@@ -1,9 +1,9 @@
-#main #filterprojectcategories *
+#filterprojectcategories *
 {
 	list-style: none;
 }
 
-#main #projectcategory
+#projectcategory
 {
 	display: flex;  
 	flex-wrap: wrap;
