@@ -10,15 +10,75 @@
 		<!-- nothing in the tag as it is referencing a .js file -->
 		<!-- defer keyword means "hold off running this .js until the whole page is loaded." -->
 		<script src="main.js" type="module" defer></script>
-		
 		<!-- delcaring a link between this and the css resource -->
 		<link rel="stylesheet" type="text/css" href="style.css" defer>
 	</head>
 	<body>
 		<section id=main>
-			<h2>Browse and filter projects by categories</h2>
+			<h2>Browse Projects</h2>
+
+			<h3>Filter projects by tags</h3>
+			<ul id="filterprojectcategoriestags">
+		<!--	...
+				<li>
+					[Category Name]
+					<ul class="projectcategory">
+						...
+						<li>
+							<button class="[FilterTagButtonID]" value=[Tag Name]>[Tag Name]</button>
+						</li>
+						...
+					</ul>
+				</li>
+				...
+		--> </ul>
 			
-			<ul id="filterprojectcategories">
+			<ul id="projectlist">
+				<li class="project">
+					<button value="[Project Name]">Expand</button>
+					<img src="/64x64.PNG" class="projectimg"></img>
+					<ul class="projecttaglist">
+						<li class="projecttag">[Project Tag]</li>
+						<li class="projecttag">[Project Tag]</li>
+						<li class="projecttag">[Project Tag]</li>
+					</ul>
+					<p class="projectdesc">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam interdum diam at est placerat eleifend. Vivamus luctus ullamcorper diam, ac accumsan tortor dictum id. Phasellus viverra, erat at placerat consequat, arcu diam pulvinar urna, id lacinia lacus neque eget tellus. Quisque iaculis euismod nisi, ac luctus turpis mollis quis. Phasellus sapien dui, volutpat ac placerat non, maximus eget mauris. Nulla facilisi. Curabitur ultrices lacus malesuada blandit dignissim. Donec malesuada, tellus quis dignissim condimentum, felis arcu vehicula dolor, mollis vulputate est nisi id purus. Vivamus faucibus ante id</p>
+				</li>
+				<li class="project">
+					<button value="[Project Name]">Expand</button>
+					<img src="/64x64.PNG"></img>
+					<ul class="projecttaglist">
+						<li class="projecttag">[Project Tag]</li>
+						<li class="projecttag">[Project Tag]</li>
+					</ul>
+				</li>
+				<li class="project">
+					<button value="[Project Name]">Expand</button>
+					<img src="/64x64.PNG"></img>
+					<ul class="projecttaglist">
+						<li class="projecttag">[Project Tag]</li>
+						<li class="projecttag">[Project Tag]</li>
+						<li class="projecttag">[Project Tag]</li>
+						<li class="projecttag">[Project Tag]</li>
+					</ul>
+				</li>
+				<li class="project">
+					<button value="[Project Name]">Expand</button>
+					<img src="/64x64.PNG"></img>
+					<ul class="projecttaglist">
+						<li class="projecttag">[Project Tag]</li>
+						<li class="projecttag">[Project Tag]</li>
+					</ul>
+				</li>
+				<li class="project">
+					<button value="[Project Name]">Expand</button>
+					<img src="/64x64.PNG"></img>
+					<ul class="projecttaglist">
+						<li class="projecttag">[Project Tag]</li>
+						<li class="projecttag">[Project Tag]</li>
+						<li class="projecttag">[Project Tag]</li>
+					</ul>
+				</li>
 			</ul>
 			
 		</section>

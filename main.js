@@ -22,15 +22,20 @@ const ActiveFilters =
 window.onload = () => // event handler
 {
 	// Generate the HTML list of project tags
-	const CategoryFilters = document.getElementById("filterprojectcategories");
+	const CategoryFilters = document.getElementById("filterprojectcategoriestags");
 	CategoryFilters.innerHTML = ConstructProjectCategoryList();
 	
-	// Get all tags and hook up their buttons
+	// Get all tags and hook up their buttons (would've just done the
+	//   onclick directly into the html tags but nothing I tried worked)
 	let tagList = document.getElementsByClassName(FilterTagButtonID);
 	for(let t of tagList)
 	{
 		t.onclick = () => SetTagFilter(t.value)
 	};
+
+	// Generate the list of projects
+	//const ProjectList = document.getElementById("filterprojectcategoriestags");
+	//ProjectList.innerHTML = ConstructProjectList();
 }
 
 /*\
@@ -38,7 +43,7 @@ window.onload = () => // event handler
 |*| |   ...
 |*| |   <li>
 |*| |   |   [Category Name]
-|*| |   |   <ul id="projectcategory">
+|*| |   |   <ul class="projectcategory">
 |*| |   |   |   ...
 |*| |   |   |   <li>
 |*| |   |   |   |   <button class="[FilterTagButtonID]" value=[Tag Name]>[Tag Name]</button>
@@ -56,7 +61,7 @@ const ConstructProjectCategoryList = () =>
 	for(const [category, tags] of Object.entries(ProjectCategoriesAndTags))
 	{
 		// ...where each is a list of tags...
-		result += `<li>${category}<ul id=\"projectcategory\">`;
+		result += `<li>${category}<ul class=\"projectcategory\">`;
 		tags.forEach((t) =>
 		{
 			result += `<li><button class=\"${FilterTagButtonID}\" value=\"${t}\">${t}</button></li>`;
@@ -65,6 +70,16 @@ const ConstructProjectCategoryList = () =>
 	};
 	return result;
 }
+
+const ConstructProjectList = () =>
+{
+	let result = "<ul>";
+	
+
+
+	return result + "</ul>";
+}
+
 
 /// Runtime Functions
 /// =================
