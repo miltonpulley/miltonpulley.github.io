@@ -1,0 +1,10 @@
+#main #filterprojectcategories *
+{
+	list-style: none;
+}
+
+#main #projectcategory
+{
+	display: flex;  
+	flex-wrap: wrap;
+}
