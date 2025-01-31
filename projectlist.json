@@ -1,0 +1,25 @@
+{
+	"projects":
+    [
+		{
+			"name": "Portfolio Website",
+			"date": "2025-01-30T12:41:26",
+			"folderpath": "/projects/This Website",
+			"tags":
+            [
+                "Solo", "HTML/CSS/JS", "2D digital"
+            ],
+            "blurb": "This website you are on now was created by me!"
+		},
+        {
+			"name": "Placeholder Text",
+			"date": "2025-01-30T12:41:26",
+			"folderpath": "/projects/This Website",
+			"tags":
+            [
+                "Solo", "HTML/CSS/JS", "2D digital"
+            ],
+            "blurb": "This"
+		}
+    ]
+}

@@ -8,6 +8,7 @@ this website myself but I thought it would be a fun exercise, and because I can 
 functionality, which is why I would rather write my own video game engine rather than an off-the-shelf one).
 
 This paragraph (and the previous) I am writing on the 31st, before I know how to do things like css animation, but I'll figure it out.
+Some of the javascript was from a project that gradually built up while I was learning HTML/CSS/JS.
 I probably won't do a datastore with SQL since that feels a bit overkill, I'll probably just fetch from file.
 The filtering being done by buttons and not a searchbar is because I currently do not feel like sanitising inputs and protecting against
 injection attacks (even though I'm sure other attacks are still possible, assuming Github Pages doesn't already protect against that stuff anyway).

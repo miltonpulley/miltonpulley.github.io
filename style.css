@@ -29,7 +29,7 @@ body
 	min-width: fit-content;
 	max-width: 100%;
 	background-color: #d6d6d6;
-	border: 1px solid #aaaaaa;
+	border: 0.1em solid #aaaaaa;
 	border-radius: 2vw;
 }
 
@@ -38,7 +38,7 @@ body
 	display: inline-block;
 	margin: 2px 0px 0px 2vw;
 	width: fit-content;
-	font-size: calc(2vw + 1em);
+	font-size: calc(1vw + 1.5em);
 }
 
 #filterallbuttons
@@ -47,15 +47,40 @@ body
 	flex-direction: row;
 	margin-right: 2vw;
 	width: auto;
-	font-size: calc(1vw + 0.4em);
+	font-size: calc(0.4vw + 0.8em);
 	justify-content: flex-end;
+}
+
+#filterprojectcategoriestags
+{
+	padding: 0px;
+	text-align: center;
+}
+
+#filterprojectcategoriestags li h3
+{
+	margin: 5px 0px 1px;
+	text-align: center;
+	font-size: calc(0.4vw + 1em);
+}
+
+.projectcategory
+{
+	display: flex;  
+	flex-wrap: wrap;
+	margin: 0px;
+	padding: 0px;
+	justify-content: center;
 }
 
 .tagfilterbutton /* all ignored ("ig") or unspecified tags, and default of all others */
 {
+	margin: 0.1em; 
+	padding: 0px 0.3em;
+	font-size: calc(0.4vw + 1em);
 	color: #000000;
 	background-color: #eaeaef;
-	border: 2px solid #999999;
+	border: 0.15em solid #999999;
 	border-radius: 0.4em;
 }
 .tagfilterbutton:hover /* all ignored ("ig") or unspecified tags, and default of all others */
@@ -83,34 +108,6 @@ body
 	background-color: #313131;
 }
 
-#filterprojectcategoriestags
-{
-	padding: 0px;
-	text-align: center;
-}
-
-#filterprojectcategoriestags li h3
-{
-	margin: 5px 0px 1px;
-	text-align: center;
-	font-size: 1.2em;
-}
-
-.projectcategory
-{
-	display: flex;  
-	flex-wrap: wrap;
-	margin: 0px;
-	padding: 0px;
-	justify-content: center;
-}
-
-.tagfilterbutton
-{
-	margin: 0.1em;
-	font-size: calc(1vw + 0.4em);
-}
-
 /* Project List */
 /* ============ */
 
@@ -125,68 +122,107 @@ body
 
 .project
 {
+	--projectimg-height: 50%;
+	--projectimg-margin-bottom: 2px;
+	--projectdesc-margin-left-right: 0.15em;
+
+	position: relative;
 	display: flex;
 	flex-direction: column;
 	/* flex: 0 0 0; */
 	margin: 0.5%;
-	padding: 2px;
 	min-width: 30em;
-	max-height: 20em;
+	max-height: calc(20em + 1.2vh);
 	aspect-ratio:  4 / 3;
 	background-color: #cccccc;
-	border: 1px solid #000000;
+	border: 0.25em solid #666666;
 	border-radius: 0.5em;
 }
 
-.projectbutton
+.projectexpand
 {
 	position: absolute;
-	margin: 2px;
-	padding: 2px;
+	top: 0;
+	margin: 4px;
+	padding: 0.15em;
 	font-size: 1.4em;
-	border: 1px solid #444444;
+	background-color: #fbf1f7;
+	border: 0.1em solid #777777;
+	border-radius: 0.3em;
+}
+.projectexpand:hover
+{
+	background-color: #ffffff;
+}
+
+.projectdate
+{
+	position: absolute;
+	right: 0;
+	margin: 4px;
+	padding: 0.15em;
+	font-size: 1.4em;
+	background-color: #cccccc;
+	border: 0.1em solid #777777;
 	border-radius: 0.3em;
 }
 
 .projectimg
 {
-	flex: 0 0 50%;
-	padding: 0px;
+	flex: 0 0 var(--projectimg-height);
 	margin: 2px;
+	margin-bottom: var(--projectimg-margin-bottom);
 	margin-inline: auto;
-	/* width: auto;
-	text-align: center; */
+	padding: 0px;
+	width: auto;
+	height: var(--projectimg-height);
+	aspect-ratio: auto;
+}
+
+.projectname
+{
+	position: absolute;
+	bottom: calc(var(--projectimg-height) - var(--projectimg-margin-bottom) - 2px);
+	margin: 2px var(--projectdesc-margin-left-right);
+	margin-bottom: 0px;
+	padding: 2px 0.25em;
+	font-size: 1.8em;
+	background-color: #ccccccaa;
+	border-top: 0.1em solid #777777;
+	border-right: 0.1em solid #777777;
+	border-radius: 0 0.4em 0 0;
 }
 
 .projectdesc
 {
 	display: inline-block;
-	margin: 0 0.15em;
+	margin: 0 var(--projectdesc-margin-left-right);
+	max-height: 3.4em; /* If I can't write the desc in 3 lines or less, it's too probably too long. */
 	font-size: 2em;
 	overflow: hidden;
 	line-height: 1.1em;
-	max-height: 3.4em; /* If I can't write the desc in 3 lines or less, it's too probably too long. */
+	border-top: 0.1em solid #777777;
 }
 
 .projecttaglist
 {
-	display: inline-flex;
+	display: flex;
 	flex: 1 0 auto;
 	flex-wrap: wrap-reverse;
-	padding: 1px;
+	padding: 2px;
 	width: auto;
 	justify-content: flex-end;
 	align-items: flex-start;
-	/* align-content: end; */
+	align-content: end;
 }
 
 .projecttag
 {
 	/* flex: 0 0 auto; */
-	padding: 1px;
 	margin: 1px;
+	padding: 1px;
 	font-size: 0.9em;
 	background-color: #aaaaaa;
-	border: 1px solid #888888;
+	border: 0.1em solid #888888;
 	border-radius: 0.2em;
 }
