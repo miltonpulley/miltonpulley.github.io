@@ -11,67 +11,72 @@
 
 #projectlist
 {
+	display: flex;
+	flex-wrap: wrap;
 	margin: 0px 1vw;
 	padding: 0px 1vw;
-	display: flex;  
-	flex-wrap: wrap;
 	justify-content: center;
 }
 
 .project
 {
+	display: flex;
+	flex-direction: column;
+	/* flex: 0 0 0; */
 	margin: 0.5%;
-	border: 1px solid #000000;
-	flex: 0 0 0;
-	min-width: 15em;
-	aspect-ratio: 4 / 3;
+	padding: 2px;
+	min-width: 30em;
+	max-height: 20em;
+	aspect-ratio:  4 / 3;
 	background-color: #cccccc;
+	border: 1px solid #000000;
 }
 
-.project button
+.projectbutton
 {
-	font-size: 0.7em;
 	position: absolute;
 	margin: 2px;
+	font-size: 1.2em;
 }
 
 .projectimg
 {
-	height: 50%;
-	display: block;
+	flex: 0 0 50%;
 	padding: 0px;
 	margin: 2px;
-	text-align: center;
 	margin-inline: auto;
-}
-
-.projecttaglist
-{
-	padding: 1px;
-	display: flex;
-	flex-wrap: wrap;
-	width: 90%;
-}
-
-.projecttag
-{
-	flex: 0 0 auto;
-	font-size: 0.5em;
-	border: 1px solid #888888;
-	background-color: #aaaaaa;
-	border-radius: 0.2rem;
-	height: auto;
-	padding: 0.1em;
-	margin: 1px;
+	/* width: auto;
+	text-align: center; */
 }
 
 .projectdesc
 {
-	display: block;
-	font-size: 80%;
-	text-overflow: ellipsis;
+	display: inline-block;
+	margin: 0 3px;
+	font-size: 2em;
+	/* text-overflow: ellipsis; */
 	overflow: hidden;
-	padding: 3px;
-	margin: 0;
-	text-align: left;
+	/* white-space: normal; */
+}
+
+.projecttaglist
+{
+	display: inline-flex;
+	flex: 1 0 auto;
+	flex-wrap: wrap-reverse;
+	padding: 1px;
+	width: auto;
+	justify-content: flex-end;
+	align-items: flex-start;
+}
+
+.projecttag
+{
+	/* flex: 0 0 auto; */
+	padding: 1px;
+	margin: 1px;
+	font-size: 0.8em;
+	background-color: #aaaaaa;
+	border: 1px solid #888888;
+	border-radius: 0.2vw;
 }

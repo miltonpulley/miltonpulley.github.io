@@ -1,0 +1,14 @@
+On the 30th of January 2025, I finally decided to create a website portfolio during the break between University terms.
+A portfolio had been something I planned to make ever since many at TAFE (and many since) have pointed out the benefits of one.
+My University's IT faculty had a conference day of sorts during the end-of-year holidays where, among other things, attended a
+presentation of creating a portfolio. From there I got the idea to use Github Pages, to reflect on assessments, show what didn't
+work and why, problem solving, teamwork, communication, and not so much on technical prowess. The presentation also showed
+"Beautiful Jekyll", which helps to quickly construct a website, but I chose to write my own HTML/CSS/JS. I didn't need to make
+this website myself but I thought it would be a fun exercise, and because I can (and also I prefer total control over the underlying
+functionality, which is why I would rather write my own video game engine rather than an off-the-shelf one).
+
+This paragraph (and the previous) I am writing on the 31st, before I know how to do things like css animation, but I'll figure it out.
+I probably won't do a datastore with SQL since that feels a bit overkill, I'll probably just fetch from file.
+The filtering being done by buttons and not a searchbar is because I currently do not feel like sanitising inputs and protecting against
+injection attacks (even though I'm sure other attacks are still possible, assuming Github Pages doesn't already protect against that stuff anyway).
+The main priority is getting the site in a workable state, as I only have 4 weeks (which is plenty of time but I don't want to get sidetracked and fall victim to scope-creep).
