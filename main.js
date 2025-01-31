@@ -1,6 +1,6 @@
 /// Constant / Idempotent / Static Values
 /// =====================================
-const FilterTagButtonID = "tagfilterbutton"
+// const FilterTagButtonID = "tagfilterbutton"
 const ProjectCategoriesAndTags =
 {
 	"Group size": ["Solo", "Team member", "Team leader"],
@@ -27,7 +27,7 @@ window.onload = () => // event handler
 	
 	// Get all tags and hook up their buttons (would've just done the
 	//   onclick directly into the html tags but nothing I tried worked)
-	let tagList = document.getElementsByClassName(FilterTagButtonID);
+	let tagList = document.getElementsByClassName("tagfilterbutton");
 	for(let t of tagList)
 	{
 		t.onclick = () => SetTagFilter(t.value)
@@ -42,11 +42,11 @@ window.onload = () => // event handler
 |*| <ul id="filterprojectcategories">
 |*| |   ...
 |*| |   <li>
-|*| |   |   [Category Name]
+|*| |   |   <h3>[Category Name]</h3>
 |*| |   |   <ul class="projectcategory">
 |*| |   |   |   ...
 |*| |   |   |   <li>
-|*| |   |   |   |   <button class="[FilterTagButtonID]" value=[Tag Name]>[Tag Name]</button>
+|*| |   |   |   |   <button class="tagfilterbutton" value=[Tag Name]>[Tag Name]</button>
 |*| |   |   |   </li>
 |*| |   |   |   ...
 |*| |   |   </ul>
@@ -61,10 +61,10 @@ const ConstructProjectCategoryList = () =>
 	for(const [category, tags] of Object.entries(ProjectCategoriesAndTags))
 	{
 		// ...where each is a list of tags...
-		result += `<li>${category}<ul class=\"projectcategory\">`;
+		result += `<li><h3>${category}</h3><ul class=\"projectcategory\">`;
 		tags.forEach((t) =>
 		{
-			result += `<li><button class=\"${FilterTagButtonID}\" value=\"${t}\">${t}</button></li>`;
+			result += `<li><button class=\"tagfilterbutton\" value=\"${t}\">${t}</button></li>`;
 		});
 		result += "</ul></li>";
 	};

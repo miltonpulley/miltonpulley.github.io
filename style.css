@@ -1,13 +1,118 @@
+body
+{
+	margin: 0px;
+}
+
+#main
+{
+	margin: 1vw;
+}
+
 #main *
 {
 	list-style: none;
+}
+
+#main > h1
+{
+	margin-left: 2vw;
+	font-size: calc(1vw + 1.4em);
+}
+
+#filterarea
+{
+	margin: 2px auto 3vh;
+	/* margin-top: 2px;
+	margin-bottom: 3vh; */
+	padding: 0px 0px 3px;
+	width: 60em;
+	min-width: fit-content;
+	max-width: 100%;
+	background-color: #d6d6d6;
+	border: 1px solid #aaaaaa;
+	border-radius: 2vw;
+}
+
+#filterarea > h2
+{
+	display: inline-block;
+	margin: 2px 0px 0px 2vw;
+	width: fit-content;
+	font-size: calc(2vw + 1em);
+}
+
+#filterallbuttons
+{
+	display: flex;
+	flex-direction: row;
+	margin-right: 2vw;
+	width: auto;
+	font-size: calc(1vw + 0.4em);
+	justify-content: flex-end;
+}
+
+.tagfilterbutton /* all ignored ("ig") or unspecified tags, and default of all others */
+{
+	color: #000000;
+	background-color: #eaeaef;
+	border: 2px solid #999999;
+	border-radius: 0.4em;
+}
+.tagfilterbutton:hover /* all ignored ("ig") or unspecified tags, and default of all others */
+{
+	background-color: #fafaff;
+}
+.tagfilterbutton[state="wh"] /* all whitelisted tags */
+{
+	color: #111111;
+	background-color: #eeeeee;
+	border-color: #111111;
+}
+.tagfilterbutton[state="wh"]:hover /* all whitelisted tags */
+{
+	background-color: #fefefe;
+}
+.tagfilterbutton[state="bl"] /* all blacklisted tags */
+{
+	color: #eeeeee;
+	background-color: #111111;
+	border-color: #eeeeee;
+}
+.tagfilterbutton[state="bl"]:hover /* all blacklisted tags */
+{
+	background-color: #313131;
+}
+
+#filterprojectcategoriestags
+{
+	padding: 0px;
+	text-align: center;
+}
+
+#filterprojectcategoriestags li h3
+{
+	margin: 5px 0px 1px;
+	text-align: center;
+	font-size: 1.2em;
 }
 
 .projectcategory
 {
 	display: flex;  
 	flex-wrap: wrap;
+	margin: 0px;
+	padding: 0px;
+	justify-content: center;
 }
+
+.tagfilterbutton
+{
+	margin: 0.1em;
+	font-size: calc(1vw + 0.4em);
+}
+
+/* Project List */
+/* ============ */
 
 #projectlist
 {
@@ -30,13 +135,17 @@
 	aspect-ratio:  4 / 3;
 	background-color: #cccccc;
 	border: 1px solid #000000;
+	border-radius: 0.5em;
 }
 
 .projectbutton
 {
 	position: absolute;
 	margin: 2px;
-	font-size: 1.2em;
+	padding: 2px;
+	font-size: 1.4em;
+	border: 1px solid #444444;
+	border-radius: 0.3em;
 }
 
 .projectimg
@@ -52,11 +161,11 @@
 .projectdesc
 {
 	display: inline-block;
-	margin: 0 3px;
+	margin: 0 0.15em;
 	font-size: 2em;
-	/* text-overflow: ellipsis; */
 	overflow: hidden;
-	/* white-space: normal; */
+	line-height: 1.1em;
+	max-height: 3.4em; /* If I can't write the desc in 3 lines or less, it's too probably too long. */
 }
 
 .projecttaglist
@@ -68,6 +177,7 @@
 	width: auto;
 	justify-content: flex-end;
 	align-items: flex-start;
+	/* align-content: end; */
 }
 
 .projecttag
@@ -75,8 +185,8 @@
 	/* flex: 0 0 auto; */
 	padding: 1px;
 	margin: 1px;
-	font-size: 0.8em;
+	font-size: 0.9em;
 	background-color: #aaaaaa;
 	border: 1px solid #888888;
-	border-radius: 0.2vw;
+	border-radius: 0.2em;
 }

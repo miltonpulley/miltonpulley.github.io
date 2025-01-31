@@ -15,23 +15,30 @@
 	</head>
 	<body>
 		<section id=main>
-			<h2>Browse Projects</h2>
+			<h1>Browse Projects</h1>
 
-			<h3>Filter projects by tags</h3>
-			<ul id="filterprojectcategoriestags">
-		<!--	...
-				<li>
-					[Category Name]
-					<ul class="projectcategory">
-						...
-						<li>
-							<button class="[FilterTagButtonID]" value=[Tag Name]>[Tag Name]</button>
-						</li>
-						...
-					</ul>
-				</li>
-				...
-		--> </ul>
+			<div id="filterarea">
+				<h2>Filter projects by tags</h2>
+				<div id="filterallbuttons">
+					<button class="tagfilterbutton" value="ignoreall" state="ig">Ignore All</button>
+					<button class="tagfilterbutton" value="whitelistall" state="wh">Whitelist All</button>
+					<button class="tagfilterbutton" value="blacklistall" state="bl">Blacklist All</button>
+				</div>
+				<ul id="filterprojectcategoriestags">
+			<!--	...
+					<li>
+						<h3>[Category Name]</h3>
+						<ul class="projectcategory">
+							...
+							<li>
+								<button class="tagfilterbutton" value=[Tag Name] state="[state]">[Tag Name]</button>
+							</li>
+							...
+						</ul>
+					</li>
+					...
+			--> </ul>
+			</div>
 			
 			<ul id="projectlist">
 				<li class="project">
