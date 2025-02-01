@@ -9,6 +9,18 @@ const ProjectCategoriesAndTags =
 	"Music": ["Vocals", "Band", "Music sheet", "Live performance"],
 };
 
+// This is shown if the projects couldn't be loaded
+const ProjectListErrorHTML = 
+	`<li class="project">
+		<img src="/placeholder.jpg" class="projectimg"></img>
+		<p class="projectname">An Error Message</p>
+		<p class="projectdesc">Um... uh... this is where I list my projects... but there was a problem fetching them!</p>
+		<ul class="projecttaglist">
+			<li class="projecttag">Error message</li>
+			<li class="projecttag">You're not supposed to see this!</li>
+		</ul>
+	</li>`
+
 /// Session State Storage
 /// =====================
 var AllProjects = [];
@@ -167,6 +179,9 @@ function FetchJSON(directory, callbackFunction)
 	.catch((error) =>
 	{
 		console.error(`Error in fetching JSON \"${directory}\", ${error}`);
+
+		const ProjectList = document.getElementById("projectlist");
+		ProjectList.innerHTML = ProjectListErrorHTML;
 	})
 	.then((FetchedParsedJSONdata) => // THIS is the data that was promised
 	{
