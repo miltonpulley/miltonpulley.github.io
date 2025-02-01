@@ -11,12 +11,13 @@ const ProjectCategoriesAndTags =
 
 /// Session State Storage
 /// =====================
-const AllProjects = {};
+var AllProjects = [];
 const ActiveFilters =
 {
 	whitelisted: [],
 	blacklisted: [],
 };
+var DisplayedProjectsIndexes = [];
 
 /// Initialisation Functions
 /// ========================
@@ -34,7 +35,7 @@ window.onload = () => // event handler
 		t.onclick = () => SetTagFilter(t.value);
 	};
 
-	// Generate the list of projects
+	// Get and generate the list of projects
 	FetchAllProjects();
 }
 
@@ -45,24 +46,24 @@ function FetchAllProjects()
 function FetchAllProjectsCallback(fetchedprojectsJSON)
 {
 	// clear the projects array
-	while(AllProjects.length > 0)
-	{
-		AllProjects.pop();
-	}
+	AllProjects = [];
 
+	let index = 0;
 	fetchedprojectsJSON.projects.forEach((proj) =>
 	{
-		if(AllProjects[proj.name])
+		// Checking if we have doubled up
+		/*if(AllProjects[proj.name])
 		{
 			console.error(`Error: Project of name \"${proj.name}\" already exists!`);
 		}
 		else
-		{
-			AllProjects[proj.name] = new Project(proj.name, new Date(proj.date), proj.folderpath, proj.tags, proj.blurb);
-		}
+		{*/
+			AllProjects[index] = new Project(proj.name, new Date(proj.date), proj.folderpath, proj.tags, proj.blurb);
+			index++;
+		//}
 	});
 	//console.log(AllProjects)
-
+	FilterProjects();
 	ConstructProjectList();
 }
 
@@ -90,8 +91,9 @@ const ConstructProjectCategoryList = () =>
 	// A list of categories...
 	for(const [category, tags] of Object.entries(ProjectCategoriesAndTags))
 	{
+		result += `<li><h3>${category}</h3>`
+		result += "<ul class=\"projectcategory\">";
 		// ...where each is a list of tags...
-		result += `<li><h3>${category}</h3><ul class=\"projectcategory\">`;
 		tags.forEach((t) =>
 		{
 			result += `<li><button class=\"tagfilterbutton\" value=\"${t}\">${t}</button></li>`;
@@ -119,11 +121,15 @@ const ConstructProjectCategoryList = () =>
 |*| |   ...
 |*| </ul>
 \*/
+// Constructs the HTML project list based on filters
 const ConstructProjectList = () =>
 {
 	let result = "";
-	for(const [name, project] of Object.entries(AllProjects))
+	// For each project that we want to display
+	DisplayedProjectsIndexes.forEach((index) =>
 	{
+		const project = AllProjects[index];
+		// Add each html tag
 		result += `<li class=\"project\">`;
 		result += `<button class="projectexpand" value=\"${project.name}\">Expand</button>`;
 		result += `<img class=\"projectimg\" src=\"${project.folderpath}/thumbnail.png\"></img>`;
@@ -136,9 +142,9 @@ const ConstructProjectList = () =>
 			result += `<li class=\"projecttag\">${t}</li>`;
 		});
 		result += "</ul></li>";
-	};
+	});
 	const ProjectList = document.getElementById("projectlist");
-	//ProjectList.innerHTML = result;
+	ProjectList.innerHTML = result;
 }
 
 /// Runtime Functions
@@ -167,6 +173,39 @@ function FetchJSON(directory, callbackFunction)
 		//console.log(FetchedParsedJSONdata); // logs the data
 		callbackFunction(FetchedParsedJSONdata);
 	});
+}
+
+function FilterProjects()
+{
+	// wipe array to recalculate
+	DisplayedProjectsIndexes = [];
+
+	// Set the defaults
+	let whitelisted = true;
+	let blacklisted = false;
+	let i = 0; // instead of traditional for loop as Allprojects.length (annoyingly) isn't a valid thing
+	for(let project of Object.values(AllProjects))
+	{
+		/// Check if any tag of this project appears in the whitelist or blacklist
+		/// -----------
+		// If the whitelist is empty, use default above (allow all)
+		if(ActiveFilters.whitelisted.length > 0)
+		{
+			whitelisted = project.tags.some(t => ActiveFilters.whitelisted.includes(t));
+		}
+		// If the blacklist is empty, use default above (remove none)
+		if(ActiveFilters.blacklisted.length > 0)
+		{
+			blacklisted = project.tags.some(t => ActiveFilters.blacklisted.includes(t));
+		}
+
+		// if whitelisted and not blacklisted, it will be displayed
+		if(whitelisted && !blacklisted)
+		{
+			DisplayedProjectsIndexes.push(i);
+		}
+		i++;
+	}
 }
 
 /// Classes and Objects

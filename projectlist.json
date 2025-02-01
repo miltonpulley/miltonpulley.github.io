@@ -17,9 +17,19 @@
 			"folderpath": "/projects/This Website",
 			"tags":
             [
-                "Solo", "HTML/CSS/JS", "2D digital"
+                "Team member", "2D digital", "C#"
             ],
             "blurb": "This"
+		},
+        {
+			"name": "blah blah",
+			"date": "1928-12-14T22:04:42",
+			"folderpath": ".",
+			"tags":
+            [
+                "Team member", "Sketch", "3D digital", "Vocals"
+            ],
+            "blurb": "Such a nice placeholder here"
 		}
     ]
 }
