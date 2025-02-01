@@ -20,9 +20,9 @@
 			<div id="filterarea">
 				<h2>Filter projects by tags</h2>
 				<div id="filterallbuttons">
-					<button class="tagfilterbutton" value="ignoreall" state="ig">Ignore All</button>
-					<button class="tagfilterbutton" value="whitelistall" state="wh">Whitelist All</button>
-					<button class="tagfilterbutton" value="blacklistall" state="bl">Blacklist All</button>
+					<button class="tagfilterallbutton" value="ignoreall" filter="ig">Ignore All</button>
+					<button class="tagfilterallbutton" value="whitelistall" filter="wh">Whitelist All</button>
+					<button class="tagfilterallbutton" value="blacklistall" filter="bl">Blacklist All</button>
 				</div>
 				<ul id="filterprojectcategoriestags"> <!--
 					...
@@ -31,15 +31,18 @@
 						<ul class="projectcategory">
 							...
 							<li>
-								<button class="tagfilterbutton" value=[Tag Name] state="[state]">[Tag Name]</button>
+								<button class="tagfilterbutton" value="[Tag Name]" [FilterTagStateName]="[State]">[Tag Name]</button>
 							</li>
 							...
 						</ul>
 					</li>
 					... -->
 				</ul>
+				<p id="projectlistlength" filter="ig"></p>
+				<p id="activewhitelist" filter="wh"></p>
+				<p id="activeblacklist" filter="bl"></p>
 			</div>
-			
+
 			<ul id="projectlist"> <!--
 				...
 				<li class="project">
@@ -65,7 +68,6 @@
 					</ul>
 				</li>
 			</ul>
-			
 		</section>
 		<footer>
 			<p>Milton Pulley 2025</p>

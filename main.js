@@ -9,6 +9,8 @@ const ProjectCategoriesAndTags =
 	"Music": ["Vocals", "Band", "Music sheet", "Live performance"],
 };
 
+const FilterTagStateName = "filter";
+
 // This is shown if the projects couldn't be loaded
 const ProjectListErrorHTML = 
 	`<li class="project">
@@ -19,17 +21,15 @@ const ProjectListErrorHTML =
 			<li class="projecttag">Error message</li>
 			<li class="projecttag">You're not supposed to see this!</li>
 		</ul>
-	</li>`
+	</li>`;
 
 /// Session State Storage
 /// =====================
-var AllProjects = [];
-const ActiveFilters =
-{
-	whitelisted: [],
-	blacklisted: [],
-};
-var DisplayedProjectsIndexes = [];
+const AllProjects = [];
+const Whitelist = [];
+const Blacklist = [];
+const DisplayedProjectsIndexes = [];
+var TotalNumberOfTags = 0;
 
 /// Initialisation Functions
 /// ========================
@@ -44,7 +44,13 @@ window.onload = () => // event handler
 	let tagList = document.getElementsByClassName("tagfilterbutton");
 	for(let t of tagList)
 	{
-		t.onclick = () => SetTagFilter(t.value);
+		t.onclick = () => SetTagFilterState(t);
+		TotalNumberOfTags++; // count the number of tags
+	};
+	let filterAllButtons = document.getElementsByClassName("tagfilterallbutton");
+	for(let b of filterAllButtons)
+	{
+		b.onclick = () => SetAllTagFilterStates(b.getAttribute(FilterTagStateName));
 	};
 
 	// Get and generate the list of projects
@@ -57,8 +63,8 @@ function FetchAllProjects()
 }
 function FetchAllProjectsCallback(fetchedprojectsJSON)
 {
-	// clear the projects array
-	AllProjects = [];
+	// effectively clears the array
+	AllProjects.splice(0);
 
 	let index = 0;
 	fetchedprojectsJSON.projects.forEach((proj) =>
@@ -89,7 +95,7 @@ function FetchAllProjectsCallback(fetchedprojectsJSON)
 |*| |   |   <ul class="projectcategory">
 |*| |   |   |   ...
 |*| |   |   |   <li>
-|*| |   |   |   |   <button class="tagfilterbutton" value=[Tag Name]>[Tag Name]</button>
+|*| |   |   |   |   <button class="tagfilterbutton" value="[Tag Name]" [FilterTagStateName]="[State]">[Tag Name]</button>
 |*| |   |   |   </li>
 |*| |   |   |   ...
 |*| |   |   </ul>
@@ -108,7 +114,7 @@ const ConstructProjectCategoryList = () =>
 		// ...where each is a list of tags...
 		tags.forEach((t) =>
 		{
-			result += `<li><button class=\"tagfilterbutton\" value=\"${t}\">${t}</button></li>`;
+			result += `<li><button class=\"tagfilterbutton\" value=\"${t}\" ${FilterTagStateName}=\"${TagStatesEnum.DefaultTagState}\">${t}</button></li>`;
 		});
 		result += "</ul></li>";
 	};
@@ -142,13 +148,13 @@ const ConstructProjectList = () =>
 	{
 		const project = AllProjects[index];
 		// Add each html tag
-		result += `<li class=\"project\">`;
+		result += "<li class=\"project\">";
 		result += `<button class="projectexpand" value=\"${project.name}\">Expand</button>`;
 		result += `<img class=\"projectimg\" src=\"${project.folderpath}/thumbnail.png\"></img>`;
 		result += `<p class=\"projectdate\">${project.date.toLocaleDateString()}</p>`;
 		result += `<p class=\"projectname\">${project.name}</p>`;
 		result += `<p class=\"projectdesc\">${project.blurb}</p>`;
-		result += `<ul class=\"projecttaglist\">`;
+		result += "<ul class=\"projecttaglist\">";
 		project.tags.forEach((t) =>
 		{
 			result += `<li class=\"projecttag\">${t}</li>`;
@@ -161,9 +167,91 @@ const ConstructProjectList = () =>
 
 /// Runtime Functions
 /// =================
-function SetTagFilter(tag)
+function SetTagFilterState(tagHTML)
 {
-	console.log(tag);
+	// Cycle state
+	let oldState = tagHTML.getAttribute(FilterTagStateName);
+	let newState = TagStatesEnum.nextStateOf(oldState);
+	tagHTML.setAttribute(FilterTagStateName, newState);
+
+	if(oldState == TagStatesEnum.WHITELISTED)
+	{	
+		// Remove tag from whitelist
+		RemoveFromWhitelist(tagHTML.value);
+	}
+
+	if(oldState == TagStatesEnum.BLACKLISTED)
+	{
+		// Remove tag from blacklist
+		RemoveFromBlacklist(tagHTML.value);
+	}
+
+	if(newState == TagStatesEnum.WHITELISTED)
+	{
+		// Add tag to whitelist
+		AddToWhitelist(tagHTML.value);
+	}
+	
+	if(newState == TagStatesEnum.BLACKLISTED)
+	{
+		// Add tag to blacklist
+		AddToBlacklist(tagHTML.value)
+	}
+
+	// Apply new filter(s) and reconstruct HTML
+	FilterProjects();
+	ConstructProjectList();
+}
+
+function SetAllTagFilterStates(state)
+{
+	// Clear all filters
+	Whitelist.splice(0);
+	Blacklist.splice(0);
+
+	let tagList = document.getElementsByClassName("tagfilterbutton");
+	for(let t of tagList)
+	{
+		t.setAttribute(FilterTagStateName, state);
+		if(state == TagStatesEnum.WHITELISTED)
+		{
+			AddToWhitelist(t.value);
+		}
+		if(state == TagStatesEnum.BLACKLISTED)
+		{
+			AddToBlacklist(t.value);
+		}
+	};
+	
+	// Apply new filter(s) and reconstruct HTML
+	FilterProjects();
+	ConstructProjectList();
+}
+
+function AddToWhitelist(tag)
+{
+	// Add tag to whitelist
+	Whitelist.push(tag);
+}
+
+function RemoveFromWhitelist(tag)
+{
+	// Remove tag from whitelist
+	let index = Whitelist.indexOf(tag);
+	Whitelist.splice(index, 1);
+}
+
+function AddToBlacklist(tag)
+{
+	// Add tag to blacklist
+	Blacklist.push(tag);
+}
+
+function RemoveFromBlacklist(tag)
+{
+	// Remove tag from blacklist
+	let index = Blacklist.indexOf(tag);
+	Blacklist.splice(index, 1);
 }
 
 function FetchJSON(directory, callbackFunction)
@@ -192,27 +280,36 @@ function FetchJSON(directory, callbackFunction)
 
 function FilterProjects()
 {
-	// wipe array to recalculate
-	DisplayedProjectsIndexes = [];
+	// effectively wipes the array to recalculate
+	DisplayedProjectsIndexes.splice(0);
 
-	// Set the defaults
-	let whitelisted = true;
-	let blacklisted = false;
-	let i = 0; // instead of traditional for loop as Allprojects.length (annoyingly) isn't a valid thing
-	for(let project of Object.values(AllProjects))
+	// iterate over projects and keep track of each index
+	let i = 0;
+	for(const project of Object.values(AllProjects))
 	{
-		/// Check if any tag of this project appears in the whitelist or blacklist
+		/// Check if any tag of this project matches any tag in the whitelist and/or blacklist
 		/// -----------
-		// If the whitelist is empty, use default above (allow all)
-		if(ActiveFilters.whitelisted.length > 0)
+		let whitelisted = true; // By default all tags are whitelisted
+		let blacklisted = false; // By default all tags are not blacklisted
+
+		// If EVERY tag in the whitelist also tags this project, it is whitelisted
+		//   i.e., if at least one tag of this project isn't whitelisted, then the project won't be displayed
+		for(let tag of Whitelist)
 		{
-			whitelisted = project.tags.some(t => ActiveFilters.whitelisted.includes(t));
-		}
-		// If the blacklist is empty, use default above (remove none)
-		if(ActiveFilters.blacklisted.length > 0)
+			whitelisted &= project.tags.includes(tag);
+		};
+
+		// If AT LEAST one tag in the blacklist also tags this project, it is blacklisted
+		//   i.e., if every tag of this project isn't blacklisted, then the project will be displayed
+		for(let tag of Blacklist)
 		{
-			blacklisted = project.tags.some(t => ActiveFilters.blacklisted.includes(t));
-		}
+			// once we know this project is blacklisted, there's no point checking the rest of the tags
+			if(project.tags.includes(tag))
+			{
+				blacklisted = true;
+				break;
+			}
+		};
 
 		// if whitelisted and not blacklisted, it will be displayed
 		if(whitelisted && !blacklisted)
@@ -220,6 +317,45 @@ function FilterProjects()
 			DisplayedProjectsIndexes.push(i);
 		}
 		i++;
+	}
+
+	UpdateActiveTagsText();
+}
+
+// Mostly beautifying based on corner cases
+function UpdateActiveTagsText()
+{
+	const ProjectListLength = document.getElementById("projectlistlength");
+	ProjectListLength.innerHTML = `Showing (${DisplayedProjectsIndexes.length}/${AllProjects.length}) projects.`;
+	
+	const ActiveWhitelist = document.getElementById("activewhitelist");
+	ActiveWhitelist.innerHTML = "No tags whitelisted."; // if Whitelist.length == 0
+	if(Whitelist.length == 1)
+	{
+		ActiveWhitelist.innerHTML = `Only showing \"${Whitelist[0]}\" projects.`;
+	}
+	else if(Whitelist.length == TotalNumberOfTags)
+	{
+		ActiveWhitelist.innerHTML = `Only showing projects that have every tag.`;
+	}
+	else if(Whitelist.length > 1)
+	{
+		ActiveWhitelist.innerHTML = `Only showing projects that have all (${Whitelist.length}) whitelisted tags.`;
+	}
+	
+	const ActiveBlacklist = document.getElementById("activeblacklist");
+	ActiveBlacklist.innerHTML = "No tags blacklisted."; // if Blacklist.length == 0
+	if(Blacklist.length == 1)
+	{
+		ActiveBlacklist.innerHTML = `Hiding all \"${Blacklist[0]}\" projects.`;
+	}
+	else if(Blacklist.length == TotalNumberOfTags)
+	{
+		ActiveBlacklist.innerHTML = `Hiding all projects that have at least one tag.`;
+	}
+	else if(Blacklist.length > 1)
+	{
+		ActiveBlacklist.innerHTML = `Hiding projects that have at least one of the (${Blacklist.length}) blacklisted tags.`;
 	}
 }
 
@@ -247,4 +383,27 @@ class Project
 		return this.name + " (" + this.date.toString() + "), " + this.folderpath + "," + this.tags + ", " + this.blurb;
 	}
 }
-// const proj1_portfolio = new Project("Portfolio Page", new Date(2025, 1, 30, 12, 41, 26), "", ["Solo", "HTML/CSS/JS", "2D digital"]);
+
+// Enum
+class TagStatesEnum
+{
+	static IGNORE = "ig";
+	static WHITELISTED = "wh";
+	static BLACKLISTED = "bl";
+
+	static DefaultTagState = TagStatesEnum.IGNORE;
+
+	// Cycles state
+	static nextStateOf(state)
+	{
+		switch(state)
+		{
+			case TagStatesEnum.IGNORE:
+				return TagStatesEnum.WHITELISTED;
+			case TagStatesEnum.WHITELISTED:
+				return TagStatesEnum.BLACKLISTED;
+			case TagStatesEnum.BLACKLISTED:
+				return TagStatesEnum.IGNORE;
+		}
+	}
+}

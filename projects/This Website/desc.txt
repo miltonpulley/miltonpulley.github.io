@@ -8,8 +8,14 @@ this website myself but I thought it would be a fun exercise, and because I can 
 functionality, which is why I would rather write my own video game engine rather than an off-the-shelf one).
 
 This paragraph (and the previous) I am writing on the 31st, before I know how to do things like css animation, but I'll figure it out.
-Some of the javascript was from a project that gradually built up while I was learning HTML/CSS/JS.
+Some of the JavaScript was from a project that gradually built up while I was learning HTML/CSS/JS.
 I probably won't do a datastore with SQL since that feels a bit overkill, I'll probably just fetch from file.
 The filtering being done by buttons and not a searchbar is because I currently do not feel like sanitising inputs and protecting against
 injection attacks (even though I'm sure other attacks are still possible, assuming Github Pages doesn't already protect against that stuff anyway).
 The main priority is getting the site in a workable state, as I only have 4 weeks (which is plenty of time but I don't want to get sidetracked and fall victim to scope-creep).
+At the end of the day I have finished displaying the project list, read from a .json file.
+
+It is the 1st of February, and I'm not particularly liking the amount of hardcoded strings due to differing files, e.g. referencing an HTML tag
+with ID 'X' in JavaScript with ".getElementById(X)". Both X's are the same, and should be in a variable for easy editing, but they appear in different
+files in different languages. I'll have to find a way to reference variables across HTML and JavaScript files, although that doesn't sound very doable.
+I have finished the functionality of filtering by tags, including a whitelist and blacklist.

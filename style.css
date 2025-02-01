@@ -33,7 +33,7 @@ body
 	border-radius: 2vw;
 }
 
-#filterarea > h2
+#filterarea > h2 /* Filter Projects By Tags */
 {
 	display: inline-block;
 	margin: 2px 0px 0px 2vw;
@@ -73,39 +73,47 @@ body
 	justify-content: center;
 }
 
-.tagfilterbutton /* all ignored ("ig") or unspecified tags, and default of all others */
+*[filter] /* all ignored ("ig") or unspecified tags, and default of all others */
 {
 	margin: 0.1em; 
 	padding: 0px 0.3em;
 	font-size: calc(0.4vw + 1em);
 	color: #000000;
-	background-color: #eaeaef;
+	background-color: #efeaea;
 	border: 0.15em solid #999999;
 	border-radius: 0.4em;
 }
-.tagfilterbutton:hover /* all ignored ("ig") or unspecified tags, and default of all others */
+#filterarea button:hover /* all ignored ("ig") or unspecified tags, and default of all others */
 {
-	background-color: #fafaff;
+	background-color: #fffafa;
 }
-.tagfilterbutton[state="wh"] /* all whitelisted tags */
+*[filter="wh"] /* all whitelisted tags */
 {
-	color: #111111;
-	background-color: #eeeeee;
-	border-color: #111111;
+	color: #333333;
+	background-color: #f0f0f0;
+	border-color: #444444;
 }
-.tagfilterbutton[state="wh"]:hover /* all whitelisted tags */
+#filterarea button[filter="wh"]:hover /* all whitelisted tags */
 {
 	background-color: #fefefe;
 }
-.tagfilterbutton[state="bl"] /* all blacklisted tags */
+*[filter="bl"] /* all blacklisted tags */
 {
 	color: #eeeeee;
 	background-color: #111111;
 	border-color: #eeeeee;
 }
-.tagfilterbutton[state="bl"]:hover /* all blacklisted tags */
+#filterarea button[filter="bl"]:hover /* all blacklisted tags */
 {
 	background-color: #313131;
+}
+
+#filterarea > p /* The 3 filter texts e.g. showing (#/#) projects */
+{
+	margin: 0.2em auto;
+	width: fit-content;
+	font-size: calc(1vw + 0.7em);
+	align-content: center;
 }
 
 /* Project List */
@@ -144,7 +152,7 @@ body
 	position: absolute;
 	top: 0;
 	margin: 4px;
-	padding: 0.15em;
+	padding: 0.1em 0.15em;
 	font-size: 1.4em;
 	background-color: #fbf1f7;
 	border: 0.1em solid #777777;
@@ -160,7 +168,7 @@ body
 	position: absolute;
 	right: 0;
 	margin: 4px;
-	padding: 0.15em;
+	padding: 0.1em 0.15em;
 	font-size: 1.4em;
 	background-color: #cccccc;
 	border: 0.1em solid #777777;
@@ -222,7 +230,7 @@ body
 	margin: 1px;
 	padding: 1px;
 	font-size: 0.9em;
-	background-color: #aaaaaa;
+	background-color: #bfbfbf;
 	border: 0.1em solid #888888;
 	border-radius: 0.2em;
 }
