@@ -134,6 +134,10 @@ body
 	--projectimg-margin-bottom: 2px;
 	--projectdesc-margin-left-right: 0.15em;
 
+	--expandproject-animation: ""; /* set by JavaScript and read by .expandedproject */
+	--expandproject-duration: 1.5s; /* read by JavaScript and by .expandedproject */
+	--expandproject-delay: 0s; /* set by JavaScript and read by .expandedproject */
+
 	position: relative;
 	display: flex;
 	flex-direction: column;
@@ -151,6 +155,7 @@ body
 {
 	position: absolute;
 	top: 0;
+	z-index: 10; /* To be in front of .expandedproject */
 	margin: 4px;
 	padding: 0.1em 0.15em;
 	font-size: 1.4em;
@@ -233,4 +238,66 @@ body
 	background-color: #bfbfbf;
 	border: 0.1em solid #888888;
 	border-radius: 0.2em;
+}
+
+/* Project Animation */
+/* ================= */
+
+.expandedproject
+{
+	position: absolute;
+	inset: 0%;
+	width: auto;
+	height: auto;
+	z-index: -1;
+	visibility: hidden;
+	opacity: 0%;
+
+	animation-name: var(--expandproject-animation); /* animaton switched by JavaScript */
+	animation-duration: var(--expandproject-duration);
+	animation-delay: var(--expandproject-delay);
+	animation-iteration-count: 1; /* plays once each time --expandproject-animation is set */
+	animation-fill-mode: forwards; /* keep the state of the last frame of animation */
+	animation-play-state: running; /* always run, will effectively stop at end of each animation */
+}
+
+@keyframes Expand /* expand and shrink are both slightly different animations */
+{
+	0%
+	{
+		/* position: absolute; */
+		z-index: -1; /* To be under everything in the project */
+		visibility: visible;
+		opacity: 0%;
+		background-color: yellow;
+	}
+	/* 1% { position: fixed; margin: inherit; } */
+	100%
+	{
+		/* position: fixed; */
+		z-index: 9; /* To be on top of everything except for the expand/shrink button */
+		visibility: visible;
+		opacity: 100%;
+		background-color: red;
+	}
+}
+
+@keyframes Shrink /* expand and shrink are both slightly different animations */
+{
+	0%
+	{
+		/* position: fixed; */
+		z-index: 9; /* To be on top of everything except for the expand/shrink button */
+		visibility: visible;
+		opacity: 100%;
+		background-color: red;
+	}
+	100%
+	{
+		/* position: absolute; */
+		z-index: -1; /* To be under everything in the project */
+		visibility: hidden;
+		opacity: 0%;
+		background-color: yellow;
+	}
 }

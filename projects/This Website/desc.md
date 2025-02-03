@@ -26,7 +26,9 @@ I'm not particularly liking the amount of hardcoded strings due to differing fil
 Both `X`'s are the same, and should be in a variable for easy editing, but they appear in different files in different languages.  
 I'll have to find a way to reference variables across HTML and JavaScript files, although that doesn't sound very doable. I have finished the functionality of filtering by tags, including a whitelist and blacklist.
 
-At the end of the day, I happened to bring up this website while on call with my Mum. As she has had experience in websites and I have conducted video game playtesting, she had a look and gave some feedback on things I didn't even consider, such as the black background of the "Blacklist All" button made it look like it was "currently selected", even though it doesn't "stay selected". This is why playtesting, User Experience (UX), and even customer requirements elicitation are important.
+At the end of the day, I happened to bring up this website while on call with my Mum. As she has had experience in websites and I have conducted video game playtesting, she had a look and gave some feedback on things I didn't even consider, such as the black background of the "Blacklist All" button made it look like it was "currently selected", even though it doesn't "stay selected".  
+I am honestly getting ahead of myself to be doing the css before finishing full functionality, so I wrote down what Mum said and I will work on it after functionality.  
+This is why playtesting, User Experience (UX), and even customer requirements elicitation are important.
 
 ## 2nd of February, 2025
 
@@ -34,3 +36,7 @@ I took the sunday off.
 
 ## 3rd of February, 2025
 
+I Added full functionality to the buttons that will (eventually) make the project expand to fill the screen, giving more detail on each project.  
+I also reorganised my JavaScript code that runs when the window is first loaded, including HTML generation and button functionality.
+
+Regrettably, these two things were done in the same commit. It definitely would have been better to have them seperate, but I ended up getting sidetracked/carried away while writing the project expand button functionality.

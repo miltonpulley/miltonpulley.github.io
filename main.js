@@ -9,7 +9,11 @@ const ProjectCategoriesAndTags =
 	"Music": ["Vocals", "Band", "Music sheet", "Live performance"],
 };
 
-const FilterTagStateName = "filter";
+const FilterTagStateName = "filter"; // HTML attribute name to store what kind of filter the tag is
+
+// Print names for the project button as well as their corresponding animation name
+const ProjectExpandName = "Expand"
+const ProjectShrinkName = "Shrink"
 
 // This is shown if the projects couldn't be loaded
 const ProjectListErrorHTML = 
@@ -25,35 +29,22 @@ const ProjectListErrorHTML =
 
 /// Session State Storage
 /// =====================
-const AllProjects = [];
-const Whitelist = [];
-const Blacklist = [];
-const DisplayedProjectsIndexes = [];
-var TotalNumberOfTags = 0;
+const AllProjects = []; // List of all projects fetched from file.
+const Whitelist = []; // The list of all whitelisted tags to filter AllProjects[].
+const Blacklist = []; // The list of all whitelisted tags to filter AllProjects[].
+const DisplayedProjectsIndexes = []; // The filtered version of AllProjects[] to be displayed to screen.
+var TotalNumberOfFilterTags = 0; // Total number of tags that can be used to filter.
+var CurrentlyExpandedProjectButton; // Keep track of the project we are viewing
 
 /// Initialisation Functions
 /// ========================
 window.onload = () => // event handler
 {
 	// Generate the HTML list of project tags
-	const CategoryFilters = document.getElementById("filterprojectcategoriestags");
-	CategoryFilters.innerHTML = ConstructProjectCategoryList();
+	GenerateFilterList();
 	
-	// Get all tags and hook up their buttons (would've just done the
-	//   onclick directly into the html tags but nothing I tried worked)
-	let tagList = document.getElementsByClassName("tagfilterbutton");
-	for(let t of tagList)
-	{
-		t.onclick = () => SetTagFilterState(t);
-		TotalNumberOfTags++; // count the number of tags
-	};
-	let filterAllButtons = document.getElementsByClassName("tagfilterallbutton");
-	for(let b of filterAllButtons)
-	{
-		b.onclick = () => SetAllTagFilterStates(b.getAttribute(FilterTagStateName));
-	};
-
 	// Get and generate the list of projects
+	// Will eventually call FilterProjects() and GenerateProjectList()
 	FetchAllProjects();
 }
 
@@ -61,7 +52,7 @@ function FetchAllProjects()
 {
 	FetchJSON("/projectlist.json", FetchAllProjectsCallback);
 }
-function FetchAllProjectsCallback(fetchedprojectsJSON)
+function FetchAllProjectsCallback(/*Function Callback*/ fetchedprojectsJSON)
 {
 	// effectively clears the array
 	AllProjects.splice(0);
@@ -80,13 +71,22 @@ function FetchAllProjectsCallback(fetchedprojectsJSON)
 			index++;
 		//}
 	});
-	//console.log(AllProjects)
+
 	FilterProjects();
-	ConstructProjectList();
+	GenerateProjectList();
 }
 
 /// Page and HTML construction
 /// ==========================
+
+/// Constructs the HTML filter list and adds functionality to their buttons.
+function GenerateFilterList()
+{
+	GenerateFilterListHTML();
+	AddFilterButtonFunctionality();
+}
+
+/// Generated HTML layout:
 /*\
 |*| <ul id="filterprojectcategories">
 |*| |   ...
@@ -103,7 +103,7 @@ function FetchAllProjectsCallback(fetchedprojectsJSON)
 |*| |   ...
 |*| </ul>
 \*/
-const ConstructProjectCategoryList = () =>
+function GenerateFilterListHTML() // Do not call, instead GenerateFilterList().
 {
 	let result = "";
 	// A list of categories...
@@ -118,9 +118,38 @@ const ConstructProjectCategoryList = () =>
 		});
 		result += "</ul></li>";
 	};
-	return result;
+
+	// Add generated HTML to the doc
+	const CategoryFilters = document.getElementById("filterprojectcategoriestags");
+	CategoryFilters.innerHTML = result;
 }
 
+function AddFilterButtonFunctionality() // Do not call, instead GenerateFilterList().
+{
+	// Get all tags and hook up their buttons (would've just done the
+	//   onclick directly into the html tags but nothing I tried worked)
+	let tagList = document.getElementsByClassName("tagfilterbutton");
+	for(let t of tagList)
+	{
+		t.onclick = () => SetTagFilterState(t);
+		TotalNumberOfFilterTags++; // count the number of tags
+	};
+	let filterAllButtons = document.getElementsByClassName("tagfilterallbutton");
+	for(let b of filterAllButtons)
+	{
+		b.onclick = () => SetAllTagFilterStates(b.getAttribute(FilterTagStateName));
+	};
+}
+
+/// Constructs the HTML project list based on filters and adds functionality to its buttons.
+/// Filtering must be called beforehand via FilterProjects().
+function GenerateProjectList()
+{
+	GenerateProjectListHTML();
+	AddExpandProjectButtonFunctionality();
+}
+
+/// Generated HTML layout:
 /*\
 |*| <ul id="projectlist">
 |*| |   ...
@@ -135,12 +164,14 @@ const ConstructProjectCategoryList = () =>
 |*| |   |   |   <li class="projecttag">[Project Tag]</li>
 |*| |   |   |   ...
 |*| |   |   </ul>
+|*| |   |   <div class="expandedproject">
+|*| |   |   |   
+|*| |   |   </div>
 |*| |   </li>
 |*| |   ...
 |*| </ul>
 \*/
-// Constructs the HTML project list based on filters
-const ConstructProjectList = () =>
+function GenerateProjectListHTML() // Do not call, instead call GenerateProjectList().
 {
 	let result = "";
 	// For each project that we want to display
@@ -149,25 +180,58 @@ const ConstructProjectList = () =>
 		const project = AllProjects[index];
 		// Add each html tag
 		result += "<li class=\"project\">";
+		
 		result += `<button class="projectexpand" value=\"${project.name}\">Expand</button>`;
 		result += `<img class=\"projectimg\" src=\"${project.folderpath}/thumbnail.png\"></img>`;
 		result += `<p class=\"projectdate\">${project.date.toLocaleDateString()}</p>`;
 		result += `<p class=\"projectname\">${project.name}</p>`;
 		result += `<p class=\"projectdesc\">${project.blurb}</p>`;
+		
 		result += "<ul class=\"projecttaglist\">";
 		project.tags.forEach((t) =>
 		{
 			result += `<li class=\"projecttag\">${t}</li>`;
 		});
-		result += "</ul></li>";
+		result += "</ul>";
+
+		result += "<div class=\"expandedproject\">";
+		result += GenerateProjectExpandedWindowHTML(project);
+		result += "</div></li>";
 	});
 	const ProjectList = document.getElementById("projectlist");
 	ProjectList.innerHTML = result;
 }
 
+function GenerateProjectExpandedWindowHTML(/*Project*/ project) // Do not call, instead call GenerateProjectList().
+{
+	return "";
+}
+
+function AddExpandProjectButtonFunctionality() // Do not call, instead call GenerateProjectList().
+{
+	// Now that we have all projects in the HTML, we need to add each one's button's functionality.
+	let allExpandProjectButtons = document.getElementsByClassName("projectexpand");
+	for(let b of allExpandProjectButtons)
+	{
+		b.onclick = (b) => 
+		{
+			// if the button will make the project expand
+			if(b.target.innerHTML == ProjectExpandName)
+			{
+				ExpandProject(b.target); // Pass the BUTTON as we need to modify its label
+			}
+			else // if the button will make the project shrink (or if it says anything else since the user could modify it)
+			{
+				ShrinkProject(b.target); // Pass the BUTTON as we need to modify its label
+			}
+		}
+	};
+}
+
+
 /// Runtime Functions
 /// =================
-function SetTagFilterState(tagHTML)
+function SetTagFilterState(/*HTML tag*/ tagHTML)
 {
 	// Cycle state
 	let oldState = tagHTML.getAttribute(FilterTagStateName);
@@ -200,10 +264,10 @@ function SetTagFilterState(tagHTML)
 
 	// Apply new filter(s) and reconstruct HTML
 	FilterProjects();
-	ConstructProjectList();
+	GenerateProjectList();
 }
 
-function SetAllTagFilterStates(state)
+function SetAllTagFilterStates(/*String*/ state)
 {
 	// Clear all filters
 	Whitelist.splice(0);
@@ -225,36 +289,36 @@ function SetAllTagFilterStates(state)
 	
 	// Apply new filter(s) and reconstruct HTML
 	FilterProjects();
-	ConstructProjectList();
+	GenerateProjectList();
 }
 
-function AddToWhitelist(tag)
+function AddToWhitelist(/*String*/ tag)
 {
 	// Add tag to whitelist
 	Whitelist.push(tag);
 }
 
-function RemoveFromWhitelist(tag)
+function RemoveFromWhitelist(/*String*/ tag)
 {
 	// Remove tag from whitelist
 	let index = Whitelist.indexOf(tag);
 	Whitelist.splice(index, 1);
 }
 
-function AddToBlacklist(tag)
+function AddToBlacklist(/*String*/ tag)
 {
 	// Add tag to blacklist
 	Blacklist.push(tag);
 }
 
-function RemoveFromBlacklist(tag)
+function RemoveFromBlacklist(/*String*/ tag)
 {
 	// Remove tag from blacklist
 	let index = Blacklist.indexOf(tag);
 	Blacklist.splice(index, 1);
 }
 
-function FetchJSON(directory, callbackFunction)
+function FetchJSON(/*String*/ directory, /*Function*/ callbackFunction)
 {
 	// fetch is asynchronous, and returns a "promise", that sometime in the future, there will be some data.
 	// as it takes time to fetch from the server .then() is used to handle it.
@@ -334,7 +398,7 @@ function UpdateActiveTagsText()
 	{
 		ActiveWhitelist.innerHTML = `Only showing \"${Whitelist[0]}\" projects.`;
 	}
-	else if(Whitelist.length == TotalNumberOfTags)
+	else if(Whitelist.length == TotalNumberOfFilterTags)
 	{
 		ActiveWhitelist.innerHTML = `Only showing projects that have every tag.`;
 	}
@@ -349,7 +413,7 @@ function UpdateActiveTagsText()
 	{
 		ActiveBlacklist.innerHTML = `Hiding all \"${Blacklist[0]}\" projects.`;
 	}
-	else if(Blacklist.length == TotalNumberOfTags)
+	else if(Blacklist.length == TotalNumberOfFilterTags)
 	{
 		ActiveBlacklist.innerHTML = `Hiding all projects that have at least one tag.`;
 	}
@@ -357,6 +421,57 @@ function UpdateActiveTagsText()
 	{
 		ActiveBlacklist.innerHTML = `Hiding projects that have at least one of the (${Blacklist.length}) blacklisted tags.`;
 	}
+}
+
+// Pass the BUTTON and not the project parent as the button's label is modified
+function ExpandProject(/*HTML tag*/ projectbutton)
+{
+	// first check if another project is currently expanded, and shrink it.
+	let delay;
+	if(CurrentlyExpandedProjectButton != undefined)
+	{
+		ShrinkProject(CurrentlyExpandedProjectButton);
+		// If there is another project, we want to start expanding the new project right after the shrinking
+		//   of the previous project, so we want to delay the expand anim by the duration of the shrink anim.
+		// This is actually the duration of the NEW project, not the one just shrunk. If we wanted to use the duration of the
+		//   shrinking project, we would have to store it in the HTML tag because for some reason JavaScript can't read CSS.
+		delay = "calc(var(--expandproject-duration) * 0.5)";
+	}
+	else
+	{
+		delay = "0s"; // if we don't have to wait for a previous project to shrink first
+	}
+	// set the delay
+	projectbutton.parentNode.style.setProperty("--expandproject-delay", delay);
+
+	// set to the expand animation
+	projectbutton.parentNode.style.setProperty("--expandproject-animation", ProjectExpandName);
+	projectbutton.innerHTML = ProjectShrinkName; // set the label
+
+	// We are now the currently expanded project
+	CurrentlyExpandedProjectButton = projectbutton;
+}
+
+// Pass the BUTTON and not the project parent as the button's label is modified
+function ShrinkProject(/*HTML tag*/ projectbutton)
+{
+	// If a project can shrink it is currently expanded.
+	//   There can only be 1 expanded project at any given time, so if this project
+	//   is NOT the currently expanded one, then we have two expanded projects.
+	if(projectbutton.value != CurrentlyExpandedProjectButton.value)
+	{
+		console.error(`Error: somehow two projects are expanded: \"${CurrentlyExpandedProjectButton.value}\" and \"${projectbutton.value}\".`);
+	}
+
+	// wipe any delay
+	projectbutton.parentNode.style.setProperty("--expandproject-delay", "0s");
+
+	// set to the shrink animation
+	projectbutton.parentNode.style.setProperty("--expandproject-animation", ProjectShrinkName);
+	projectbutton.innerHTML = ProjectExpandName; // set the label
+
+	// There is now no currently expanded project.
+	CurrentlyExpandedProjectButton = undefined; // undefined, NOT null.
 }
 
 /// Classes and Objects
