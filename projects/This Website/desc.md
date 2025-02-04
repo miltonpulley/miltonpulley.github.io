@@ -36,7 +36,25 @@ I took the sunday off.
 
 ## 3rd of February, 2025
 
-I Added full functionality to the buttons that will (eventually) make the project expand to fill the screen, giving more detail on each project.  
+I Added full functionality to the buttons that will (eventually) make the project expand to fill the screen, giving more detail on each project. This involved CSS animation, which was quite easy to pick up.
+
 I also reorganised my JavaScript code that runs when the window is first loaded, including HTML generation and button functionality.
 
 Regrettably, these two things were done in the same commit. It definitely would have been better to have them seperate, but I ended up getting sidetracked/carried away while writing the project expand button functionality.
+
+When the project expands to fill the screen, I'm thinking it could have an area that could display different kinds of things (and not just images) because a lot of these projects could be interacted with, i.e. spinning 3D models that can have wireframe so my topology can be seen, or music I've composed could be played, etc.  
+I probably won't write most of these as I'm sure many people have already gone through and designed these things on the internet.
+
+Any tool I create for adding entries of new projects probably won't be very complex, and might not even be more than just writing extra HTML to be loaded from a file. If it does become tedious enough then I will, and I'll write the current system in a way that can be swapped out easily, just in case.
+
+There was some unfinished experimenting I have done, but won't commit because of its dirty, messy, experimental, chicken-scratch, off-the-back-of-the-napkin nature.
+
+## 4th of February, 2025
+
+I'll be honest, today I didn't do anything. I *could* have just as easily lied that I was otherwise occupied, but... well I feel like there is some sort of validity as to why I slacked, and therefore a motive against lying (A don't-lie-because-not-guilty sort of situation).
+
+Sure, I did have a slow start to the day but I was fine by ~1pm. Rather, with some basic risk assessment, I gave myself the deadline of the 24th of february as that is when my university term starts. This would mean I have ~13-16 days, depending on how many days of each weekend I take off. I have let's say... 50-75% of the total work done in 4 days (30th, 31st, 1st, 3rd). I feel *quite* confident that I can get this finished in time.
+
+Also, if one would think I should've taken Saturday the 1st of February off, then you could consider this day to be effectively that.
+
+In other news, I found out there (apparently) will be a blackout tommorow from 7am to 5pm, although just means that I cannot use the internet as a resource. I can still work on the project as Visual Studio Code has an extension that can host the website from my computer, which is how I have been seeing real time changes to my TML/CSS/JS.
