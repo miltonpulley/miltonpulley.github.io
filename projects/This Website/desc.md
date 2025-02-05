@@ -53,7 +53,8 @@ There was some unfinished experimenting I have done, but won't commit because of
 
 I'll be honest, today I didn't do anything. I *could* have just as easily lied that I was otherwise occupied, but... well I feel like there is some sort of validity as to why I slacked, and therefore a motive against lying (A don't-lie-because-not-guilty sort of situation).
 
-Sure, I did have a slow start to the day but I was fine by ~1pm. Rather, with some basic risk assessment, I gave myself the deadline of the 24th of february as that is when my university term starts. This would mean I have ~13-16 days, depending on how many days of each weekend I take off. I have let's say... 50-75% of the total work done in 4 days (30th, 31st, 1st, 3rd). I feel *quite* confident that I can get this finished in time.
+Sure, I did have a slow start to the day but I was fine by ~1pm. Rather, with some basic risk assessment, I gave myself the deadline of the 24th of february as that is when my university term starts. This would mean I have ~13-16 days, depending on how many days of each weekend I take off. I have let's say... 50-75% of the total work done in 4 days (30th, 31st, 1st, 3rd). I feel *quite* confident that I can get this finished in time.  
+If this were a group project or something I would get paid for then no question I would be on it, but this is a solo project with much wiggle room.
 
 Also, if one would think I should've taken Saturday the 1st of February off, then you could consider this day to be effectively that.
 

@@ -135,8 +135,20 @@ body
 	--projectdesc-margin-left-right: 0.15em;
 
 	--expandproject-animation: ""; /* set by JavaScript and read by .expandedproject */
-	--expandproject-duration: 1.5s; /* read by JavaScript and by .expandedproject */
+	--expandproject-duration: 1s; /* read by JavaScript and by .expandedproject */
 	--expandproject-delay: 0s; /* set by JavaScript and read by .expandedproject */
+
+	/* The rect that the project animation starts with, set by JavaScript and read by .expandedproject */
+	--expandproject-from-top: 0;
+	--expandproject-from-left: 0;
+	--expandproject-from-width: 0;
+	--expandproject-from-height: 0;
+
+	/* The rect that the project animation ends with, set by JavaScript and read by .expandedproject */
+	--expandproject-to-top: 0;
+	--expandproject-to-left: 0;
+	--expandproject-to-width: 0;
+	--expandproject-to-height: 0;
 
 	position: relative;
 	display: flex;
@@ -155,9 +167,9 @@ body
 {
 	position: absolute;
 	top: 0;
-	z-index: 10; /* To be in front of .expandedproject */
 	margin: 4px;
 	padding: 0.1em 0.15em;
+	visibility: visible; /* To be visible regardless of parent .expandedproject */
 	font-size: 1.4em;
 	background-color: #fbf1f7;
 	border: 0.1em solid #777777;
@@ -246,12 +258,13 @@ body
 .expandedproject
 {
 	position: absolute;
-	inset: 0%;
+	inset: 0px;
+	margin: 0;
 	width: auto;
 	height: auto;
-	z-index: -1;
+	z-index: 2; /* to be under all expand/shrink buttons */
 	visibility: hidden;
-	opacity: 0%;
+	background-color: #18aaf9; /* Black and transparent */
 
 	animation-name: var(--expandproject-animation); /* animaton switched by JavaScript */
 	animation-duration: var(--expandproject-duration);
@@ -259,26 +272,30 @@ body
 	animation-iteration-count: 1; /* plays once each time --expandproject-animation is set */
 	animation-fill-mode: forwards; /* keep the state of the last frame of animation */
 	animation-play-state: running; /* always run, will effectively stop at end of each animation */
+	animation-timing-function: ease-in-out;
 }
 
 @keyframes Expand /* expand and shrink are both slightly different animations */
 {
 	0%
 	{
-		/* position: absolute; */
-		z-index: -1; /* To be under everything in the project */
+		position: fixed;
+		top: var(--expandproject-from-top);
+		left: var(--expandproject-from-left);
+		width: var(--expandproject-from-width);
+		height: var(--expandproject-from-height);
 		visibility: visible;
-		opacity: 0%;
-		background-color: yellow;
+		background-color: #00000000; /* Black and transparent */
 	}
-	/* 1% { position: fixed; margin: inherit; } */
 	100%
 	{
-		/* position: fixed; */
-		z-index: 9; /* To be on top of everything except for the expand/shrink button */
+		position: fixed;
+		top: var(--expandproject-to-top);
+		left: var(--expandproject-to-left);
+		width: var(--expandproject-to-width);
+		height: var(--expandproject-to-height);
+		z-index: 9; /* To be on top of everything except for its OWN the expand/shrink button */
 		visibility: visible;
-		opacity: 100%;
-		background-color: red;
 	}
 }
 
@@ -286,18 +303,29 @@ body
 {
 	0%
 	{
-		/* position: fixed; */
-		z-index: 9; /* To be on top of everything except for the expand/shrink button */
+		position: fixed;
+		/* may not be the size of the viewport if the expand was interruped by user */
+		top: var(--expandproject-from-top);
+		left: var(--expandproject-from-left);
+		width: var(--expandproject-from-width);
+		height: var(--expandproject-from-height);
+		z-index: 9; /* To be on top of everything except for its OWN expand/shrink button */
 		visibility: visible;
-		opacity: 100%;
-		background-color: red;
+		border-color: inherit; /* will fade out border like bg colour */
+	}
+	99%
+	{
+		position: fixed;
+		top: var(--expandproject-to-top);
+		left: var(--expandproject-to-left);
+		width: var(--expandproject-to-width);
+		height: var(--expandproject-to-height);
+		background-color: #00000000; /* Black and transparent */
+		border: inherit; /* need to copy border to correctly offset expand/shrink button */
+		border-color: #00000000; /* fade out border like bg colour */
 	}
 	100%
 	{
-		/* position: absolute; */
-		z-index: -1; /* To be under everything in the project */
-		visibility: hidden;
-		opacity: 0%;
-		background-color: yellow;
+		/* effectively reset to default values pre-animation */
 	}
 }

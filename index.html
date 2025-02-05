@@ -36,8 +36,8 @@
 							...
 						</ul>
 					</li>
-					... -->
-				</ul>
+					...
+			--> </ul>
 				<p id="projectlistlength" filter="ig"></p>
 				<p id="activewhitelist" filter="wh"></p>
 				<p id="activeblacklist" filter="bl"></p>
@@ -46,7 +46,9 @@
 			<ul id="projectlist"> <!--
 				...
 				<li class="project">
-					<button value="[Project Name]" class="projectexpand">Expand</button>
+					<div class="expandedproject">
+						<button value="[Project Name]" class="projectexpand">Expand</button>
+					</div>
 					<img src="[Project Image]" class="projectimg"></img>
 					<p class="projectdate">[Date]</p>
 					<p class="projectname">[Project Name]</p>
@@ -56,12 +58,9 @@
 						<li class="projecttag">[Project Tag]</li>
 						...
 					</ul>
-					<div class="expandedproject">
-						
-					</div>
 				</li>
-				... -->
-				<!-- This is shown before the projects are loaded -->
+				... 
+			--> <!-- This is shown before the projects are loaded -->
 				<li class="project">
 					<img src="" class="projectimg"></img>
 					<p class="projectname">Loading...</p>
