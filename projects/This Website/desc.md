@@ -59,3 +59,14 @@ If this were a group project or something I would get paid for then no question 
 Also, if one would think I should've taken Saturday the 1st of February off, then you could consider this day to be effectively that.
 
 In other news, I found out there (apparently) will be a blackout tommorow from 7am to 5pm, although just means that I cannot use the internet as a resource. I can still work on the project as Visual Studio Code has an extension that can host the website from my computer, which is how I have been seeing real time changes to my TML/CSS/JS.
+
+## 5th of February, 2025
+
+Just implemented the CSS animation of expanding/shrinking of the projects from the project list, although the illusion is broken when you scroll while shrinking. It (in theory) is easy enough to fix by, while shrinking, continuously updating the end size/position (via the four `--expandproject-to-X` variables), but would have to be done asynchronously and would have to constantly check the progress of the animation.  
+I don't really know when I'll get around to fixing it since it has a lower priority than continuing to implement functionality.
+
+I feel like any part of the program I write that makes CSS and JS interact is awfully messy, but I don't really see any better way to do how I'm doing it (otherwise I would obviously do the better way).  
+I feel like this is because CSS is kind of an all-over-the-place language that is sometimes vauge and unintuitive in what things do, but I suppose I'd rather have CSS than putting the styling directly into HTML like pre-CSS.
+
+I have decided to instead of having many project viewers with one each per project in the project list, only the animation will be, and the singular actual viewer always stays the same size on screen, just changes visibility. This means that the project viewer has to change its inner HTML to match the currently viewed project.  
+I have decided to do this because there will be less everything to load, and it means I can decouple the viewer from the project list.

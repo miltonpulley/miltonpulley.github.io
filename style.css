@@ -134,21 +134,21 @@ body
 	--projectimg-margin-bottom: 2px;
 	--projectdesc-margin-left-right: 0.15em;
 
-	--expandproject-animation: ""; /* set by JavaScript and read by .expandedproject */
-	--expandproject-duration: 1s; /* read by JavaScript and by .expandedproject */
-	--expandproject-delay: 0s; /* set by JavaScript and read by .expandedproject */
+	--projectanim-animation: ""; /* set by JavaScript and read by .projectanim */
+	--projectanim-duration: 1s; /* read by JavaScript and by .projectanim */
+	--projectanim-delay: 0s; /* set by JavaScript and read by .projectanim */
 
-	/* The rect that the project animation starts with, set by JavaScript and read by .expandedproject */
-	--expandproject-from-top: 0;
-	--expandproject-from-left: 0;
-	--expandproject-from-width: 0;
-	--expandproject-from-height: 0;
+	/* The rect that the project animation starts with, set by JavaScript and read by .projectanim */
+	--projectanim-from-top: 0;
+	--projectanim-from-left: 0;
+	--projectanim-from-width: 0;
+	--projectanim-from-height: 0;
 
-	/* The rect that the project animation ends with, set by JavaScript and read by .expandedproject */
-	--expandproject-to-top: 0;
-	--expandproject-to-left: 0;
-	--expandproject-to-width: 0;
-	--expandproject-to-height: 0;
+	/* The rect that the project animation ends with, set by JavaScript and read by .projectanim */
+	--projectanim-to-top: 0;
+	--projectanim-to-left: 0;
+	--projectanim-to-width: 0;
+	--projectanim-to-height: 0;
 
 	position: relative;
 	display: flex;
@@ -163,19 +163,19 @@ body
 	border-radius: 0.5em;
 }
 
-.projectexpand
+.viewprojectbutton
 {
 	position: absolute;
 	top: 0;
 	margin: 4px;
 	padding: 0.1em 0.15em;
-	visibility: visible; /* To be visible regardless of parent .expandedproject */
+	visibility: visible; /* To be visible regardless of parent .projectanim */
 	font-size: 1.4em;
 	background-color: #fbf1f7;
 	border: 0.1em solid #777777;
 	border-radius: 0.3em;
 }
-.projectexpand:hover
+.viewprojectbutton:hover
 {
 	background-color: #ffffff;
 }
@@ -255,7 +255,7 @@ body
 /* Project Animation */
 /* ================= */
 
-.expandedproject
+.projectanim
 {
 	position: absolute;
 	inset: 0px;
@@ -264,12 +264,12 @@ body
 	height: auto;
 	z-index: 2; /* to be under all expand/shrink buttons */
 	visibility: hidden;
-	background-color: #18aaf9; /* Black and transparent */
+	background-color: #cccccc; /* Black and transparent */
 
-	animation-name: var(--expandproject-animation); /* animaton switched by JavaScript */
-	animation-duration: var(--expandproject-duration);
-	animation-delay: var(--expandproject-delay);
-	animation-iteration-count: 1; /* plays once each time --expandproject-animation is set */
+	animation-name: var(--projectanim-animation); /* animaton switched by JavaScript */
+	animation-duration: var(--projectanim-duration);
+	animation-delay: var(--projectanim-delay);
+	animation-iteration-count: 1; /* plays once each time --projectanim-animation is set */
 	animation-fill-mode: forwards; /* keep the state of the last frame of animation */
 	animation-play-state: running; /* always run, will effectively stop at end of each animation */
 	animation-timing-function: ease-in-out;
@@ -280,20 +280,20 @@ body
 	0%
 	{
 		position: fixed;
-		top: var(--expandproject-from-top);
-		left: var(--expandproject-from-left);
-		width: var(--expandproject-from-width);
-		height: var(--expandproject-from-height);
+		top: var(--projectanim-from-top);
+		left: var(--projectanim-from-left);
+		width: var(--projectanim-from-width);
+		height: var(--projectanim-from-height);
 		visibility: visible;
 		background-color: #00000000; /* Black and transparent */
 	}
 	100%
 	{
 		position: fixed;
-		top: var(--expandproject-to-top);
-		left: var(--expandproject-to-left);
-		width: var(--expandproject-to-width);
-		height: var(--expandproject-to-height);
+		top: var(--projectanim-to-top);
+		left: var(--projectanim-to-left);
+		width: var(--projectanim-to-width);
+		height: var(--projectanim-to-height);
 		z-index: 9; /* To be on top of everything except for its OWN the expand/shrink button */
 		visibility: visible;
 	}
@@ -305,10 +305,10 @@ body
 	{
 		position: fixed;
 		/* may not be the size of the viewport if the expand was interruped by user */
-		top: var(--expandproject-from-top);
-		left: var(--expandproject-from-left);
-		width: var(--expandproject-from-width);
-		height: var(--expandproject-from-height);
+		top: var(--projectanim-from-top);
+		left: var(--projectanim-from-left);
+		width: var(--projectanim-from-width);
+		height: var(--projectanim-from-height);
 		z-index: 9; /* To be on top of everything except for its OWN expand/shrink button */
 		visibility: visible;
 		border-color: inherit; /* will fade out border like bg colour */
@@ -316,10 +316,10 @@ body
 	99%
 	{
 		position: fixed;
-		top: var(--expandproject-to-top);
-		left: var(--expandproject-to-left);
-		width: var(--expandproject-to-width);
-		height: var(--expandproject-to-height);
+		top: var(--projectanim-to-top);
+		left: var(--projectanim-to-left);
+		width: var(--projectanim-to-width);
+		height: var(--projectanim-to-height);
 		background-color: #00000000; /* Black and transparent */
 		border: inherit; /* need to copy border to correctly offset expand/shrink button */
 		border-color: #00000000; /* fade out border like bg colour */
@@ -329,3 +329,6 @@ body
 		/* effectively reset to default values pre-animation */
 	}
 }
+
+/* Project Viewer */
+/* ============== */

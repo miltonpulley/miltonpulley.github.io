@@ -34,7 +34,7 @@ const Whitelist = []; // The list of all whitelisted tags to filter AllProjects[
 const Blacklist = []; // The list of all whitelisted tags to filter AllProjects[].
 const DisplayedProjectsIndexes = []; // The filtered version of AllProjects[] to be displayed to screen.
 var TotalNumberOfFilterTags = 0; // Total number of tags that can be used to filter.
-var CurrentlyExpandedProjectButton; // Keep track of the project we are viewing
+var CurrentlyViewingProjectButton; // Keep track of the project in the list who's content is in the viewer
 
 /// Initialisation Functions
 /// ========================
@@ -46,6 +46,9 @@ window.onload = () => // event handler
 	// Get and generate the list of projects
 	// Will eventually call FilterProjects() and GenerateProjectList()
 	FetchAllProjects();
+
+	// Generate the project viewer
+	GenerateProjectViewer();
 }
 
 function FetchAllProjects()
@@ -146,7 +149,7 @@ function AddFilterButtonFunctionality() // Do not call, instead GenerateFilterLi
 function GenerateProjectList()
 {
 	GenerateProjectListHTML();
-	AddExpandProjectButtonFunctionality();
+	AddProjectListButtonFunctionality();
 }
 
 /// Generated HTML layout:
@@ -154,8 +157,8 @@ function GenerateProjectList()
 |*| <ul id="projectlist">
 |*| |   ...
 |*| |   <li class="project">
-|*| |   |   <div class="expandedproject">
-|*| |   |   |   <button value="[Project Name]" class="projectexpand">Expand</button>
+|*| |   |   <div class="projectanim">
+|*| |   |   |   <button value="[Project Name]" class="viewprojectbutton">Expand</button>
 |*| |   |   </div>
 |*| |   |   <img src="[Project Image]" class="projectimg"></img>
 |*| |   |   <p class="projectdate">[Date]</p>
@@ -180,8 +183,8 @@ function GenerateProjectListHTML() // Do not call, instead call GenerateProjectL
 		// Add each html tag
 		result += `
 			<li class=\"project\">
-				<div class=\"expandedproject\">
-					${GenerateProjectExpandedWindowHTML(project)}
+				<div class=\"projectanim\">
+					<button class=\"viewprojectbutton\" value=\"${project.name}\">Expand</button>
 				</div>
 				<img class=\"projectimg\" src=\"${project.folderpath}/thumbnail.png\"></img>
 				<p class=\"projectdate\">${project.date.toLocaleDateString()}</p>
@@ -208,19 +211,11 @@ function AddProjectTagsHTML(/*string[]*/ tags) // Do not call, instead call Gene
 	return result;
 }
 
-/// see GenerateProjectListHTML()'s output for how this outputs.
-function GenerateProjectExpandedWindowHTML(/*Project*/ project) // Do not call, instead call GenerateProjectList().
-{
-	let result = "";
-	result += `<button class="projectexpand" value=\"${project.name}\">Expand</button>`;
-	return result;
-}
-
-function AddExpandProjectButtonFunctionality() // Do not call, instead call GenerateProjectList().
+function AddProjectListButtonFunctionality() // Do not call, instead call GenerateProjectList().
 {
 	// Now that we have all projects in the HTML, we need to add each one's button's functionality.
-	let allExpandProjectButtons = document.getElementsByClassName("projectexpand");
-	for(let b of allExpandProjectButtons)
+	let allViewProjectButtons = document.getElementsByClassName("viewprojectbutton");
+	for(let b of allViewProjectButtons)
 	{
 		b.onclick = (b) => 
 		{
@@ -237,6 +232,24 @@ function AddExpandProjectButtonFunctionality() // Do not call, instead call Gene
 	};
 }
 
+/// Constructs the HTML expanded project viewer screen and adds functionality to its buttons.
+/// Do not call this to change what project is being viewed, instead use ViewProjectInViewer().
+function GenerateProjectViewer()
+{
+	GenerateProjectViewerHTML();
+	AddProjectViewerButtonFunctionality();
+}
+
+function GenerateProjectViewerHTML() // Do not call, instead call GenerateProjectViewer().
+{
+	//let result = "";
+	//result += 
+}
+
+function AddProjectViewerButtonFunctionality()
+{
+
+}
 
 /// Runtime Functions
 /// =================
@@ -433,101 +446,106 @@ function UpdateActiveTagsText()
 }
 
 // Pass the BUTTON and not the project parent as the button's label is modified
-function ExpandProject(/*HTML tag*/ projectbutton)
+function ExpandProject(/*HTML tag*/ viewprojectbutton)
 {
-	let projectExpandWindow = projectbutton.parentNode;
-	let projectListItem = projectExpandWindow.parentNode;
+	let projectAnimation = viewprojectbutton.parentNode;
+	let projectListItem = projectAnimation.parentNode;
 
 	// first check if another project is currently expanded, and shrink it.
 	let delay;
-	if(CurrentlyExpandedProjectButton != undefined)
+	if(CurrentlyViewingProjectButton != undefined)
 	{
-		ShrinkProject(CurrentlyExpandedProjectButton);
+		ShrinkProject(CurrentlyViewingProjectButton);
 		// If there is another project, we want to start expanding the new project right after the shrinking
 		//   of the previous project, so we want to delay the expand anim by the duration of the shrink anim.
 		// This is actually the duration of the NEW project, not the one just shrunk. If we wanted to use the duration of the
 		//   shrinking project, we would have to store it in the HTML tag because for some reason JavaScript can't read CSS.
-		delay = "calc(var(--expandproject-duration) * 0.5)";
+		delay = "calc(var(--projectanim-duration) * 0.5)";
 	}
 	else
 	{
 		delay = "0s"; // if we don't have to wait for a previous project to shrink first
 	}
 	// set the delay
-	projectListItem.style.setProperty("--expandproject-delay", delay);
+	projectListItem.style.setProperty("--projectanim-delay", delay);
 	
 	// project will expand from the CURRENT size to cover the viewport
 	//   CURRENT size because if the shrinking was interrupted by the user then it should expand from where it is
-	SetProjectAnimationFromRect(projectListItem, projectExpandWindow);
+	SetProjectAnimationFromRect(projectListItem, projectAnimation);
 	SetProjectAnimationToViewport(projectListItem);
 
 	// set to the expand animation
-	projectListItem.style.setProperty("--expandproject-animation", ProjectExpandName);
-	projectbutton.innerHTML = ProjectShrinkName; // set the label
+	projectListItem.style.setProperty("--projectanim-animation", ProjectExpandName);
+	viewprojectbutton.innerHTML = ProjectShrinkName; // set the label
 	
 	// We are now the currently expanded project
-	CurrentlyExpandedProjectButton = projectbutton;
+	CurrentlyViewingProjectButton = viewprojectbutton;
 }
 
 // Pass the BUTTON and not the project parent as the button's label is modified
-function ShrinkProject(/*HTML tag*/ projectbutton)
+function ShrinkProject(/*HTML tag*/ viewprojectbutton)
 {
-	let projectExpandWindow = projectbutton.parentNode;
-	let projectListItem = projectExpandWindow.parentNode;
+	let projectAnimation = viewprojectbutton.parentNode;
+	let projectListItem = projectAnimation.parentNode;
 
 	// If a project can shrink it is currently expanded.
 	//   There can only be 1 expanded project at any given time, so if this project
 	//   is NOT the currently expanded one, then we have two expanded projects.
-	if(projectbutton.value != CurrentlyExpandedProjectButton.value)
+	if(viewprojectbutton.value != CurrentlyViewingProjectButton.value)
 	{
-		console.error(`Error: somehow two projects are expanded: \"${CurrentlyExpandedProjectButton.value}\" and \"${projectbutton.value}\".`);
+		console.error(`Error: somehow two projects are expanded: \"${CurrentlyViewingProjectButton.value}\" and \"${viewprojectbutton.value}\".`);
 	}
 
 	// wipe any delay
-	projectListItem.style.setProperty("--expandproject-delay", "0s");
+	projectListItem.style.setProperty("--projectanim-delay", "0s");
 
 	// project will shrink from the CURRENT size to the project rect
 	//   CURRENT size because if the expanding was interrupted by the user then it should shrink from where it is
-	SetProjectAnimationFromRect(projectListItem, projectExpandWindow);
+	SetProjectAnimationFromRect(projectListItem, projectAnimation);
 	SetProjectAnimationToRect(projectListItem, projectListItem);
 
 	// set to the shrink animation
-	projectListItem.style.setProperty("--expandproject-animation", ProjectShrinkName);
-	projectbutton.innerHTML = ProjectExpandName; // set the label
+	projectListItem.style.setProperty("--projectanim-animation", ProjectShrinkName);
+	viewprojectbutton.innerHTML = ProjectExpandName; // set the label
 
 	// There is now no currently expanded project.
-	CurrentlyExpandedProjectButton = undefined; // undefined, NOT null.
+	CurrentlyViewingProjectButton = undefined; // undefined, NOT null.
 }
 
 // Set the rect that the animation will expand/shrink from the rect of the reference HTML tag
 function SetProjectAnimationFromRect(/*HTML Tag*/ project, /*HTML Tag*/ fromTagRef)
 {
 	let rect = fromTagRef.getBoundingClientRect();
-	project.style.setProperty("--expandproject-from-top", rect.top+"px");
-	project.style.setProperty("--expandproject-from-left", rect.left+"px");
-	project.style.setProperty("--expandproject-from-width", rect.width+"px");
-	project.style.setProperty("--expandproject-from-height", rect.height+"px");
+	project.style.setProperty("--projectanim-from-top", rect.top+"px");
+	project.style.setProperty("--projectanim-from-left", rect.left+"px");
+	project.style.setProperty("--projectanim-from-width", rect.width+"px");
+	project.style.setProperty("--projectanim-from-height", rect.height+"px");
 }
 
 // Set the rect that the animation will expand/shrink to the rect of the reference HTML tag
 function SetProjectAnimationToRect(/*HTML Tag*/ project, /*HTML Tag*/ toTagRef)
 {
 	let rect = toTagRef.getBoundingClientRect();
-	project.style.setProperty("--expandproject-to-top", rect.top+"px");
-	project.style.setProperty("--expandproject-to-left", rect.left+"px");
-	project.style.setProperty("--expandproject-to-width", rect.width+"px");
-	project.style.setProperty("--expandproject-to-height", rect.height+"px");
+	project.style.setProperty("--projectanim-to-top", rect.top+"px");
+	project.style.setProperty("--projectanim-to-left", rect.left+"px");
+	project.style.setProperty("--projectanim-to-width", rect.width+"px");
+	project.style.setProperty("--projectanim-to-height", rect.height+"px");
 }
 
 // Set the rect so that the animation will expand/shrink to the entire viewport
 function SetProjectAnimationToViewport(/*HTML Tag*/ project)
 {
 	// At the top left of the viewport
-	project.style.setProperty("--expandproject-to-top", "0px");
-	project.style.setProperty("--expandproject-to-left", "0px");
+	project.style.setProperty("--projectanim-to-top", "0px");
+	project.style.setProperty("--projectanim-to-left", "0px");
 	// 100% the width and height of the viewport
-	project.style.setProperty("--expandproject-to-width", "100vw");
-	project.style.setProperty("--expandproject-to-height", "100vh");
+	project.style.setProperty("--projectanim-to-width", "100vw");
+	project.style.setProperty("--projectanim-to-height", "100vh");
+}
+
+function ViewProjectInViewer()
+{
+
 }
 
 /// Classes and Objects
