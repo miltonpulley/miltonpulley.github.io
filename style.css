@@ -332,3 +332,7 @@ body
 
 /* Project Viewer */
 /* ============== */
+.projectviewer
+{
+	position: fixed;
+}

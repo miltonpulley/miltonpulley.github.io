@@ -45,7 +45,7 @@ Regrettably, these two things were done in the same commit. It definitely would 
 When the project expands to fill the screen, I'm thinking it could have an area that could display different kinds of things (and not just images) because a lot of these projects could be interacted with, i.e. spinning 3D models that can have wireframe so my topology can be seen, or music I've composed could be played, etc.  
 I probably won't write most of these as I'm sure many people have already gone through and designed these things on the internet.
 
-Any tool I create for adding entries of new projects probably won't be very complex, and might not even be more than just writing extra HTML to be loaded from a file. If it does become tedious enough then I will, and I'll write the current system in a way that can be swapped out easily, just in case.
+Any tool I create for adding entries of new projects probably won't be very complex, and might not even be more than just writing extra HTML to be loaded from a file. If it does become tedious enough then I will, and I'll write the current system in a way that can be swapped out easily, just in case (note that if improperly done or unchecked will obviously lead to a slew of hacks, attacks and exploits).
 
 There was some unfinished experimenting I have done, but won't commit because of its dirty, messy, experimental, chicken-scratch, off-the-back-of-the-napkin nature.
 
@@ -70,3 +70,17 @@ I feel like this is because CSS is kind of an all-over-the-place language that i
 
 I have decided to instead of having many project viewers with one each per project in the project list, only the animation will be, and the singular actual viewer always stays the same size on screen, just changes visibility. This means that the project viewer has to change its inner HTML to match the currently viewed project.  
 I have decided to do this because there will be less everything to load, and it means I can decouple the viewer from the project list.
+
+## 6th of February, 2025
+
+I overslept by 3 HOURS today, waking up at 11am (I usually get up at 9 but I've been getting up at 8 recently, most likely due to less physical exertion over the holidays). I don't know what is happening, I haven't overslept for ***YEARS***, but then suddenly overslept twice.
+
+Nevertheless I still pressed on with the project, even though the project viewer is the most complicated part of the project, mainly because I haven't done "be-able-to-load-anything" in HTML/CSS/JS before.  
+I have some ideas on how I could do it, such as loading the entire project viewer's inner HTML from file, meaning I would write different HTML for each project.
+
+Another thing I will have to think about is protecting against attacks, hacks and exploits. I still need to do more research on this, but since the website is read-only from the client's end, attacks to the server should in theory be eliminated. I *think* this will protect against client-to-client-via-server attacks like XSS, but again I need to do more research.  
+Yes I should've been thinking about attacks, hacks and exploits from the start but the chances of a malicious someone coming across this website... maybe EVER is astronomically low.
+
+A good solution to all of this (besides the anomalous oversleeping) is using LIT components, which I probably should've started with in the first place since I have been taught in it.  
+LIT components would automatically handle a lot of vulnerability protection like sanitising inputs, and would be a good way to generate the project viewer.  
+I will probably switch over to LIT components.

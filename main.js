@@ -85,11 +85,11 @@ function FetchAllProjectsErrorCallback()
 
 /// Helper Functions
 /// ================
-function FetchJSON(/*String*/ directory, /*Function*/ callbackFunction, /*Function*/ callbackError)
+function FetchJSON(/*String*/ filepath, /*Function*/ callbackFunction, /*Function*/ callbackError)
 {
 	// fetch is asynchronous, and returns a "promise", that sometime in the future, there will be some data.
 	// as it takes time to fetch from the server .then() is used to handle it.
-	fetch(directory)
+	fetch(filepath)
 	.then((response) =>
 	{
 		//console.log(response); // logs the PROMISE
@@ -97,7 +97,7 @@ function FetchJSON(/*String*/ directory, /*Function*/ callbackFunction, /*Functi
 	})
 	.catch((error) =>
 	{
-		console.error(`Error in fetching JSON \"${directory}\", ${error}`);
+		console.error(`Error in fetching JSON \"${filepath}\", ${error}`);
 
 		callbackError();
 	})

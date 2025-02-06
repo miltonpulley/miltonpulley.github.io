@@ -16,6 +16,15 @@ import
 from "./main.js";
 
 
+/// Runtime Functions
+/// =================
+import
+{
+	ViewProjectInViewer
+}
+from "./projectviewer.js";
+
+
 /// Page and HTML construction
 /// ==========================
 // Constructs the HTML project list based on filters and adds functionality to its buttons.
@@ -30,7 +39,7 @@ export function GenerateProjectList()
 /*\
 |*| <ul id="projectlist">
 |*| |   ...
-|*| |   <li class="project">
+|*| |   <li class="project" value="[ProjectList[] ID]">
 |*| |   |   <div class="projectanim">
 |*| |   |   |   <button value="[Project Name]" class="viewprojectbutton">Expand</button>
 |*| |   |   </div>
@@ -56,7 +65,7 @@ function GenerateProjectListHTML() // Do not call, instead call GenerateProjectL
         const project = AllProjects[index];
         // Add each html tag
         result += `
-            <li class=\"project\">
+            <li class=\"project\" value=\"${index}\">
                 <div class=\"projectanim\">
                     <button class=\"viewprojectbutton\" value=\"${project.name}\">Expand</button>
                 </div>
@@ -145,6 +154,10 @@ function ExpandProject(/*HTML tag*/ viewprojectbutton)
 	
 	// We are now the currently expanded project
 	CurrentlyViewingProjectButton = viewprojectbutton;
+
+	// View the project in the project viewer
+	let project = AllProjects[projectListItem.value];
+	ViewProjectInViewer(project);
 }
 
 // Pass the BUTTON and not the project parent as the button's label is modified
