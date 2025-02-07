@@ -30,7 +30,16 @@ export function RefreshProjectList()
 
 /// Page and HTML construction
 /// ==========================
-import {LitElement, html, css} from 'https://cdn.jsdelivr.net/gh/lit/dist@3/core/lit-core.min.js';
+import { LitElement, html } from 'https://cdn.jsdelivr.net/gh/lit/dist@3/core/lit-core.min.js';
+
+// Get CSS data for LIT components
+import
+{
+	ProjectListElement_StyleCSS,
+	ProjectListItemElement_StyleCSS,
+	ProjectListItemElement_AnimationCSS,
+}
+from "./styleLIT.js"
 
 export class Project
 {
@@ -57,17 +66,13 @@ export class Project
 
 export class ProjectListElement extends LitElement
 {
-	// defines attributes
-	// static properties =
-	// {
-	// 	index: {type: Number},
-	// };
+	// Set the CSS data
+	static styles = [ ProjectListElement_StyleCSS ];
 
-	render() // returns HTML that is the content of this.
+	render() // LIT event that contructs the tag's HTML.
 	{
 		// For each project that we want to display
 		return html`
-		<link rel="stylesheet" type="text/css" href="style.css" defer>
 		<ul id="projectlist">
 		${
 			DisplayedProjectsIndexes.map(function(index)
@@ -78,7 +83,6 @@ export class ProjectListElement extends LitElement
 		</ul>`;
 	}
 }
-
 // registers the ProjectListElement class as "project-list" in the DOM
 customElements.define("project-list", ProjectListElement);
 
@@ -88,9 +92,14 @@ export class ProjectListItemElement extends LitElement
 	static properties =
 	{
 		index: {type: Number},
-
+		
+		// don't want it as an attribute, so state = true (makes it internal)
+		// convention to put underscore in front
 		_viewState: {type: String, state: true}
 	};
+
+	// Set the CSS data
+	static styles = [ ProjectListItemElement_StyleCSS, ProjectListItemElement_AnimationCSS, ];
 
 	constructor()
 	{
@@ -98,13 +107,12 @@ export class ProjectListItemElement extends LitElement
 		this._viewState = ProjectExpandName;
 	}
 
-	render() // returns HTML that is the content of this.
+	render() // LIT event that contructs the tag's HTML.
 	{
 		// Constructs the HTML project list based on filters and adds functionality to its buttons.
 		// Filtering must be called beforehand via FilterProjects().
 		let project = AllProjects[this.index];
 		return html`
-			<link rel="stylesheet" type="text/css" href="style.css" defer>
             <li class=\"project\" value=\"${project.name}\">
                 <div class=\"projectanim\">
                     <button @click=${this._clickedViewButton} class=\"viewprojectbutton\" value=\"${project.name}\">${this._viewState}</button>
@@ -238,6 +246,5 @@ export class ProjectListItemElement extends LitElement
 		project.style.setProperty("--projectanim-to-height", "100vh");
 	}
 }
-
 // registers the ProjectListItemElement class as "project-list-item" in the DOM
 customElements.define("project-list-item", ProjectListItemElement);

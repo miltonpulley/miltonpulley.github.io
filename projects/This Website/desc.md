@@ -58,7 +58,7 @@ If this were a group project or something I would get paid for then no question 
 
 Also, if one would think I should've taken Saturday the 1st of February off, then you could consider this day to be effectively that.
 
-In other news, I found out there (apparently) will be a blackout tommorow from 7am to 5pm, although just means that I cannot use the internet as a resource. I can still work on the project as Visual Studio Code has an extension that can host the website from my computer, which is how I have been seeing real time changes to my TML/CSS/JS.
+In other news, I found out there (apparently) will be a blackout tommorow from 7am to 5pm, although just means that I cannot use the internet as a resource. I can still work on the project as Visual Studio Code has an [extension](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) that can host the website from my computer, which is how I have been seeing real time changes to my HTML/CSS/JS.
 
 ## 5th of February, 2025
 
@@ -84,3 +84,12 @@ Yes I should've been thinking about attacks, hacks and exploits from the start b
 A good solution to all of this (besides the anomalous oversleeping) is using LIT components, which I probably should've started with in the first place since I have been taught in it.  
 LIT components would automatically handle a lot of vulnerability protection like sanitising inputs, and would be a good way to generate the project viewer.  
 I will probably switch over to LIT components.
+
+## 7th of February, 2025
+
+Finished converting the project list to use LIT elements. It was a bit of a hassle, which is why I decided not to put the filter-tags-to-LIT conversion in the same commit.  
+It's annoying that LIT doesn't like to have external CSS, and prefers you put all of it in a static field in the LIT element class, meaning CSS syntax doesn't work without some VSCode extension that I have yet to look for.
+
+I originally had the CSS linked in the LIT's `render()` function, but is now is in the LIT class `static styles = [""]` for compatibility and other reasons.  
+In order to not have the JavaScript files be massive, and to make the conversion easier, the css is loaded from another JavaScript file which is just the original CSS file but with each LIT component's CSS wrapped in `export const X = css``;` to make them LIT `css` strings.  
+Another thing that this seemed to fix was that editing the CSS file wasn't applying to the [VSCode Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) without me reloading the page, instead of it applying when saving the file like usual.
