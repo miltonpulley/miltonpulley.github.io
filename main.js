@@ -25,13 +25,18 @@ export const DisplayedProjectsIndexes = []; // The filtered version of AllProjec
 /// Page and HTML construction
 /// ==========================
 import { GenerateFilterList } from "./filters.js";
-import { GenerateProjectList } from "./projectlist.js";
+import { RefreshProjectList } from "./projectlist.js";
 import { GenerateProjectViewer } from "./projectviewer.js";
 
 
 /// Runtime Functions
 /// =================
 import { FilterProjects } from "./filters.js";
+
+
+/// Classes and Objects
+/// ===================
+import { Project } from "./projectlist.js";
 
 
 /// Initialisation Functions
@@ -74,7 +79,7 @@ function FetchAllProjectsCallback(/*Function Callback*/ fetchedprojectsJSON)
 	});
 
 	FilterProjects();
-	GenerateProjectList();
+	RefreshProjectList();
 }
 function FetchAllProjectsErrorCallback()
 {
@@ -111,99 +116,3 @@ function FetchJSON(/*String*/ filepath, /*Function*/ callbackFunction, /*Functio
 
 /// Classes and Objects
 /// ===================
-export class Project
-{
-	name = "";
-	date = new Date();
-	folderpath = "";
-	tags = [];
-	blurb = "";
-
-	constructor(name, date, folderpath, tags, blurb)
-	{
-		this.name = name;
-		this.date = date;
-		this.folderpath = folderpath;
-		this.tags = tags;
-		this.blurb = blurb
-	}
-
-	describe()
-	{
-		return this.name + " (" + this.date.toString() + "), " + this.folderpath + "," + this.tags + ", " + this.blurb;
-	}
-}
-
-export class FilterTag
-{
-	// Enum states
-	static IGNORE = "ig";
-	static WHITELISTED = "wh";
-	static BLACKLISTED = "bl";
-
-	static DefaultTagState = FilterTag.IGNORE;
-
-	// Cycles state
-	static nextStateOf(state)
-	{
-		switch(state)
-		{
-			case FilterTag.IGNORE:
-				return FilterTag.WHITELISTED;
-			case FilterTag.WHITELISTED:
-				return FilterTag.BLACKLISTED;
-			case FilterTag.BLACKLISTED:
-				return FilterTag.IGNORE;
-		}
-	}
-
-	static AddToWhitelist(/*String*/ tag) { Whitelist.push(tag); }
-	static RemoveFromWhitelist(/*String*/ tag) { Whitelist.splice(Whitelist.indexOf(tag), 1); }
-	static AddToBlacklist(/*String*/ tag) { Blacklist.push(tag); }
-	static RemoveFromBlacklist(/*String*/ tag) { Blacklist.splice(Blacklist.indexOf(tag), 1); }
-
-	static SetTagFilterState(/*HTML tag*/ tagHTML)
-	{
-		// Cycle state
-		let oldState = tagHTML.getAttribute(FilterTagStateName);
-		let newState = FilterTag.nextStateOf(oldState);
-		tagHTML.setAttribute(FilterTagStateName, newState);
-
-		// Remove tag from either whitelist or blacklist
-		if(oldState == FilterTag.WHITELISTED) { FilterTag.RemoveFromWhitelist(tagHTML.value); }
-		if(oldState == FilterTag.BLACKLISTED) { FilterTag.RemoveFromBlacklist(tagHTML.value); }
-		
-		// Add tag to either whitelist or blacklist
-		if(newState == FilterTag.WHITELISTED) { FilterTag.AddToWhitelist(tagHTML.value); }
-		if(newState == FilterTag.BLACKLISTED) { FilterTag.AddToBlacklist(tagHTML.value); }
-
-		// Apply new filter(s) and reconstruct HTML
-		FilterProjects();
-		GenerateProjectList();
-	}
-
-	static SetAllTagFilterStates(/*String*/ state)
-	{
-		// Clear all filters
-		Whitelist.splice(0);
-		Blacklist.splice(0);
-
-		let tagList = document.getElementsByClassName("tagfilterbutton");
-		for(let t of tagList)
-		{
-			t.setAttribute(FilterTagStateName, state);
-			if(state == FilterTag.WHITELISTED)
-			{
-				FilterTag.AddToWhitelist(t.value);
-			}
-			if(state == FilterTag.BLACKLISTED)
-			{
-				FilterTag.AddToBlacklist(t.value);
-			}
-		};
-		
-		// Apply new filter(s) and reconstruct HTML
-		FilterProjects();
-		GenerateProjectList();
-	}
-}

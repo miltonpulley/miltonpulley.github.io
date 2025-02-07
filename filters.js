@@ -26,13 +26,10 @@ import
 from "./main.js";
 
 
-/// Classes and Objects
-/// ===================
-import { FilterTag } from "./main.js";
-
-
 /// Page and HTML construction
 /// ==========================
+import { RefreshProjectList } from "./projectlist.js";
+
 // Constructs the HTML filter list and adds functionality to their buttons.
 export function GenerateFilterList()
 {
@@ -176,5 +173,82 @@ function UpdateActiveTagsText()
 	else if(Blacklist.length > 1)
 	{
 		ActiveBlacklist.innerHTML = `Hiding projects that have at least one of the (${Blacklist.length}) blacklisted tags.`;
+	}
+}
+
+
+/// Classes and Objects
+/// ===================
+export class FilterTag
+{
+	// Enum states
+	static IGNORE = "ig";
+	static WHITELISTED = "wh";
+	static BLACKLISTED = "bl";
+
+	static DefaultTagState = FilterTag.IGNORE;
+
+	// Cycles state
+	static nextStateOf(state)
+	{
+		switch(state)
+		{
+			case FilterTag.IGNORE:
+				return FilterTag.WHITELISTED;
+			case FilterTag.WHITELISTED:
+				return FilterTag.BLACKLISTED;
+			case FilterTag.BLACKLISTED:
+				return FilterTag.IGNORE;
+		}
+	}
+
+	static AddToWhitelist(/*String*/ tag) { Whitelist.push(tag); }
+	static RemoveFromWhitelist(/*String*/ tag) { Whitelist.splice(Whitelist.indexOf(tag), 1); }
+	static AddToBlacklist(/*String*/ tag) { Blacklist.push(tag); }
+	static RemoveFromBlacklist(/*String*/ tag) { Blacklist.splice(Blacklist.indexOf(tag), 1); }
+
+	static SetTagFilterState(/*HTML tag*/ tagHTML)
+	{
+		// Cycle state
+		let oldState = tagHTML.getAttribute(FilterTagStateName);
+		let newState = FilterTag.nextStateOf(oldState);
+		tagHTML.setAttribute(FilterTagStateName, newState);
+
+		// Remove tag from either whitelist or blacklist
+		if(oldState == FilterTag.WHITELISTED) { FilterTag.RemoveFromWhitelist(tagHTML.value); }
+		if(oldState == FilterTag.BLACKLISTED) { FilterTag.RemoveFromBlacklist(tagHTML.value); }
+		
+		// Add tag to either whitelist or blacklist
+		if(newState == FilterTag.WHITELISTED) { FilterTag.AddToWhitelist(tagHTML.value); }
+		if(newState == FilterTag.BLACKLISTED) { FilterTag.AddToBlacklist(tagHTML.value); }
+
+		// Apply new filter(s) and reconstruct HTML
+		FilterProjects();
+		RefreshProjectList();
+	}
+
+	static SetAllTagFilterStates(/*String*/ state)
+	{
+		// Clear all filters
+		Whitelist.splice(0);
+		Blacklist.splice(0);
+
+		let tagList = document.getElementsByClassName("tagfilterbutton");
+		for(let t of tagList)
+		{
+			t.setAttribute(FilterTagStateName, state);
+			if(state == FilterTag.WHITELISTED)
+			{
+				FilterTag.AddToWhitelist(t.value);
+			}
+			if(state == FilterTag.BLACKLISTED)
+			{
+				FilterTag.AddToBlacklist(t.value);
+			}
+		};
+		
+		// Apply new filter(s) and reconstruct HTML
+		FilterProjects();
+		RefreshProjectList();
 	}
 }
