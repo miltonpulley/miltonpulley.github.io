@@ -7,7 +7,7 @@ const ProjectShrinkName = "Shrink"
 
 /// Global Session State Storage
 /// ============================
-var CurrentlyViewingProjectButton; // Keep track of the project in the list who's content is in the viewer
+var CurrentlyViewedProject; // Keep track of the project in the list who's content is in the viewer
 import
 {
 	AllProjects,
@@ -51,7 +51,7 @@ export class Project
 
 	describe()
 	{
-		return `Project "${this.name}": (${this.GetDisplayDate()}), ${this.blurb}, ${this.tags}, "${this.folderpath}".`;
+		return `Project "${this.name}": (${this.GetDisplayDate()}), ${this.blurb}, [${this.tags}], "${this.folderpath}".`;
 	}
 
 	GetDisplayDate()
@@ -179,38 +179,34 @@ export class ProjectListItemElement extends LitElement
 	// underscore is conventional when internal to the class (JavaScript has no actual way to declare it formally)
 	_viewButtonClicked(b)
 	{
-		// if the button will make the project expand
+		// expanding or shrinking based on current state
 		if(this._viewState == ProjectExpandName)
 		{
-			this._expandProject(b.target); // Pass the BUTTON as we need to modify its label
+			this.ExpandProject();
 		}
-		else // if the button will make the project shrink (or if it says anything else since the user could modify it)
+		else
 		{
-			this._shrinkProject(b.target); // Pass the BUTTON as we need to modify its label
+			this.ShrinkProject();
 		}
 	}
 
-	// Pass the BUTTON and not the project parent as the button's label gets modified
-	_expandProject(/*HTML tag*/ viewprojectbutton)
+	ExpandProject()
 	{
-		let projectAnimation = viewprojectbutton.parentNode;
-		let projectListItem = projectAnimation.parentNode;
+		let projectListItem = this.shadowRoot.firstElementChild;
+		let projectAnimation = projectListItem.querySelector(".projectanim");
 
 		// first check if another project is currently expanded, and shrink it.
-		let delay;
-		if(CurrentlyViewingProjectButton != undefined)
+		let delay = "0s"; // if we don't have to wait for a previous project to shrink first
+		if(CurrentlyViewedProject != undefined)
 		{
-			this._shrinkProject(CurrentlyViewingProjectButton);
+			CurrentlyViewedProject.ShrinkProject();
 			// If there is another project, we want to start expanding the new project right after the shrinking
 			//   of the previous project, so we want to delay the expand anim by the duration of the shrink anim.
 			// This is actually the duration of the NEW project, not the one just shrunk. If we wanted to use the duration of the
 			//   shrinking project, we would have to store it in the HTML tag because for some reason JavaScript can't read CSS.
 			delay = "calc(var(--projectanim-duration) * 0.5)";
 		}
-		else
-		{
-			delay = "0s"; // if we don't have to wait for a previous project to shrink first
-		}
+
 		// set the delay
 		projectListItem.style.setProperty("--projectanim-delay", delay);
 		
@@ -224,24 +220,24 @@ export class ProjectListItemElement extends LitElement
 		this._viewState = ProjectShrinkName; // set the label
 		
 		// We are now the currently expanded project
-		CurrentlyViewingProjectButton = viewprojectbutton;
+		CurrentlyViewedProject = this;
 
-		// Get the project (matched by name) and view it in the project viewer
-		ViewProjectInViewer(AllProjects.find(((proj) => proj.name == viewprojectbutton.value)));
+		// Get the project and view it in the project viewer
+		ViewProjectInViewer(AllProjects[this.index]);
 	}
 
-	// Pass the BUTTON and not the project parent as the button's label is modified
-	_shrinkProject(/*HTML tag*/ viewprojectbutton)
+	ShrinkProject()
 	{
-		let projectAnimation = viewprojectbutton.parentNode;
-		let projectListItem = projectAnimation.parentNode;
+		let projectListItem = this.shadowRoot.firstElementChild;
+		let projectAnimation = projectListItem.querySelector(".projectanim");
 
 		// If a project can shrink it is currently expanded.
 		//   There can only be 1 expanded project at any given time, so if this project
 		//   is NOT the currently expanded one, then we have two expanded projects.
-		if(viewprojectbutton.value != CurrentlyViewingProjectButton.value)
+		if(this._viewState != CurrentlyViewedProject._viewState)
 		{
-			console.error(`Error: somehow two projects are expanded: "${CurrentlyViewingProjectButton.value}" and "${viewprojectbutton.value}".`);
+			console.warn(`Warning: somehow two projects are expanded: "${CurrentlyViewedProject._viewState}" and "${this._viewState}", shrinking both...`);
+			CurrentlyViewedProject.ShrinkProject();
 		}
 
 		// wipe any delay
@@ -257,7 +253,7 @@ export class ProjectListItemElement extends LitElement
 		this._viewState = ProjectExpandName; // set the label
 
 		// There is now no currently expanded project.
-		CurrentlyViewingProjectButton = undefined; // undefined, NOT null.
+		CurrentlyViewedProject = undefined; // undefined, NOT null.
 	}
 
 	// Set the rect that the animation will expand/shrink from the rect of the reference HTML tag
