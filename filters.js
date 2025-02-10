@@ -30,237 +30,14 @@ from "./main.js";
 /// =================
 import { RefreshProjectList } from "./projectlist.js";
 
-// Constructs the HTML filter list and adds functionality to their buttons.
+// Rerenders the filter list.
+// To modify filters, call FilterProjects() beforehand.
 export function RefreshFilterList()
 {
-	const CategoryFilters = document.getElementById("filterarea");
+	let CategoryFilters = document.getElementById("filterarea");
 	CategoryFilters.requestUpdate(); // LIT regenerate html
 }
 
-
-/// Page and HTML construction
-/// ==========================
-import { LitElement, html } from 'https://cdn.jsdelivr.net/gh/lit/dist@3/core/lit-core.min.js';
-
-// Get CSS data for LIT components
-import
-{
-	FilterAreaElement_StyleCSS
-}
-from "./styleLIT.js"
-
-export class FilterAreaElement extends LitElement
-{
-	// defines attributes
-	static properties =
-	{
-		allfilter: {type: String}, // every filter tag defaults to this on render
-
-		// projectlistlength: {type: String},
-		// activewhitelist: {type: String},
-		// activeblacklist: {type: String},
-	};
-
-	static projectlistlength = "";
-	static activewhitelist = "";
-	static activeblacklist = "";
-
-	// Set the CSS data
-	static styles = [ FilterAreaElement_StyleCSS ];
-
-	// Attribute values don't get set up in the constructor, so you can't access their values in the constructor. 
-	// To init properties, we can do it in connectedCallback(), which isn't really supposed to be used with LIT elements.
-	// connectedCallback()
-	// {
-	// 	super.connectedCallback(); // always gotta do this
-
-	// 	// If filter was not set, default to FilterTag.DefaultTagState.
-	// 	// This defaulting is also done in the FilterTagElement class, but is done
-	// 	//   here to update the white & black lists and filter the project list.
-	// 	this.allfilter = this.allfilter || FilterTag.DefaultTagState;
-	// 	this._updateFilterLists();
-	// }
-
-	render() // LIT event that contructs the tag's HTML.
-	{
-		FilterAreaElement.UpdateActiveTagsText();
-		return html`
-			<div>
-				<h2>Filter projects by tags</h2>
-				<div id="filterallbuttons">
-					<button @click="${this._filterAllButtonClicked}" class="tagfilterallbutton" value="${FilterTag.IGNORE}">Ignore All</button>
-					<button @click="${this._filterAllButtonClicked}" class="tagfilterallbutton" value="${FilterTag.WHITELISTED}">Whitelist All</button>
-					<button @click="${this._filterAllButtonClicked}" class="tagfilterallbutton" value="${FilterTag.BLACKLISTED}">Blacklist All</button>
-				</div>
-				<ul id="filtercategories">
-				${
-					// For a better layout of the HTML layout, see the comment block below.
-					Object.entries(ProjectCategoriesAndTags).map(function([category, tags])
-					{
-						return html`
-							<h3>${category}</h3>
-							<ul class="projectcategory">
-							${
-								tags.map(function(tag)
-								{
-									TotalNumberOfFilterTags++; // count the number of tags
-									return html`<li><filter-tag tag="${tag}" filter="${this.allfilter}"></filter-tag></li>`;
-								}, this)
-							}
-							</ul>`;
-					}, this)
-				}
-				</ul>
-				<p id="projectlistlength" value="${FilterTag.IGNORE}">${FilterAreaElement.projectlistlength}</p>
-				<p id="activewhitelist" value="${FilterTag.WHITELISTED}">${FilterAreaElement.activewhitelist}</p>
-				<p id="activeblacklist" value="${FilterTag.BLACKLISTED}">${FilterAreaElement.activeblacklist}</p>
-			</div>`;
-	}
-
-	_filterAllButtonClicked(b)
-	{
-		// set the allfilter
-		this.allfilter = b.target.value;
-
-		// Clear all filters
-		Whitelist.splice(0);
-		Blacklist.splice(0);
-		
-		// Fill the whitelist with every tag
-		if(this.allfilter == FilterTag.WHITELISTED)
-		{
-			for(const [category, tags] of Object.entries(ProjectCategoriesAndTags))
-			{
-				tags.forEach((tag) =>
-				{
-					FilterTag.AddToWhitelist(tag);
-				});
-			}
-		}
-		// Fill the blacklist with every tag
-		if(this.allfilter == FilterTag.BLACKLISTED)
-		{
-			for(const [category, tags] of Object.entries(ProjectCategoriesAndTags))
-			{
-				tags.forEach((tag) =>
-				{
-					FilterTag.AddToBlacklist(tag);
-				});
-			}
-		}
-
-		// Apply new filter(s) and reconstruct HTML
-		FilterProjects();
-		RefreshFilterList();
-		RefreshProjectList();
-	}
-
-	// Mostly beautifying based on corner cases
-	static UpdateActiveTagsText()
-	{
-		FilterAreaElement.projectlistlength = `Showing (${DisplayedProjectsIndexes.length}/${AllProjects.length}) projects.`;
-		
-		FilterAreaElement.activewhitelist = "No tags whitelisted."; // if Whitelist.length == 0
-		if(Whitelist.length == 1)
-		{
-			FilterAreaElement.activewhitelist = `Only showing \"${Whitelist[0]}\" projects.`;
-		}
-		else if(Whitelist.length == TotalNumberOfFilterTags)
-		{
-			FilterAreaElement.activewhitelist = `Only showing projects that have every tag.`;
-		}
-		else if(Whitelist.length > 1)
-		{
-			FilterAreaElement.activewhitelist = `Only showing projects that have all (${Whitelist.length}) whitelisted tags.`;
-		}
-		
-		FilterAreaElement.activeblacklist = "No tags blacklisted."; // if Blacklist.length == 0
-		if(Blacklist.length == 1)
-		{
-			FilterAreaElement.activeblacklist = `Hiding all \"${Blacklist[0]}\" projects.`;
-		}
-		else if(Blacklist.length == TotalNumberOfFilterTags)
-		{
-			FilterAreaElement.activeblacklist = `Hiding all projects that have at least one tag.`;
-		}
-		else if(Blacklist.length > 1)
-		{
-			FilterAreaElement.activeblacklist = `Hiding projects that have at least one of the (${Blacklist.length}) blacklisted tags.`;
-		}
-	}
-}
-// registers the FilterAreaElement class as "filter-area" in the DOM
-customElements.define("filter-area", FilterAreaElement);
-
-/// Generated HTML layout:
-/*\
-|*| <ul id="filtercategories">
-|*| |   ...
-|*| |   <li>
-|*| |   |   <h3>[Category Name]</h3>
-|*| |   |   <ul class="projectcategory">
-|*| |   |   |   ...
-|*| |   |   |   <li>
-|*| |   |   |   |   <button class="tagfilterbutton" value="[Tag Name]" [FilterTagStateName]="[State]">[Tag Name]</button>
-|*| |   |   |   </li>
-|*| |   |   |   ...
-|*| |   |   </ul>
-|*| |   </li>
-|*| |   ...
-|*| </ul>
-\*/
-export class FilterTagElement extends LitElement
-{
-	// defines attributes
-	static properties =
-	{
-		tag: {type: String},
-		filter: {type: String},
-	};
-
-	// Set the CSS data
-	static styles = [ FilterAreaElement_StyleCSS ];
-
-	// Attribute values don't get set up in the constructor, so you can't access their values in the constructor. 
-	// To init properties, we can do it in connectedCallback(), which isn't really supposed to be used with LIT elements.
-	connectedCallback()
-	{
-		super.connectedCallback(); // always gotta do this
-		this.filter = this.filter || FilterTag.DefaultTagState; // If filter was not set, default to FilterTag.DefaultTagState.
-	}
-
-	// For a better layout of the HTML layout, see the comment block above.
-	render() // LIT event that contructs the tag's HTML.
-	{
-		return html`<button @click="${this._filterButtonClicked}" class="tagfilterbutton" value="${this.filter}">${this.tag}</button>`;
-	}
-
-	_filterButtonClicked(b)
-	{
-		// Get new filter
-		let oldState = this.filter;
-		this.filter = FilterTag.nextStateOf(oldState);
-
-		// Remove tag from either whitelist or blacklist
-		if(oldState == FilterTag.WHITELISTED) { FilterTag.RemoveFromWhitelist(this.tag); }
-		if(oldState == FilterTag.BLACKLISTED) { FilterTag.RemoveFromBlacklist(this.tag); }
-		
-		// Add tag to either whitelist or blacklist
-		if(this.filter == FilterTag.WHITELISTED) { FilterTag.AddToWhitelist(this.tag); }
-		if(this.filter == FilterTag.BLACKLISTED) { FilterTag.AddToBlacklist(this.tag); }
-
-		// Apply new filter(s) and reconstruct HTML
-		FilterProjects();
-		RefreshFilterList();
-		RefreshProjectList();
-	}
-}
-// registers the FilterTagElement class as "filter-tag" in the DOM
-customElements.define("filter-tag", FilterTagElement);
-
-
-/// Runtime Functions
-/// =================
 export function FilterProjects()
 {
 	// effectively wipes the array to recalculate
@@ -336,3 +113,219 @@ export class FilterTag
 	static AddToBlacklist(/*String*/ tag) { Blacklist.push(tag); }
 	static RemoveFromBlacklist(/*String*/ tag) { Blacklist.splice(Blacklist.indexOf(tag), 1); }
 }
+
+
+/// Page and HTML construction
+/// ==========================
+import { LitElement, html } from 'https://cdn.jsdelivr.net/gh/lit/dist@3/core/lit-core.min.js';
+
+// Get CSS data for LIT components
+import
+{
+	FilterAreaElement_StyleCSS
+}
+from "./styleLIT.js"
+
+// Entire generated inner HTML of <filter-area id="filterarea"></filter-area> and <filter-tag></filter-tag>.
+/*\
+|*| <filter-area id="filterarea">
+|*| |   <div>
+|*| |   |   <h2>Filter projects by tags</h2>
+|*| |   |   <div id="filterallbuttons">
+|*| |   |   |   <button class="tagfilterallbutton" value="ig">Ignore All</button>
+|*| |   |   |   <button class="tagfilterallbutton" value="wh">Whitelist All</button>
+|*| |   |   |   <button class="tagfilterallbutton" value="bl">Blacklist All</button>
+|*| |   |   </div>
+|*| |   |   <div id="filtercategories">
+|*| |   |   |   ...
+|*| |   |   |   <h3>[Category Name]</h3>
+|*| |   |   |   <div class="filtercategory">
+|*| |   |   |   |   ...
+|*| |   |   |   |   <filter-tag tag="[Tag Name]">
+|*| |   |   |   |   |   <button class="tagfilterbutton" value="filter">[Tag Name]</button>
+|*| |   |   |   |   </filter-tag>
+|*| |   |   |   |   ...
+|*| |   |   |   </div>
+|*| |   |   |   ...
+|*| |   |   </div>
+|*| |   |   <p id="numshowingprojects" value="ig">[Text]</p>
+|*| |   |   <p id="activewhitelist" value="wh">[Text]</p>
+|*| |   |   <p id="activeblacklist" value="bl">[Text]</p>
+|*| |   </div>
+|*| </filter-area>
+\*/
+export class FilterAreaElement extends LitElement
+{
+	// defines attributes
+	static properties =
+	{
+		allfilter: {type: String}, // every filter tag defaults to this on render
+	};
+
+	// Text to be displayed to the user informing them on what the filters are doing
+	static numshowingprojects = "";
+	static activewhitelist = "";
+	static activeblacklist = "";
+
+	// Set the CSS data
+	static styles = [ FilterAreaElement_StyleCSS ];
+
+	// For a better view of the HTML layout, see the comment block above.
+	render() // LIT event that contructs the tag's HTML.
+	{
+		FilterAreaElement.UpdateActiveTagsText();
+		return html`
+			<div>
+				<h2>Filter projects by tags</h2>
+				<div id="filterallbuttons">
+					<button @click="${this._filterAllButtonClicked}" class="tagfilterallbutton" value="${FilterTag.IGNORE}">Ignore All</button>
+					<button @click="${this._filterAllButtonClicked}" class="tagfilterallbutton" value="${FilterTag.WHITELISTED}">Whitelist All</button>
+					<button @click="${this._filterAllButtonClicked}" class="tagfilterallbutton" value="${FilterTag.BLACKLISTED}">Blacklist All</button>
+				</div>
+				<div id="filtercategories">
+				${
+					Object.entries(ProjectCategoriesAndTags).map(function([category, tags])
+					{
+						return html`
+							<h3>${category}</h3>
+							<div class="filtercategory">
+							${
+								tags.map(function(tag)
+								{
+									TotalNumberOfFilterTags++; // count the number of tags
+									return html`<filter-tag tag="${tag}" .filter="${this.allfilter}"></filter-tag>`;
+								}, this)
+							}
+							</div>`;
+					}, this)
+				}
+				</div>
+				<p id="numshowingprojects" value="${FilterTag.IGNORE}">${FilterAreaElement.numshowingprojects}</p>
+				<p id="activewhitelist" value="${FilterTag.WHITELISTED}">${FilterAreaElement.activewhitelist}</p>
+				<p id="activeblacklist" value="${FilterTag.BLACKLISTED}">${FilterAreaElement.activeblacklist}</p>
+			</div>`;
+	}
+
+	_filterAllButtonClicked(b)
+	{
+		// set the allfilter
+		this.allfilter = b.target.value;
+
+		// Clear all filters
+		Whitelist.splice(0);
+		Blacklist.splice(0);
+		
+		// Fill the whitelist with every tag
+		if(this.allfilter == FilterTag.WHITELISTED)
+		{
+			for(const [category, tags] of Object.entries(ProjectCategoriesAndTags))
+			{
+				tags.forEach((tag) =>
+				{
+					FilterTag.AddToWhitelist(tag);
+				});
+			}
+		}
+		// Fill the blacklist with every tag
+		if(this.allfilter == FilterTag.BLACKLISTED)
+		{
+			for(const [category, tags] of Object.entries(ProjectCategoriesAndTags))
+			{
+				tags.forEach((tag) =>
+				{
+					FilterTag.AddToBlacklist(tag);
+				});
+			}
+		}
+
+		// Apply new filter(s) and reconstruct HTML
+		FilterProjects();
+		RefreshFilterList();
+		RefreshProjectList();
+	}
+
+	// Mostly beautifying based on corner cases
+	static UpdateActiveTagsText()
+	{
+		FilterAreaElement.numshowingprojects = `Showing (${DisplayedProjectsIndexes.length}/${AllProjects.length}) projects.`;
+		
+		FilterAreaElement.activewhitelist = "No tags whitelisted."; // if Whitelist.length == 0
+		if(Whitelist.length == 1)
+		{
+			FilterAreaElement.activewhitelist = `Only showing "${Whitelist[0]}" projects.`;
+		}
+		else if(Whitelist.length == TotalNumberOfFilterTags)
+		{
+			FilterAreaElement.activewhitelist = `Only showing projects that have every tag.`;
+		}
+		else if(Whitelist.length > 1)
+		{
+			FilterAreaElement.activewhitelist = `Only showing projects that have all (${Whitelist.length}) whitelisted tags.`;
+		}
+		
+		FilterAreaElement.activeblacklist = "No tags blacklisted."; // if Blacklist.length == 0
+		if(Blacklist.length == 1)
+		{
+			FilterAreaElement.activeblacklist = `Hiding all "${Blacklist[0]}" projects.`;
+		}
+		else if(Blacklist.length == TotalNumberOfFilterTags)
+		{
+			FilterAreaElement.activeblacklist = `Hiding all projects that have at least one tag.`;
+		}
+		else if(Blacklist.length > 1)
+		{
+			FilterAreaElement.activeblacklist = `Hiding projects that have at least one of the (${Blacklist.length}) blacklisted tags.`;
+		}
+	}
+}
+// registers the FilterAreaElement class as "filter-area" in the DOM
+customElements.define("filter-area", FilterAreaElement);
+
+export class FilterTagElement extends LitElement
+{
+	// defines attributes
+	static properties =
+	{
+		tag: {type: String},
+		filter: {type: String},
+	};
+
+	// Set the CSS data
+	static styles = [ FilterAreaElement_StyleCSS ];
+
+	// Attribute values don't get set up in the constructor, so you can't access their values in the constructor. 
+	// To init properties, we can do it in connectedCallback(), which isn't really supposed to be used with LIT elements.
+	connectedCallback()
+	{
+		super.connectedCallback(); // always gotta do this
+		this.filter = this.filter || FilterTag.DefaultTagState; // If filter was not set, default to FilterTag.DefaultTagState.
+	}
+
+	// For a better view of the HTML layout, see the comment block above.
+	render() // LIT event that contructs the tag's HTML.
+	{
+		return html`<button @click="${this._filterButtonClicked}" class="tagfilterbutton" value="${this.filter}">${this.tag}</button>`;
+	}
+
+	_filterButtonClicked(b)
+	{
+		// Get new filter
+		let oldState = this.filter;
+		this.filter = FilterTag.nextStateOf(oldState);
+
+		// Remove tag from either whitelist or blacklist
+		if(oldState == FilterTag.WHITELISTED) { FilterTag.RemoveFromWhitelist(this.tag); }
+		if(oldState == FilterTag.BLACKLISTED) { FilterTag.RemoveFromBlacklist(this.tag); }
+		
+		// Add tag to either whitelist or blacklist
+		if(this.filter == FilterTag.WHITELISTED) { FilterTag.AddToWhitelist(this.tag); }
+		if(this.filter == FilterTag.BLACKLISTED) { FilterTag.AddToBlacklist(this.tag); }
+
+		// Apply new filter(s) and reconstruct HTML
+		FilterProjects();
+		RefreshFilterList();
+		RefreshProjectList();
+	}
+}
+// registers the FilterTagElement class as "filter-tag" in the DOM
+customElements.define("filter-tag", FilterTagElement);

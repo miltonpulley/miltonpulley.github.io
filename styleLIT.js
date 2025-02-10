@@ -61,7 +61,7 @@ export const FilterAreaElement_StyleCSS = css`
 	font-size: calc(0.4vw + 1em);
 }
 
-.projectcategory
+.filtercategory
 {
 	display: flex;  
 	flex-wrap: wrap;
@@ -114,7 +114,7 @@ export const ProjectListElement_StyleCSS = css`
 	list-style: none;
 }
 
-#projectlist
+:host > div
 {
 	display: flex;
 	flex-wrap: wrap;
@@ -238,6 +238,7 @@ export const ProjectListItemElement_StyleCSS = css`
 	display: flex;
 	flex: 1 0 auto;
 	flex-wrap: wrap-reverse;
+	margin: 1px;
 	padding: 2px;
 	width: auto;
 	justify-content: flex-end;

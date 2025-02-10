@@ -22,13 +22,6 @@ export const Blacklist = []; // The list of all whitelisted tags to filter AllPr
 export const DisplayedProjectsIndexes = []; // The filtered version of AllProjects[] to be displayed to screen.
 
 
-/// Page and HTML construction
-/// ==========================
-import { RefreshFilterList } from "./filters.js";
-import { RefreshProjectList } from "./projectlist.js";
-import { GenerateProjectViewer } from "./projectviewer.js";
-
-
 /// Runtime Functions
 /// =================
 import { FilterProjects } from "./filters.js";
@@ -44,12 +37,13 @@ import { Project } from "./projectlist.js";
 window.onload = () => // event handler
 {
 	// Get and generate the list of projects
-	// Will eventually call FilterProjects(), RefreshFilterList(), and RefreshProjectList().
+	// Will eventually call FilterProjects(), RefreshFilterList(), RefreshProjectList(), and RefreshProjectViewer().
 	FetchAllProjects();
-
-	// Generate the project viewer
-	GenerateProjectViewer();
 }
+
+import { RefreshFilterList } from "./filters.js";
+import { RefreshProjectList } from "./projectlist.js";
+import { RefreshProjectViewer } from "./projectviewer.js";
 
 function FetchAllProjects()
 {
@@ -63,25 +57,27 @@ function FetchAllProjectsCallback(/*Function Callback*/ fetchedprojectsJSON)
 	let index = 0;
 	fetchedprojectsJSON.projects.forEach((proj) =>
 	{
-		// Checking if we have doubled up
-		/*if(AllProjects[proj.name])
+		// Checking if we have doubled up by checking if any project
+		//   already parsed has the same name of the current project.
+		if(AllProjects.find((p) => p.name == proj.name))
 		{
-			console.error(`Error: Project of name \"${proj.name}\" already exists!`);
+			console.warn(`Warning: Project of name "${proj.name}" already exists! Skipping...`);
 		}
 		else
-		{*/
-			AllProjects[index] = new Project(proj.name, new Date(proj.date), proj.folderpath, proj.tags, proj.blurb);
+		{
+			AllProjects[index] = new Project(proj.name, proj.date, proj.blurb, proj.tags, proj.folderpath);
 			index++;
-		//}
+		}
 	});
 
 	FilterProjects();
 	RefreshFilterList();
 	RefreshProjectList();
+	RefreshProjectViewer();
 }
 function FetchAllProjectsErrorCallback()
 {
-	const ProjectList = document.getElementById("projectlist");
+	let ProjectList = document.getElementById("projectlist");
 	ProjectList.innerHTML = ProjectListErrorHTML;
 }
 
@@ -100,7 +96,7 @@ function FetchJSON(/*String*/ filepath, /*Function*/ callbackFunction, /*Functio
 	})
 	.catch((error) =>
 	{
-		console.error(`Error in fetching JSON \"${filepath}\", ${error}`);
+		console.error(`Error in fetching JSON "${filepath}", ${error}`);
 
 		callbackError();
 	})
@@ -112,5 +108,5 @@ function FetchJSON(/*String*/ filepath, /*Function*/ callbackFunction, /*Functio
 }
 
 
-/// Classes and Objects
-/// ===================
+/// Page and HTML construction
+/// ==========================

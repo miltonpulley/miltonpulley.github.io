@@ -105,6 +105,7 @@ Took a break.
 
 ## 10th of February, 2025
 
-After a bit more work, continuing on what I didn't finish on the 7th, I have finally converted the filter area and the project list to LIT components. The project viewer has yet to be converted, but it only exists as ~1-3 lines of code at the moment.
-
+After a bit more work, continuing on what I didn't finish on the 7th, I have finally converted the filter area and the project list to LIT components. The project viewer has yet to be converted, but it only exists as ~1-3 lines of code at the moment.  
 Again, I probably should've started with LIT but for some reason I didn't. I guess I forgot about the security part.
+
+Just reorganised some of the project, including reordering the functions in each JavaScript file to be consistent, and turning every `<ul>` into `<div>` and removing every `<li>` in the LIT components since even though they were all still unordered lists, the CSS `flex` was doing all the layout.

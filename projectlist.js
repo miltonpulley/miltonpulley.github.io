@@ -20,13 +20,53 @@ from "./main.js";
 /// =================
 import { ViewProjectInViewer } from "./projectviewer.js";
 
-// Refresh the project list HTML
+// Rerenders the project list based on filters.
+// To modify filters, call FilterProjects() beforehand.
 export function RefreshProjectList()
 {
-    const ProjectList = document.getElementById("projectlist");
+    let ProjectList = document.getElementById("projectlist");
 	ProjectList.requestUpdate(); // LIT regenerate html
 }
 
+
+/// Classes and Objects
+/// ===================
+// Project data is NOT stored in the LIT element as the project may be filtered out, but the data must still exist
+export class Project
+{
+	name = "";
+	_date = ""; // Just text, gets try-parsed to Date() object in GetDisplayDate()
+	blurb = "";
+	tags = [];
+	folderpath = "";
+
+	constructor(name, date, blurb, tags, folderpath)
+	{
+		this.name = name;
+		this._date = date;
+		this.blurb = blurb
+		this.tags = tags;
+		this.folderpath = folderpath;
+	}
+
+	describe()
+	{
+		return `Project "${this.name}": (${this.GetDisplayDate()}), ${this.blurb}, ${this.tags}, "${this.folderpath}".`;
+	}
+
+	GetDisplayDate()
+	{
+		// Try to convert to a date
+		let d = Date.parse(this._date);
+		if(isNaN(d))
+		{
+			// Failed to parse, so this._date must be text and not a date
+			return this._date;
+		}
+		// Was a date, return formatted text
+		return new Date(d).toLocaleDateString();
+	}
+}
 
 /// Page and HTML construction
 /// ==========================
@@ -41,47 +81,49 @@ import
 }
 from "./styleLIT.js"
 
-// Project data is NOT stored in the LIT element as the project may be filtered out, but the data must still exist
-export class Project
-{
-	name = "";
-	date = new Date();
-	folderpath = "";
-	tags = [];
-	blurb = "";
-
-	constructor(name, date, folderpath, tags, blurb)
-	{
-		this.name = name;
-		this.date = date;
-		this.folderpath = folderpath;
-		this.tags = tags;
-		this.blurb = blurb
-	}
-
-	describe()
-	{
-		return this.name + " (" + this.date.toString() + "), " + this.folderpath + "," + this.tags + ", " + this.blurb;
-	}
-}
-
+// Entire generated inner HTML of <project-list id="projectlist"></project-list> and <project-list-item></project-list-item>.
+/*\
+|*| <project-list id="projectlist">
+|*| |   <div>
+|*| |   |   ...
+|*| |   |   <project-list-item>
+|*| |   |   |   <div class="project">
+|*| |   |   |   |   <div class="projectanim">
+|*| |   |   |   |   |   <button class="viewprojectbutton" value="[Project Name]">Expand</button>
+|*| |   |   |   |   </div>
+|*| |   |   |   |   <img class="projectimg" src="[Project Image]"></img>
+|*| |   |   |   |   <p class="projectdate">[Date]</p>
+|*| |   |   |   |   <p class="projectname">[Project Name]</p>
+|*| |   |   |   |   <p class="projectdesc">[Project Description]</p>
+|*| |   |   |   |   <div class="projecttaglist">
+|*| |   |   |   |   |   ...
+|*| |   |   |   |   |   <p class="projecttag">[Project Tag]</p>
+|*| |   |   |   |   |   ...
+|*| |   |   |   |   </div>
+|*| |   |   |   </div>
+|*| |   |   </project-list-item>
+|*| |   |   ...
+|*| |   </div>
+|*| </project-list>
+\*/
 export class ProjectListElement extends LitElement
 {
 	// Set the CSS data
 	static styles = [ ProjectListElement_StyleCSS ];
 
+	// For a better view of the HTML layout, see the comment block above.
 	render() // LIT event that contructs the tag's HTML.
 	{
 		// For each project that we want to display
 		return html`
-		<ul id="projectlist">
+		<div>
 		${
 			DisplayedProjectsIndexes.map(function(index)
 			{
-				return html`<project-list-item index="${index}"></project-list-item>`;
+				return html`<project-list-item .index="${index}"></project-list-item>`;
 			})
 		}
-		</ul>`;
+		</div>`;
 	}
 }
 // registers the ProjectListElement class as "project-list" in the DOM
@@ -110,27 +152,28 @@ export class ProjectListItemElement extends LitElement
 		this._viewState = ProjectExpandName;
 	}
 
+	// For a better view of the HTML layout, see the comment block above.
 	render() // LIT event that contructs the tag's HTML.
 	{
 		// Constructs the HTML project list based on filters and adds functionality to its buttons.
 		// Filtering must be called beforehand via FilterProjects().
 		let project = AllProjects[this.index];
 		return html`
-            <li class=\"project\" value=\"${project.name}\">
-                <div class=\"projectanim\">
-                    <button @click=${this._viewButtonClicked} class=\"viewprojectbutton\" value=\"${project.name}\">${this._viewState}</button>
+            <div class="project">
+                <div class="projectanim">
+                    <button @click=${this._viewButtonClicked} class="viewprojectbutton" value="${project.name}">${this._viewState}</button>
                 </div>
-                <img class=\"projectimg\" src=\"${project.folderpath}/thumbnail.png\"></img>
-                <p class=\"projectdate\">${project.date.toLocaleDateString()}</p>
-                <p class=\"projectname\">${project.name}</p>
-                <p class=\"projectdesc\">${project.blurb}</p>
-                <ul class=\"projecttaglist\">
+                <img class="projectimg" src="${project.folderpath}/thumbnail.png"></img>
+                <p class="projectdate">${project.GetDisplayDate()}</p>
+                <p class="projectname">${project.name}</p>
+                <p class="projectdesc">${project.blurb}</p>
+                <div class="projecttaglist">
 					${project.tags.map(function(t)
 					{
-						return html`<li class=\"projecttag\">${t}</li>`;
+						return html`<p class="projecttag">${t}</p>`;
 					})}
-                </ul>
-            </li>`;
+                </div>
+            </div>`;
 	}
 
 	// underscore is conventional when internal to the class (JavaScript has no actual way to declare it formally)
@@ -147,7 +190,7 @@ export class ProjectListItemElement extends LitElement
 		}
 	}
 
-	// Pass the BUTTON and not the project parent as the button's label is modified
+	// Pass the BUTTON and not the project parent as the button's label gets modified
 	_expandProject(/*HTML tag*/ viewprojectbutton)
 	{
 		let projectAnimation = viewprojectbutton.parentNode;
@@ -183,9 +226,8 @@ export class ProjectListItemElement extends LitElement
 		// We are now the currently expanded project
 		CurrentlyViewingProjectButton = viewprojectbutton;
 
-		// View the project in the project viewer
-		let project = AllProjects[projectListItem.value];
-		ViewProjectInViewer(project);
+		// Get the project (matched by name) and view it in the project viewer
+		ViewProjectInViewer(AllProjects.find(((proj) => proj.name == viewprojectbutton.value)));
 	}
 
 	// Pass the BUTTON and not the project parent as the button's label is modified
@@ -199,7 +241,7 @@ export class ProjectListItemElement extends LitElement
 		//   is NOT the currently expanded one, then we have two expanded projects.
 		if(viewprojectbutton.value != CurrentlyViewingProjectButton.value)
 		{
-			console.error(`Error: somehow two projects are expanded: \"${CurrentlyViewingProjectButton.value}\" and \"${viewprojectbutton.value}\".`);
+			console.error(`Error: somehow two projects are expanded: "${CurrentlyViewingProjectButton.value}" and "${viewprojectbutton.value}".`);
 		}
 
 		// wipe any delay

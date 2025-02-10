@@ -1,35 +1,55 @@
 {
 	"projects":
-    [
+	[
 		{
 			"name": "Portfolio Website",
 			"date": "2025-01-30T12:41:26",
-			"folderpath": "/projects/This Website",
+			"blurb": "This website you are on now was created by me!",
 			"tags":
-            [
-                "Solo", "HTML/CSS/JS", "2D digital"
-            ],
-            "blurb": "This website you are on now was created by me!"
+			[
+				"Solo", "HTML/CSS/JS", "2D digital"
+			],
+			"folderpath": "/projects/This Website"
 		},
-        {
+		{
 			"name": "Placeholder Text",
 			"date": "2025-01-30T12:41:26",
-			"folderpath": "/projects/This Website",
+			"blurb": "This",
 			"tags":
-            [
-                "Team member", "2D digital", "C#"
-            ],
-            "blurb": "This"
+			[
+				"Team member", "2D digital", "C#"
+			],
+			"folderpath": "/projects/This Website"
 		},
-        {
+		{
 			"name": "blah blah",
-			"date": "1928-12-14T22:04:42",
-			"folderpath": ".",
+			"date": "Unknown",
+			"blurb": "Such a nice placeholder here",
 			"tags":
-            [
-                "Team member", "Sketch", "3D digital", "Vocals"
-            ],
-            "blurb": "Such a nice placeholder here"
+			[
+				"Team member", "Sketch", "3D digital", "Vocals"
+			],
+			"folderpath":  "/projects/This Website"
+		},
+		{
+			"name": "woiwwiyuoe ajguiagfh gu oioyuoyuyi",
+			"date": "9999-12-31T23:59:59",
+			"blurb": "lhiuhuhyGGUYqg udugh ihsesht jkyfkyufhuoabigbeergui ohoabu sssssdfkj fjwnodq fenbghibi",
+			"tags":
+			[
+				"Solo", "Team member", "HTML/CSS/JS", "2D digital", "Sketch", "3D digital", "Blender Grease Pencil", "Vocals", "C#", "Live performance"
+			],
+			"folderpath":  "/projects/This Website"
+		},
+		{
+			"name": "",
+			"date": "0001-01-01T22:00:00",
+			"blurb": "",
+			"tags":
+			[
+				
+			],
+			"folderpath":  "/projects/This Website"
 		}
-    ]
+	]
 }

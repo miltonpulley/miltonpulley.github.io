@@ -10,9 +10,6 @@
 		<!-- nothing in the tag as it is referencing a .js file -->
 		<!-- defer keyword means "hold off running this .js until the whole page is loaded." -->
 		<script src="main.js" type="module" defer></script>
-		<script src="filters.js" type="module" defer></script>
-		<script src="projectlist.js" type="module" defer></script>
-		<script src="projectviewer.js" type="module" defer></script>
 		<!-- delcaring a link between this and the css resource -->
 		<link rel="stylesheet" type="text/css" href="style.css" defer>
 	</head>
@@ -20,52 +17,12 @@
 		<section id=main>
 			<h1>Browse Projects</h1>
 
-			<filter-area id="filterarea">
-			<!--<div>
-					<h2>Filter projects by tags</h2>
-					<div id="filterallbuttons">
-						<button class="tagfilterallbutton" value="ig">Ignore All</button>
-						<button class="tagfilterallbutton" value="wh">Whitelist All</button>
-						<button class="tagfilterallbutton" value="bl">Blacklist All</button>
-					</div>
-					<ul id="filtercategories">
-						...
-						<li>
-							<h3>[Category Name]</h3>
-							<ul class="projectcategory">
-								...
-								<li>
-									<button class="tagfilterbutton" value="[Tag Name]" [FilterTagStateName]="[State]">[Tag Name]</button>
-								</li>
-								...
-							</ul>
-						</li>
-						...
-					</ul>
-					<p id="projectlistlength" filter="ig">[Text]</p>
-					<p id="activewhitelist" filter="wh">[Text]</p>
-					<p id="activeblacklist" filter="bl">[Text]</p>
-				</div> -->
-			</filter-area>
-
-			<project-list id="projectlist"> <!--
-				...
-				<li class="project" value="[ProjectList[] ID]">
-					<div class="projectanim">
-						<button value="[Project Name]" class="viewprojectbutton">Expand</button>
-					</div>
-					<img src="[Project Image]" class="projectimg"></img>
-					<p class="projectdate">[Date]</p>
-					<p class="projectname">[Project Name]</p>
-					<p class="projectdesc">[Project Description]</p>
-					<ul class="projecttaglist">
-						...
-						<li class="projecttag">[Project Tag]</li>
-						...
-					</ul>
-				</li>
-				... 
-			--> <!-- This is shown before the projects are loaded -->
+			<!-- To see inner HTML, see code block above definition in filters.js -->
+			<filter-area id="filterarea"></filter-area>
+			
+			<!-- To see inner HTML, see code block above definition in projectlist.js -->
+			<project-list id="projectlist">
+				<!-- This is shown before the projects are loaded, but LIT never removes it -->
 				<li class="project">
 					<img src="" class="projectimg"></img>
 					<p class="projectname">Loading...</p>
@@ -76,9 +33,8 @@
 				</li>
 			</project-list>
 
-			<div id="projectviewer">
-				
-			</div>
+			<!-- To see inner HTML, see code block above definition in projectviewer.js -->
+			<div id="projectviewer"></div>
 		</section>
 		<footer>
 			<p>Milton Pulley 2025</p>

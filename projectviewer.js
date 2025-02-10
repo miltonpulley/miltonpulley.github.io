@@ -6,42 +6,25 @@
 /// ============================
 
 
-/// Page and HTML construction
-/// ==========================
-// Constructs the HTML expanded project viewer screen and adds functionality to its buttons.
-// Do not call this to change what project is being viewed, instead use ViewProjectInViewer().
-export function GenerateProjectViewer()
-{
-	GenerateProjectViewerHTML();
-	AddProjectViewerButtonFunctionality();
-}
-
-function GenerateProjectViewerHTML() // Do not call, instead call GenerateProjectViewer().
-{
-	//let result = "";
-	//result += 
-}
-
-function AddProjectViewerButtonFunctionality()
-{
-
-}
-
-
 /// Runtime Functions
 /// =================
+// Rerenders the expanded project viewer screen.
+// To change what project is being viewed, call ViewProjectInViewer() instead.
+export function RefreshProjectViewer()
+{
+	let ProjectViewer = document.getElementById("projectlist");
+	ProjectViewer.requestUpdate(); // LIT regenerate html
+}
+
+
 export function ViewProjectInViewer(/*Project*/ project)
 {
 	console.log(project.folderpath);
 }
 
 
-
-function ViewProject(/*Function Callback*/ callback)
-{
-	ExpandProject();
-}
-
+/// Helper Functions
+/// ================
 // async function getFile()
 // {
 // 	let myPromise = new Promise(function(resolve)
@@ -63,5 +46,18 @@ function ViewProject(/*Function Callback*/ callback)
 // 	});
 // 	document.getElementById("demo").innerHTML = await myPromise;
 // }
-
 // getFile();
+
+
+/// Page and HTML construction
+/// ==========================
+function GenerateProjectViewerHTML() // Do not call, instead call GenerateProjectViewer().
+{
+	//let result = "";
+	//result += 
+}
+
+function AddProjectViewerButtonFunctionality()
+{
+
+}
