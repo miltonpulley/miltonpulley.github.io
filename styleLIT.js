@@ -8,7 +8,7 @@ export const FilterAreaElement_StyleCSS = css`
 	list-style: none;
 }
 
-#filterarea
+:host > div
 {
 	margin: 2px auto 3vh;
 	/* margin-top: 2px;
@@ -22,12 +22,20 @@ export const FilterAreaElement_StyleCSS = css`
 	border-radius: 2vw;
 }
 
-#filterarea > h2 /* Filter Projects By Tags */
+:host > div > h2 /* Filter Projects By Tags */
 {
 	display: inline-block;
 	margin: 2px 0px 0px 2vw;
 	width: fit-content;
 	font-size: calc(1vw + 1.5em);
+}
+
+:host > div > p /* The 3 filter texts e.g. showing (#/#) projects */
+{
+	margin: 0.2em auto;
+	width: fit-content;
+	font-size: calc(1vw + 0.7em);
+	align-content: center;
 }
 
 #filterallbuttons
@@ -40,13 +48,13 @@ export const FilterAreaElement_StyleCSS = css`
 	justify-content: flex-end;
 }
 
-#filterprojectcategoriestags
+#filtercategories
 {
 	padding: 0px;
 	text-align: center;
 }
 
-#filterprojectcategoriestags li h3
+#filtercategories h3
 {
 	margin: 5px 0px 1px;
 	text-align: center;
@@ -62,7 +70,7 @@ export const FilterAreaElement_StyleCSS = css`
 	justify-content: center;
 }
 
-*[filter] /* all ignored ("ig") or unspecified tags, and default of all others */
+*[value] /* all ignored ("ig") or unspecified tags, and default of all others */
 {
 	margin: 0.1em; 
 	padding: 0px 0.3em;
@@ -72,37 +80,29 @@ export const FilterAreaElement_StyleCSS = css`
 	border: 0.15em solid #999999;
 	border-radius: 0.4em;
 }
-#filterarea button:hover /* all ignored ("ig") or unspecified tags, and default of all others */
+button:hover /* all ignored ("ig") or unspecified tags, and default of all others */
 {
 	background-color: #fffafa;
 }
-*[filter="wh"] /* all whitelisted tags */
+*[value="wh"] /* all whitelisted tags */
 {
 	color: #333333;
 	background-color: #f0f0f0;
 	border-color: #444444;
 }
-#filterarea button[filter="wh"]:hover /* all whitelisted tags */
+button[value="wh"]:hover /* all whitelisted tags */
 {
 	background-color: #fefefe;
 }
-*[filter="bl"] /* all blacklisted tags */
+*[value="bl"] /* all blacklisted tags */
 {
 	color: #eeeeee;
 	background-color: #111111;
 	border-color: #eeeeee;
 }
-#filterarea button[filter="bl"]:hover /* all blacklisted tags */
+button[value="bl"]:hover /* all blacklisted tags */
 {
 	background-color: #313131;
-}
-
-#filterarea > p /* The 3 filter texts e.g. showing (#/#) projects */
-{
-	margin: 0.2em auto;
-	width: fit-content;
-	font-size: calc(1vw + 0.7em);
-	align-content: center;
 }
 `;
 

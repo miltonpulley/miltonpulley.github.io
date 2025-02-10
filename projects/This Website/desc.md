@@ -91,5 +91,20 @@ Finished converting the project list to use LIT elements. It was a bit of a hass
 It's annoying that LIT doesn't like to have external CSS, and prefers you put all of it in a static field in the LIT element class, meaning CSS syntax doesn't work without some VSCode extension that I have yet to look for.
 
 I originally had the CSS linked in the LIT's `render()` function, but is now is in the LIT class `static styles = [""]` for compatibility and other reasons.  
-In order to not have the JavaScript files be massive, and to make the conversion easier, the css is loaded from another JavaScript file which is just the original CSS file but with each LIT component's CSS wrapped in `export const X = css``;` to make them LIT `css` strings.  
+In order to not have the JavaScript files be massive, and to make the conversion easier, the css is loaded from another JavaScript file which is just the original CSS file but with each LIT component's CSS wrapped in `export const X = css``;` to make them LIT `css` strings.
+
 Another thing that this seemed to fix was that editing the CSS file wasn't applying to the [VSCode Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) without me reloading the page, instead of it applying when saving the file like usual.
+
+## 8th of February, 2025
+
+Took a break and hung out with some friends.
+
+## 9th of February, 2025
+
+Took a break.
+
+## 10th of February, 2025
+
+After a bit more work, continuing on what I didn't finish on the 7th, I have finally converted the filter area and the project list to LIT components. The project viewer has yet to be converted, but it only exists as ~1-3 lines of code at the moment.
+
+Again, I probably should've started with LIT but for some reason I didn't. I guess I forgot about the security part.

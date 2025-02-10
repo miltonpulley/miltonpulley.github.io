@@ -20,31 +20,33 @@
 		<section id=main>
 			<h1>Browse Projects</h1>
 
-			<div id="filterarea">
-				<h2>Filter projects by tags</h2>
-				<div id="filterallbuttons">
-					<button class="tagfilterallbutton" value="ignoreall" filter="ig">Ignore All</button>
-					<button class="tagfilterallbutton" value="whitelistall" filter="wh">Whitelist All</button>
-					<button class="tagfilterallbutton" value="blacklistall" filter="bl">Blacklist All</button>
-				</div>
-				<ul id="filterprojectcategoriestags"> <!--
-					...
-					<li>
-						<h3>[Category Name]</h3>
-						<ul class="projectcategory">
-							...
-							<li>
-								<button class="tagfilterbutton" value="[Tag Name]" [FilterTagStateName]="[State]">[Tag Name]</button>
-							</li>
-							...
-						</ul>
-					</li>
-					...
-			--> </ul>
-				<p id="projectlistlength" filter="ig"></p>
-				<p id="activewhitelist" filter="wh"></p>
-				<p id="activeblacklist" filter="bl"></p>
-			</div>
+			<filter-area id="filterarea">
+			<!--<div>
+					<h2>Filter projects by tags</h2>
+					<div id="filterallbuttons">
+						<button class="tagfilterallbutton" value="ig">Ignore All</button>
+						<button class="tagfilterallbutton" value="wh">Whitelist All</button>
+						<button class="tagfilterallbutton" value="bl">Blacklist All</button>
+					</div>
+					<ul id="filtercategories">
+						...
+						<li>
+							<h3>[Category Name]</h3>
+							<ul class="projectcategory">
+								...
+								<li>
+									<button class="tagfilterbutton" value="[Tag Name]" [FilterTagStateName]="[State]">[Tag Name]</button>
+								</li>
+								...
+							</ul>
+						</li>
+						...
+					</ul>
+					<p id="projectlistlength" filter="ig">[Text]</p>
+					<p id="activewhitelist" filter="wh">[Text]</p>
+					<p id="activeblacklist" filter="bl">[Text]</p>
+				</div> -->
+			</filter-area>
 
 			<project-list id="projectlist"> <!--
 				...

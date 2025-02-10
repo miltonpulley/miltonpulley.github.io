@@ -41,6 +41,7 @@ import
 }
 from "./styleLIT.js"
 
+// Project data is NOT stored in the LIT element as the project may be filtered out, but the data must still exist
 export class Project
 {
 	name = "";
@@ -96,6 +97,8 @@ export class ProjectListItemElement extends LitElement
 		// don't want it as an attribute, so state = true (makes it internal)
 		// convention to put underscore in front
 		_viewState: {type: String, state: true}
+
+		// Project data is NOT stored in the LIT element as the project may be filtered out, but the data must still exist.
 	};
 
 	// Set the CSS data
@@ -115,7 +118,7 @@ export class ProjectListItemElement extends LitElement
 		return html`
             <li class=\"project\" value=\"${project.name}\">
                 <div class=\"projectanim\">
-                    <button @click=${this._clickedViewButton} class=\"viewprojectbutton\" value=\"${project.name}\">${this._viewState}</button>
+                    <button @click=${this._viewButtonClicked} class=\"viewprojectbutton\" value=\"${project.name}\">${this._viewState}</button>
                 </div>
                 <img class=\"projectimg\" src=\"${project.folderpath}/thumbnail.png\"></img>
                 <p class=\"projectdate\">${project.date.toLocaleDateString()}</p>
@@ -131,7 +134,7 @@ export class ProjectListItemElement extends LitElement
 	}
 
 	// underscore is conventional when internal to the class (JavaScript has no actual way to declare it formally)
-	_clickedViewButton(b)
+	_viewButtonClicked(b)
 	{
 		// if the button will make the project expand
 		if(this._viewState == ProjectExpandName)

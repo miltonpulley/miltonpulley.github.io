@@ -24,7 +24,7 @@ export const DisplayedProjectsIndexes = []; // The filtered version of AllProjec
 
 /// Page and HTML construction
 /// ==========================
-import { GenerateFilterList } from "./filters.js";
+import { RefreshFilterList } from "./filters.js";
 import { RefreshProjectList } from "./projectlist.js";
 import { GenerateProjectViewer } from "./projectviewer.js";
 
@@ -43,11 +43,8 @@ import { Project } from "./projectlist.js";
 /// ========================
 window.onload = () => // event handler
 {
-	// Generate the HTML list of project tags
-	GenerateFilterList();
-	
 	// Get and generate the list of projects
-	// Will eventually call FilterProjects() and GenerateProjectList()
+	// Will eventually call FilterProjects(), RefreshFilterList(), and RefreshProjectList().
 	FetchAllProjects();
 
 	// Generate the project viewer
@@ -79,6 +76,7 @@ function FetchAllProjectsCallback(/*Function Callback*/ fetchedprojectsJSON)
 	});
 
 	FilterProjects();
+	RefreshFilterList();
 	RefreshProjectList();
 }
 function FetchAllProjectsErrorCallback()
