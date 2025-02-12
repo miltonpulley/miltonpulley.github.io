@@ -18,19 +18,32 @@ export function RefreshProjectViewer()
 
 export function ViewProjectInViewer(/*Project*/ project)
 {
-	ProjectViewerElement.projectViewData = {}; // clear the data
+	let numFiles = project.viewerdatafiles.length;
+
+	// Clear the current data and set the array to final size, since it might be filled out of order, even though
+	//   accounting for array length is actually unnecessary because JavaScript can have any index filled at any
+	//   time regardless of current array size, but that's gross and unreadable and I'm too used to C/C++/C# code)
+	ProjectViewerElement.projectViewData = new Array(numFiles);
 
 	// Dynamically load all files and load them
-	project.viewerdatafiles.forEach((file) => 
+	for(let i = 0; i < numFiles; i++)
 	{
+		let file = project.viewerdatafiles[i];
 		FetchFile(project.viewerdatapath + file,
 		(data) => // Once fetched, add to the list of stuff shown when viewing.
 		{
-			ProjectViewerElement.projectViewData[file] = data;
-			RefreshProjectViewer(); // Refresh after loading
+			// Set by i instead of pushing since this runs in an asynchronous callback, so
+			//   the order could be out depending on how long each file takes to be loaded.
+			ProjectViewerElement.projectViewData[i] = data;
+
+			// If this is the final file loaded, refresh to display.
+			if(i == numFiles - 1)
+			{
+				console.log(ProjectViewerElement.projectViewData);
+				RefreshProjectViewer();
+			}
 		});
-	});
-	// No point in refreshing here because code here will be called BEFORE the FetchFile callback above.
+	}
 }
 
 
