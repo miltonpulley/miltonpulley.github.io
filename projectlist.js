@@ -1,5 +1,16 @@
 /// Constant / Idempotent / Static Values
 /// =====================================
+const ProjectListErrorHTML = // This is shown if the projects couldn't be loaded
+	`<li class="project">
+		<img src="/placeholder.jpg" class="projectimg"></img>
+		<p class="projectname">An Error Message</p>
+		<p class="projectdesc">Um... uh... this is where I list my projects... but there was a problem fetching them!</p>
+		<ul class="projecttaglist">
+			<li class="projecttag">Error message</li>
+			<li class="projecttag">You're not supposed to see this!</li>
+		</ul>
+	</li>`;
+
 // Print names for the project button as well as their corresponding animation name
 const ProjectExpandName = "Expand"
 const ProjectShrinkName = "Shrink"
@@ -24,8 +35,8 @@ import { ViewProjectInViewer } from "./projectviewer.js";
 // To modify filters, call FilterProjects() beforehand.
 export function RefreshProjectList()
 {
-    let ProjectList = document.getElementById("projectlist");
-	ProjectList.requestUpdate(); // LIT regenerate html
+	// Get <project-list> tag and LIT regenerate html
+	document.querySelector("project-list").requestUpdate();
 }
 
 
@@ -38,20 +49,22 @@ export class Project
 	_date = ""; // Just text, gets try-parsed to Date() object in GetDisplayDate()
 	blurb = "";
 	tags = [];
-	folderpath = "";
+	viewerdatapath = "";
+	viewerdatafiles = [];
 
-	constructor(name, date, blurb, tags, folderpath)
+	constructor(name, date, blurb, tags, viewerdatapath, viewerdatafiles)
 	{
 		this.name = name;
 		this._date = date;
 		this.blurb = blurb
 		this.tags = tags;
-		this.folderpath = folderpath;
+		this.viewerdatapath = viewerdatapath;
+		this.viewerdatafiles = viewerdatafiles;
 	}
 
 	describe()
 	{
-		return `Project "${this.name}": (${this.GetDisplayDate()}), ${this.blurb}, [${this.tags}], "${this.folderpath}".`;
+		return `Project "${this.name}": (${this.GetDisplayDate()}), ${this.blurb}, [${this.tags}], "${this.viewerdatapath}" [${this.viewerdatafiles}].`;
 	}
 
 	GetDisplayDate()
@@ -70,7 +83,8 @@ export class Project
 
 /// Page and HTML construction
 /// ==========================
-import { LitElement, html } from 'https://cdn.jsdelivr.net/gh/lit/dist@3/core/lit-core.min.js';
+import {LitElement, html, unsafeHTML} from 'https://cdn.jsdelivr.net/gh/lit/dist@2/all/lit-all.min.js';
+import dompurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.2.4/+esm';
 
 // Get CSS data for LIT components
 import
@@ -81,9 +95,9 @@ import
 }
 from "./styleLIT.js"
 
-// Entire generated inner HTML of <project-list id="projectlist"></project-list> and <project-list-item></project-list-item>.
+// Entire generated inner HTML of <project-list></project-list> and <project-list-item></project-list-item>.
 /*\
-|*| <project-list id="projectlist">
+|*| <project-list>
 |*| |   <div>
 |*| |   |   ...
 |*| |   |   <project-list-item>
@@ -109,21 +123,26 @@ from "./styleLIT.js"
 export class ProjectListElement extends LitElement
 {
 	// Set the CSS data
-	static styles = [ ProjectListElement_StyleCSS ];
+	static styles = [ ProjectListElement_StyleCSS, ProjectListItemElement_StyleCSS ];
 
 	// For a better view of the HTML layout, see the comment block above.
 	render() // LIT event that contructs the tag's HTML.
 	{
-		// For each project that we want to display
-		return html`
-		<div>
-		${
-			DisplayedProjectsIndexes.map(function(index)
-			{
-				return html`<project-list-item .index="${index}"></project-list-item>`;
-			})
+		// If there are no projects, show error.
+		if(DisplayedProjectsIndexes.length == 0)
+		{
+			return html`<div>${unsafeHTML(dompurify.sanitize(ProjectListErrorHTML))}</div>`;
 		}
-		</div>`;
+		return html`
+			<div>
+			${
+				// For each project that we want to display
+				DisplayedProjectsIndexes.map(function(index)
+				{
+					return html`<project-list-item .index="${index}"></project-list-item>`;
+				})
+			}
+			</div>`;
 	}
 }
 // registers the ProjectListElement class as "project-list" in the DOM
@@ -163,7 +182,7 @@ export class ProjectListItemElement extends LitElement
                 <div class="projectanim">
                     <button @click=${this._viewButtonClicked} class="viewprojectbutton" value="${project.name}">${this._viewState}</button>
                 </div>
-                <img class="projectimg" src="${project.folderpath}/thumbnail.png"></img>
+                <img class="projectimg" src="${project.viewerdatapath}thumbnail.png"></img>
                 <p class="projectdate">${project.GetDisplayDate()}</p>
                 <p class="projectname">${project.name}</p>
                 <p class="projectdesc">${project.blurb}</p>

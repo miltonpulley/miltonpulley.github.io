@@ -9,7 +9,12 @@
 			[
 				"Solo", "HTML/CSS/JS", "2D digital"
 			],
-			"folderpath": "/projects/This Website"
+			"projectviewerdatapath": "/projects/This Website/",
+			"projectviewerdatafiles":
+			[
+				"desc.md",
+				"thumbnail.png"
+			]
 		},
 		{
 			"name": "Placeholder Text",
@@ -19,7 +24,12 @@
 			[
 				"Team member", "2D digital", "C#"
 			],
-			"folderpath": "/projects/This Website"
+			"projectviewerdatapath": "/projects/This Website/",
+			"projectviewerdatafiles":
+			[
+				"desc.md",
+				"thumbnail.png"
+			]
 		},
 		{
 			"name": "blah blah",
@@ -29,7 +39,12 @@
 			[
 				"Team member", "Sketch", "3D digital", "Vocals"
 			],
-			"folderpath":  "/projects/This Website"
+			"projectviewerdatapath":  "/projects/This Website/",
+			"projectviewerdatafiles":
+			[
+				"desc.md",
+				"thumbnail.png"
+			]
 		},
 		{
 			"name": "woiwwiyuoe ajguiagfh gu oioyuoyuyi",
@@ -39,7 +54,12 @@
 			[
 				"Solo", "Team member", "HTML/CSS/JS", "2D digital", "Sketch", "3D digital", "Blender Grease Pencil", "Vocals", "C#", "Live performance"
 			],
-			"folderpath":  "/projects/This Website"
+			"projectviewerdatapath":  "/projects/This Website/",
+			"projectviewerdatafiles":
+			[
+				"desc.md",
+				"thumbnail.png"
+			]
 		},
 		{
 			"name": "",
@@ -49,7 +69,12 @@
 			[
 				
 			],
-			"folderpath":  "/projects/This Website"
+			"projectviewerdatapath":  "/projects/This Website/",
+			"projectviewerdatafiles":
+			[
+				"desc.md",
+				"thumbnail.png"
+			]
 		}
 	]
 }

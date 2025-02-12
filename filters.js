@@ -9,8 +9,6 @@ const ProjectCategoriesAndTags =
 	"Music": ["Vocals", "Band", "Music sheet", "Live performance"],
 };
 
-export const FilterTagStateName = "filter"; // HTML attribute name to store what kind of filter the tag is
-
 
 /// Global Session State Storage
 /// ============================
@@ -34,8 +32,8 @@ import { RefreshProjectList } from "./projectlist.js";
 // To modify filters, call FilterProjects() beforehand.
 export function RefreshFilterList()
 {
-	let CategoryFilters = document.getElementById("filterarea");
-	CategoryFilters.requestUpdate(); // LIT regenerate html
+	// Get <filter-area> tag and LIT regenerate html
+	document.querySelector("filter-area").requestUpdate();
 }
 
 export function FilterProjects()
@@ -120,15 +118,11 @@ export class FilterTag
 import { LitElement, html } from 'https://cdn.jsdelivr.net/gh/lit/dist@3/core/lit-core.min.js';
 
 // Get CSS data for LIT components
-import
-{
-	FilterAreaElement_StyleCSS
-}
-from "./styleLIT.js"
+import { FilterAreaElement_StyleCSS } from "./styleLIT.js"
 
-// Entire generated inner HTML of <filter-area id="filterarea"></filter-area> and <filter-tag></filter-tag>.
+// Entire generated inner HTML of <filter-area></filter-area> and <filter-tag></filter-tag>.
 /*\
-|*| <filter-area id="filterarea">
+|*| <filter-area>
 |*| |   <div>
 |*| |   |   <h2>Filter projects by tags</h2>
 |*| |   |   <div id="filterallbuttons">
@@ -162,7 +156,8 @@ export class FilterAreaElement extends LitElement
 		allfilter: {type: String}, // every filter tag defaults to this on render
 	};
 
-	// Text to be displayed to the user informing them on what the filters are doing
+	// Text to be displayed to the user informing them on what the filters are doing.
+	// These are static members and not properties since there are only one of each.
 	static numshowingprojects = "";
 	static activewhitelist = "";
 	static activeblacklist = "";

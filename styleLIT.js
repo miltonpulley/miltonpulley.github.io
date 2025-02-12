@@ -340,8 +340,15 @@ export const ProjectListItemElement_AnimationCSS = css`
 /* Project Viewer (ProjectViewerElement in projectviewer.js) */
 /* ========================================================= */
 export const ProjectViewerElement_StyleCSS = css`
-.projectviewer
+#projectviewer
 {
 	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	margin: 0;
+	overflow: scroll;
+	text-wrap: wrap;
 }
 `;

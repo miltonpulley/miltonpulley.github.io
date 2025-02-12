@@ -109,3 +109,16 @@ After a bit more work, continuing on what I didn't finish on the 7th, I have fin
 Again, I probably should've started with LIT but for some reason I didn't. I guess I forgot about the security part.
 
 Just reorganised some of the project, including reordering the functions in each JavaScript file to be consistent, and turning every `<ul>` into `<div>` and removing every `<li>` in the LIT components since even though they were all still unordered lists, the CSS `flex` was doing all the layout.
+
+## 11th of February, 2025
+
+Currently in the middle of fiddling with the project viewer, and dynamically fetching an unknown amount of any kind of file. I currently am not going to write my own file-to-html parsers for various reasons, so I'll be using online libraries. Eventually I will write my own parsers for the sake of challenge and independance of 3rd-party code (maybe one day I'll even drop LIT!), but that's not on the agenda to be done before the 24th.
+
+Currently I am trying to find a parser that makes markdown convert to HTML, and I have, but nothing yet that directly works with LIT other than LIT's `unsafeHTML(``)` directive. I would like this as LIT is the thing doing much in the way of security right now.  
+Funnily enough, Markdown would most likely be the easiest kind of file for me to write a file-to-HTML converter for (besides plain text files and other HTML files), since Markdown and HTML are so similar. It would certainly be easier than a parser for 3D models or actual music with audio playback (I'm pretty sure I know how I would do both of those, but certainly not going to be able to do them all before the 24th).
+
+## 12th of February, 2025
+
+Got the project viewer working, albeit with still some work to go (e.g. no CSS yet). I made a way to dynamically load any kind of file with `FetchFile()`, which calls a file-specific fetch function based on file extension. Some supported file types don't actually need to be fetched, e.g. images, since the HTML can load them (i.e., `<img src="[path]"></img>`).
+
+After the 2 days research on HTML sanitization, safe sinks, 3rd-party libraries, and a quick refresher on XSS attacks, I decided on using the `marked` package to convert fetched Markdown to HTML, and sanitizing with the `domPurify` package. It then gets loaded in the LIT component with the `unsafeHTML(``)` LIT directive, which I am a tad bit apprehensive about, but I'm pretty sure the sanitization and my other measures plug the security holes `unsafeHTML(``)` creates (this is a static site after all, i.e., one that takes no user input).

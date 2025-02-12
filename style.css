@@ -50,7 +50,3 @@ body
 /* Project Viewer */
 /* ============== */
 /* See ProjectViewerElement_StyleCSS in styleLIT.js */
-.projectviewer
-{
-	position: fixed;
-}
