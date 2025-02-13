@@ -122,3 +122,12 @@ Funnily enough, Markdown would most likely be the easiest kind of file for me to
 Got the project viewer working, albeit with still some work to go (e.g. no CSS yet). I made a way to dynamically load any kind of file with `FetchFile()`, which calls a file-specific fetch function based on file extension. Some supported file types don't actually need to be fetched, e.g. images, since the HTML can load them (i.e., `<img src="[path]"></img>`).
 
 After the 2 days research on HTML sanitization, safe sinks, 3rd-party libraries, and a quick refresher on XSS attacks, I decided on using the `marked` package to convert fetched Markdown to HTML, and sanitizing with the `domPurify` package. It then gets loaded in the LIT component with the `unsafeHTML(``)` LIT directive, which I am a tad bit apprehensive about, but I'm pretty sure the sanitization and my other measures plug the security holes `unsafeHTML(``)` creates (this is a static site after all, i.e., one that takes no user input).
+
+One thing that is really low priority is that the only way I have currently found to statically load LIT's `unsafeHTML(``)` directive is to load the ENTIRE LIT package, which produces a console warning in the page, which is kind of annoying.
+
+## 13th of February, 2025
+
+Waking up today, I saw that my computer decided to have an OS update without my knowledge or input, which meant what little researching tabs I had were gone. I couldn't recover them because I usually use incognito mode (mostly out of habit), and just leave the tabs I need open (they persist with my computer off).  
+Nothing major lost though, as I can find most of them again, and the few I lost are no big deal.
+
+It's great coming back from a night's rest and realising your fix from the previous day turns out to actually have not fixed the problem, and you can see exactly why it didn't.

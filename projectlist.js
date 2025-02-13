@@ -83,8 +83,8 @@ export class Project
 
 /// Page and HTML construction
 /// ==========================
-import {LitElement, html, unsafeHTML} from 'https://cdn.jsdelivr.net/gh/lit/dist@2/all/lit-all.min.js';
-import dompurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.2.4/+esm';
+import {LitElement, html, unsafeHTML} from "https://cdn.jsdelivr.net/gh/lit/dist@3.2.1/all/lit-all.min.js"; // lit-all for unsafeHTML.
+import dompurify from "https://cdn.jsdelivr.net/npm/dompurify@3.2.4/+esm"; // For sanitizing HTML
 
 // Get CSS data for LIT components
 import
@@ -93,7 +93,7 @@ import
 	ProjectListItemElement_StyleCSS,
 	ProjectListItemElement_AnimationCSS,
 }
-from "./styleLIT.js"
+from "./styleLIT.js";
 
 // Entire generated inner HTML of <project-list></project-list> and <project-list-item></project-list-item>.
 /*\

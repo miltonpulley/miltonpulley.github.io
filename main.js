@@ -131,8 +131,8 @@ export function FetchTextToString(/*String*/ filepath, /*Function(String)*/ call
 		callbackFunction(FetchedParsedTextdata);
 	});
 }
-import { marked } from 'https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js'; // for converting Markdown to UNSANITIZED HTML.
-import dompurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.2.4/+esm'; // For sanitizing HTML
+import { marked } from "https://cdn.jsdelivr.net/npm/marked@15.0.7/+esm"; // for converting Markdown to UNSANITIZED HTML.
+import dompurify from "https://cdn.jsdelivr.net/npm/dompurify@3.2.4/+esm"; // For sanitizing HTML
 export function FetchMarkdownToHTML(/*String*/ filepath, /*Function(String)*/ callbackFunction)
 {
 	// Markdown is plain text, and we already have a fetch function for that.

@@ -115,10 +115,10 @@ export class FilterTag
 
 /// Page and HTML construction
 /// ==========================
-import { LitElement, html } from 'https://cdn.jsdelivr.net/gh/lit/dist@3/core/lit-core.min.js';
+import { LitElement, html } from "https://cdn.jsdelivr.net/gh/lit/dist@3.2.1/core/lit-core.min.js";
 
 // Get CSS data for LIT components
-import { FilterAreaElement_StyleCSS } from "./styleLIT.js"
+import { FilterAreaElement_StyleCSS } from "./styleLIT.js";
 
 // Entire generated inner HTML of <filter-area></filter-area> and <filter-tag></filter-tag>.
 /*\

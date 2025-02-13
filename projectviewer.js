@@ -18,28 +18,32 @@ export function RefreshProjectViewer()
 
 export function ViewProjectInViewer(/*Project*/ project)
 {
-	let numFiles = project.viewerdatafiles.length;
-
+	let numFiles = project.viewerdatafiles.length; // how many files in total to load
+	
 	// Clear the current data and set the array to final size, since it might be filled out of order, even though
 	//   accounting for array length is actually unnecessary because JavaScript can have any index filled at any
 	//   time regardless of current array size, but that's gross and unreadable and I'm too used to C/C++/C# code)
 	ProjectViewerElement.projectViewData = new Array(numFiles);
-
-	// Dynamically load all files and load them
+	
+	// Dynamically load all files and load them IN THE SAME ORDER
+	let numLoadedFiles = 0; // keep track of how many files have been loaded so far
 	for(let i = 0; i < numFiles; i++)
 	{
-		let file = project.viewerdatafiles[i];
-		FetchFile(project.viewerdatapath + file,
+		let filename = project.viewerdatafiles[i];
+
+		FetchFile(project.viewerdatapath + filename,
 		(data) => // Once fetched, add to the list of stuff shown when viewing.
 		{
 			// Set by i instead of pushing since this runs in an asynchronous callback, so
 			//   the order could be out depending on how long each file takes to be loaded.
-			ProjectViewerElement.projectViewData[i] = data;
+			ProjectViewerElement.projectViewData[i] = [filename, data];
 
-			// If this is the final file loaded, refresh to display.
-			if(i == numFiles - 1)
+			numLoadedFiles++;
+			// If this is the final file loaded, refresh to display. Refreshing every
+			//   time a file is loaded is unnecessary, and may cause multiple flashes.
+			if(numLoadedFiles == numFiles)
 			{
-				console.log(ProjectViewerElement.projectViewData);
+				// console.log(ProjectViewerElement.projectViewData);
 				RefreshProjectViewer();
 			}
 		});
@@ -49,23 +53,23 @@ export function ViewProjectInViewer(/*Project*/ project)
 
 /// Helper Functions
 /// ================
-import { FetchFile } from "./main.js"
+import { FetchFile } from "./main.js";
 
 
 /// Page and HTML construction
 /// ==========================
-import {LitElement, html, unsafeHTML} from 'https://cdn.jsdelivr.net/gh/lit/dist@2/all/lit-all.min.js';
-import dompurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.2.4/+esm'; // For sanitizing HTML
+import {LitElement, html, unsafeHTML} from "https://cdn.jsdelivr.net/gh/lit/dist@3.2.1/all/lit-all.min.js"; // lit-all for unsafeHTML.
+import dompurify from "https://cdn.jsdelivr.net/npm/dompurify@3.2.4/+esm"; // For sanitizing HTML
 
 // Get CSS data for LIT components
-import { ProjectViewerElement_StyleCSS } from "./styleLIT.js"
+import { ProjectViewerElement_StyleCSS } from "./styleLIT.js";
 
 // Entire generated inner HTML of <project-viewer></project-viewer>.
 /*\
 |*| <project-viewer>
 |*| |   <div id="projectviewer">
 |*| |   |   ...
-|*| |   |   <div value="[Loaded File Name]">
+|*| |   |   <div filename="[Loaded File Name]">
 |*| |   |   |   <!-- See FetchFile() in main.js for what can appear here -->
 |*| |   |   </div>
 |*| |   |   ...
@@ -86,10 +90,10 @@ export class ProjectViewerElement extends LitElement
 	{
 		return html`
 			<div id="projectviewer">
-				${Object.entries(ProjectViewerElement.projectViewData).map(function([filename, contents])
+				${Object.entries(ProjectViewerElement.projectViewData).map(function([index, [filename, contents]])
 				{
 					// unsafeHTML is used because of markdown, but we have sanitized
-					return html`<div value="${filename}">${unsafeHTML(dompurify.sanitize(contents))}</div>`;
+					return html`<div filename="${dompurify.sanitize(filename)}">${unsafeHTML(dompurify.sanitize(contents))}</div>`;
 				})}
 			</div>`;
 	}
