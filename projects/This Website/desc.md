@@ -131,3 +131,13 @@ Waking up today, I saw that my computer decided to have an OS update without my 
 Nothing major lost though, as I can find most of them again, and the few I lost are no big deal.
 
 It's great coming back from a night's rest and realising your fix from the previous day turns out to actually have not fixed the problem, and you can see exactly why it didn't.
+
+## 14th of February, 2025
+
+I've spent most of yesterday and some of today trying to detect and handle the CSS animation for it to coincide with the project viewer. After a *lot* of fiddling and learning from online docs and examples with JavaScript's (frankly annoying) asynchronous code capabilities, it turned out to be as simple as the fact that CSS animations have an event for when animations start and end.
+
+I also then thought "well, since the shrinking animation still doesn't account for scrolling the screen, I may as well do that while I'm here since it isn't that different!". It turns out animations don't have an event for DURING an animation, only start and end.  
+This led to *EVEN MORE* fiddling with JavaScript `Promise`s, `await`s, security risks of `setTimeout()`, and even the weird scoping of the `this` keyword with not only asyncronicity, but with events *and* LIT elements.  
+Eventually I was able to do away with all that by just listening for when the screen scrolls.
+
+As I am writing this, the project viewer now coincides with the CSS animation, but still needs some work, like it covering the shrink project button, or that the page still scrolls behind it, and even takes precedence.

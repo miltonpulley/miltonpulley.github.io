@@ -19,11 +19,11 @@ export function RefreshProjectViewer()
 export function ViewProjectInViewer(/*Project*/ project)
 {
 	let numFiles = project.viewerdatafiles.length; // how many files in total to load
-	
+
 	// Clear the current data and set the array to final size, since it might be filled out of order, even though
 	//   accounting for array length is actually unnecessary because JavaScript can have any index filled at any
 	//   time regardless of current array size, but that's gross and unreadable and I'm too used to C/C++/C# code)
-	ProjectViewerElement.projectViewData = new Array(numFiles);
+	ProjectViewerElement.ProjectViewData = new Array(numFiles);
 	
 	// Dynamically load all files and load them IN THE SAME ORDER
 	let numLoadedFiles = 0; // keep track of how many files have been loaded so far
@@ -36,18 +36,25 @@ export function ViewProjectInViewer(/*Project*/ project)
 		{
 			// Set by i instead of pushing since this runs in an asynchronous callback, so
 			//   the order could be out depending on how long each file takes to be loaded.
-			ProjectViewerElement.projectViewData[i] = [filename, data];
+			ProjectViewerElement.ProjectViewData[i] = [filename, data];
 
 			numLoadedFiles++;
 			// If this is the final file loaded, refresh to display. Refreshing every
 			//   time a file is loaded is unnecessary, and may cause multiple flashes.
 			if(numLoadedFiles == numFiles)
 			{
-				// console.log(ProjectViewerElement.projectViewData);
+				ProjectViewerElement.Displaying = true;
 				RefreshProjectViewer();
 			}
 		});
 	}
+}
+
+export function ClearProjectViewer()
+{
+	ProjectViewerElement.Displaying = false;
+	ProjectViewerElement.ProjectViewData = [];
+	RefreshProjectViewer();
 }
 
 
@@ -80,7 +87,8 @@ export class ProjectViewerElement extends LitElement
 {
 	// These are static members and not properties since there are only one
 	//   of each, and need to be accessed without reference to the LIT tag.
-	static projectViewData = []; // fetched project view data set in ViewProjectInViewer().
+	static ProjectViewData = []; // fetched project view data set in ViewProjectInViewer().
+	static Displaying = false; // If false, nothing will render.
 
 	// Set the CSS data
 	static styles = [ ProjectViewerElement_StyleCSS ];
@@ -88,9 +96,16 @@ export class ProjectViewerElement extends LitElement
 	// For a better view of the HTML layout, see the comment block above.
 	render() // LIT event that contructs the tag's HTML.
 	{
+		// If there is no project to display, render nothing
+		//   as to not cover any other element in the window
+		if(!ProjectViewerElement.Displaying)
+		{
+			return html``;
+		}
+		// Add each loaded file to the project viewer.
 		return html`
 			<div id="projectviewer">
-				${Object.entries(ProjectViewerElement.projectViewData).map(function([index, [filename, contents]])
+				${Object.entries(ProjectViewerElement.ProjectViewData).map(function([index, [filename, contents]])
 				{
 					// unsafeHTML is used because of markdown, but we have sanitized
 					return html`<div filename="${dompurify.sanitize(filename)}">${unsafeHTML(dompurify.sanitize(contents))}</div>`;

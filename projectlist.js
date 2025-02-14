@@ -29,7 +29,7 @@ from "./main.js";
 
 /// Runtime Functions
 /// =================
-import { ViewProjectInViewer } from "./projectviewer.js";
+import { ViewProjectInViewer, ClearProjectViewer } from "./projectviewer.js";
 
 // Rerenders the project list based on filters.
 // To modify filters, call FilterProjects() beforehand.
@@ -139,6 +139,7 @@ export class ProjectListElement extends LitElement
 				// For each project that we want to display
 				DisplayedProjectsIndexes.map(function(index)
 				{
+					// Give the project list item the reference to the project
 					return html`<project-list-item .index="${index}"></project-list-item>`;
 				})
 			}
@@ -153,22 +154,39 @@ export class ProjectListItemElement extends LitElement
 	// defines attributes
 	static properties =
 	{
-		index: {type: Number},
+		index: {type: Number}, // The index into AllProjects
 		
 		// don't want it as an attribute, so state = true (makes it internal)
 		// convention to put underscore in front
-		_viewState: {type: String, state: true}
+		_viewState: {type: String, state: true}, // Also what the view project button text will be
+		_listenForScroll: {type: Boolean, state: true}, // If true, code will run when the window scrolls
 
 		// Project data is NOT stored in the LIT element as the project may be filtered out, but the data must still exist.
 	};
 
 	// Set the CSS data
 	static styles = [ ProjectListItemElement_StyleCSS, ProjectListItemElement_AnimationCSS, ];
-
-	constructor()
+	
+	connectedCallback() 
 	{
-		super();
+		super.connectedCallback();
+
+		// init values
 		this._viewState = ProjectExpandName;
+		this._listenForScroll = false;
+
+		// Be able to listen for scrolling 
+		// Adding and removing listener done to ensure only one listener per project list item
+		//   https://lit.dev/docs/v1/components/events/#add-event-listeners-in-connectedcallback
+		document.addEventListener("scroll", () => this._updateAnimationOnScroll(this));
+	}
+
+	disconnectedCallback()
+	{
+		// Stop listening for scrolling by removing the exact same thing we added in connectedCallback()
+		document.removeEventListener("scroll", () => this._updateAnimationOnScroll(this));
+
+		super.disconnectedCallback();
 	}
 
 	// For a better view of the HTML layout, see the comment block above.
@@ -211,8 +229,10 @@ export class ProjectListItemElement extends LitElement
 
 	ExpandProject()
 	{
-		let projectListItem = this.shadowRoot.firstElementChild;
-		let projectAnimation = projectListItem.querySelector(".projectanim");
+		// The <div> in the shadow root that contains everything else
+		let projectContainer = this.shadowRoot.firstElementChild;
+		// The animated <div> inside the project
+		let projectAnimation = projectContainer.querySelector(".projectanim");
 
 		// first check if another project is currently expanded, and shrink it.
 		let delay = "0s"; // if we don't have to wait for a previous project to shrink first
@@ -225,54 +245,89 @@ export class ProjectListItemElement extends LitElement
 			//   shrinking project, we would have to store it in the HTML tag because for some reason JavaScript can't read CSS.
 			delay = "calc(var(--projectanim-duration) * 0.5)";
 		}
-
 		// set the delay
-		projectListItem.style.setProperty("--projectanim-delay", delay);
+		projectContainer.style.setProperty("--projectanim-delay", delay);
 		
 		// project will expand from the CURRENT size to cover the viewport
 		//   CURRENT size because if the shrinking was interrupted by the user then it should expand from where it is
-		this._setProjectAnimationFromRect(projectListItem, projectAnimation);
-		this._setProjectAnimationToViewport(projectListItem);
+		this._setProjectAnimationFromRect(projectContainer, projectAnimation);
+		this._setProjectAnimationToViewport(projectContainer);
 
 		// set to the expand animation
-		projectListItem.style.setProperty("--projectanim-animation", ProjectExpandName);
+		projectContainer.style.setProperty("--projectanim-animation", ProjectExpandName);
 		this._viewState = ProjectShrinkName; // set the label
-		
+
 		// We are now the currently expanded project
 		CurrentlyViewedProject = this;
 
-		// Get the project and view it in the project viewer
-		ViewProjectInViewer(AllProjects[this.index]);
+		// When the animation ends, run this
+		projectAnimation.onanimationend = () =>
+		{
+			// Get the project and view it in the project viewer
+			ViewProjectInViewer(AllProjects[this.index]);
+		};
 	}
 
 	ShrinkProject()
 	{
-		let projectListItem = this.shadowRoot.firstElementChild;
-		let projectAnimation = projectListItem.querySelector(".projectanim");
+		// The <div> in the shadow root that contains everything else
+		let projectContainer = this.shadowRoot.firstElementChild;
+		// The animated <div> inside the project
+		let projectAnimation = projectContainer.querySelector(".projectanim");
 
 		// If a project can shrink it is currently expanded.
 		//   There can only be 1 expanded project at any given time, so if this project
 		//   is NOT the currently expanded one, then we have two expanded projects.
-		if(this._viewState != CurrentlyViewedProject._viewState)
+		if(this != CurrentlyViewedProject)
 		{
-			console.warn(`Warning: somehow two projects are expanded: "${CurrentlyViewedProject._viewState}" and "${this._viewState}", shrinking both...`);
+			console.warn(`Warning: somehow two projects are expanded: "${CurrentlyViewedProject.index}" and "${this.index}", shrinking both...`);
 			CurrentlyViewedProject.ShrinkProject();
 		}
 
 		// wipe any delay
-		projectListItem.style.setProperty("--projectanim-delay", "0s");
+		projectContainer.style.setProperty("--projectanim-delay", "0s");
 
 		// project will shrink from the CURRENT size to the project rect
 		//   CURRENT size because if the expanding was interrupted by the user then it should shrink from where it is
-		this._setProjectAnimationFromRect(projectListItem, projectAnimation);
-		this._setProjectAnimationToRect(projectListItem, projectListItem);
+		this._setProjectAnimationFromRect(projectContainer, projectAnimation);
+		this._setProjectAnimationToRect(projectContainer, projectContainer);
+		this._listenForScroll = true; // continuously set the ToRect in case the screen scrolls
 
 		// set to the shrink animation
-		projectListItem.style.setProperty("--projectanim-animation", ProjectShrinkName);
+		projectContainer.style.setProperty("--projectanim-animation", ProjectShrinkName);
 		this._viewState = ProjectExpandName; // set the label
 
 		// There is now no currently expanded project.
 		CurrentlyViewedProject = undefined; // undefined, NOT null.
+
+		// Immediately hide the project viewer
+		ClearProjectViewer();
+		
+		// When the animation ends, run this
+		projectAnimation.onanimationend = () =>
+		{
+			this._listenForScroll = false;
+			projectContainer.style = null; // clear inline style
+		};
+	}
+
+	// Do not call, only called by listening for window scrolling
+	_updateAnimationOnScroll()
+	{
+		// Because this listens to the window scroll event, it will happen very often and very quickly.
+		//   This means we need to efficiently stop the ones that don't need to be running at that moment.
+		if(!this._listenForScroll) { return; }
+
+		// The <div> in the shadow root that contains everything else
+		let projectContainer = this.shadowRoot.firstElementChild;
+		
+		// If we are currently in the shrinking animation
+		let animName = projectContainer.style.getPropertyValue("--projectanim-animation");
+		if(animName == ProjectShrinkName)
+		{
+			// Continuously update the end position to the container
+			this._setProjectAnimationToRect(projectContainer, projectContainer);
+		}
 	}
 
 	// Set the rect that the animation will expand/shrink from the rect of the reference HTML tag

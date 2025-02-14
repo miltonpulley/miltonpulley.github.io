@@ -345,9 +345,10 @@ export const ProjectViewerElement_StyleCSS = css`
 	position: fixed;
 	top: 0;
 	left: 0;
+	z-index: 100; /* To be on top of everything, project shrink button only clickable if this isn't over it */
 	width: 100vw;
 	height: 100vh;
-	margin: 0;
+	margin: 20px; /* Temporary value, To not cover the project shrink button */
 	overflow: scroll;
 	text-wrap: wrap;
 }
