@@ -12,7 +12,10 @@ const ProjectCategoriesAndTags =
 
 /// Global Session State Storage
 /// ============================
-var TotalNumberOfFilterTags = 0; // Total number of tags that can be used to filter.
+// Total number of tags that can be used to filter.
+var TotalNumberOfFilterTags = 0;
+// total number of tags equals the sum of the number of tags in each category
+Object.values(ProjectCategoriesAndTags).forEach((tags) => { TotalNumberOfFilterTags += tags.length;} );
 
 import
 {
@@ -150,12 +153,6 @@ import { FilterAreaElement_StyleCSS } from "./styleLIT.js";
 \*/
 export class FilterAreaElement extends LitElement
 {
-	// defines attributes
-	static properties =
-	{
-		allfilter: {type: String}, // every filter tag defaults to this on render
-	};
-
 	// Text to be displayed to the user informing them on what the filters are doing.
 	// These are static members and not properties since there are only one of each.
 	static numshowingprojects = "";
@@ -178,17 +175,16 @@ export class FilterAreaElement extends LitElement
 					<button @click="${this._filterAllButtonClicked}" class="tagfilterallbutton" value="${FilterTag.BLACKLISTED}">Blacklist All</button>
 				</div>
 				<div id="filtercategories">
-				${
+				${ // For each category:
 					Object.entries(ProjectCategoriesAndTags).map(function([category, tags])
 					{
 						return html`
 							<h3>${category}</h3>
 							<div class="filtercategory">
-							${
+							${ // For each tag in the category:
 								tags.map(function(tag)
 								{
-									TotalNumberOfFilterTags++; // count the number of tags
-									return html`<filter-tag tag="${tag}" .filter="${this.allfilter}"></filter-tag>`;
+									return html`<filter-tag tag="${tag}" .filter="${FilterTag.DefaultTagState}"></filter-tag>`;
 								}, this)
 							}
 							</div>`;
@@ -203,35 +199,41 @@ export class FilterAreaElement extends LitElement
 
 	_filterAllButtonClicked(b)
 	{
-		// set the allfilter
-		this.allfilter = b.target.value;
+		// The filter type that every filter tag will become.
+		let newFilter = b.target.value;
 
 		// Clear all filters
 		Whitelist.splice(0);
 		Blacklist.splice(0);
 		
 		// Fill the whitelist with every tag
-		if(this.allfilter == FilterTag.WHITELISTED)
+		if(newFilter == FilterTag.WHITELISTED)
 		{
-			for(const [category, tags] of Object.entries(ProjectCategoriesAndTags))
+			for(let tagsInCategory of Object.values(ProjectCategoriesAndTags))
 			{
-				tags.forEach((tag) =>
+				for(let tag of tagsInCategory)
 				{
 					FilterTag.AddToWhitelist(tag);
-				});
+				};
 			}
 		}
 		// Fill the blacklist with every tag
-		if(this.allfilter == FilterTag.BLACKLISTED)
+		if(newFilter == FilterTag.BLACKLISTED)
 		{
-			for(const [category, tags] of Object.entries(ProjectCategoriesAndTags))
+			for(let tagsInCategory of Object.values(ProjectCategoriesAndTags))
 			{
-				tags.forEach((tag) =>
+				for(let tag of tagsInCategory)
 				{
 					FilterTag.AddToBlacklist(tag);
-				});
+				};
 			}
 		}
+
+		// Set all filter tags' filter state
+		// This was previously done through FilterAreaElement.render(), but did not properly set the tag styles
+		//   because FOR SOME REASON clicking the "ignore all" button more than once stops setting the tags' filters.
+		let tags = this.shadowRoot.firstElementChild.querySelectorAll("filter-tag");
+		tags.forEach((t) => {t.filter = newFilter});
 
 		// Apply new filter(s) and reconstruct HTML
 		FilterProjects();

@@ -1,16 +1,5 @@
 /// Constant / Idempotent / Static Values
 /// =====================================
-const ProjectListErrorHTML = // This is shown if the projects couldn't be loaded
-	`<li class="project">
-		<img src="/placeholder.jpg" class="projectimg"></img>
-		<p class="projectname">An Error Message</p>
-		<p class="projectdesc">Um... uh... this is where I list my projects... but there was a problem fetching them!</p>
-		<ul class="projecttaglist">
-			<li class="projecttag">Error message</li>
-			<li class="projecttag">You're not supposed to see this!</li>
-		</ul>
-	</li>`;
-
 // Print names for the project button as well as their corresponding animation name
 const ProjectExpandName = "Expand"
 const ProjectShrinkName = "Shrink"
@@ -129,9 +118,23 @@ export class ProjectListElement extends LitElement
 	render() // LIT event that contructs the tag's HTML.
 	{
 		// If there are no projects, show error.
+		if(AllProjects.length == 0)
+		{
+			return html`
+				<div><li class="project">
+					<img src="/placeholder.jpg" class="projectimg"></img>
+					<p class="projectname">An Error Message</p>
+					<p class="projectdesc">Um... uh... this is where I list my projects... but there was a problem fetching them!</p>
+					<ul class="projecttaglist">
+						<li class="projecttag">Error message</li>
+						<li class="projecttag">You're not supposed to see this!</li>
+					</ul>
+				</li></div>`;
+		}
+		// If there are no projects that match the filters, show so.
 		if(DisplayedProjectsIndexes.length == 0)
 		{
-			return html`<div>${unsafeHTML(dompurify.sanitize(ProjectListErrorHTML))}</div>`;
+			return html`<div><li class="project"><p class="projectdesc">No projects match the filters!</p></li></div>`;
 		}
 		return html`
 			<div>

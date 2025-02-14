@@ -141,3 +141,5 @@ This led to *EVEN MORE* fiddling with JavaScript `Promise`s, `await`s, security 
 Eventually I was able to do away with all that by just listening for when the screen scrolls.
 
 As I am writing this, the project viewer now coincides with the CSS animation, but still needs some work, like it covering the shrink project button, or that the page still scrolls behind it, and even takes precedence.
+
+For some reason, if you click the "ignore all" filter button more than once, it *DOES NOT* update the filter tags' visual filter, but still filters correctly anyway. **BY ALL ACCOUNTS there is no way this should happen.** The way I fixed it is to forcibly get the tags and forcibly set their filters, which defeated the whole purpose of setting them through the LIT `render()` function.

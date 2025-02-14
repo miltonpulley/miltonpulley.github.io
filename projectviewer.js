@@ -105,11 +105,13 @@ export class ProjectViewerElement extends LitElement
 		// Add each loaded file to the project viewer.
 		return html`
 			<div id="projectviewer">
-				${Object.entries(ProjectViewerElement.ProjectViewData).map(function([index, [filename, contents]])
-				{
-					// unsafeHTML is used because of markdown, but we have sanitized
-					return html`<div filename="${dompurify.sanitize(filename)}">${unsafeHTML(dompurify.sanitize(contents))}</div>`;
-				})}
+				${ // For each file. index is unused but kept to make clear that these are indexed by file order, not by filename. 
+					Object.entries(ProjectViewerElement.ProjectViewData).map(function([index, [filename, contents]])
+					{
+						// unsafeHTML is used because of markdown, but we have sanitized
+						return html`<div filename="${dompurify.sanitize(filename)}">${unsafeHTML(dompurify.sanitize(contents))}</div>`;
+					})
+				}
 			</div>`;
 	}
 }
