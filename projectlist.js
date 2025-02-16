@@ -1,13 +1,13 @@
 /// Constant / Idempotent / Static Values
 /// =====================================
 // Print names for the project button as well as their corresponding animation name
-const ProjectExpandName = "Expand"
-const ProjectShrinkName = "Shrink"
+export const ProjectExpandName = "Expand"
+export const ProjectShrinkName = "Shrink"
 
 
 /// Global Session State Storage
 /// ============================
-var CurrentlyViewedProject; // Keep track of the project in the list who's content is in the viewer
+export var CurrentlyViewedProject; // Keep track of the project in the list who's content is in the viewer
 import
 {
 	AllProjects,
@@ -72,8 +72,7 @@ export class Project
 
 /// Page and HTML construction
 /// ==========================
-import {LitElement, html, unsafeHTML} from "https://cdn.jsdelivr.net/gh/lit/dist@3.2.1/all/lit-all.min.js"; // lit-all for unsafeHTML.
-import dompurify from "https://cdn.jsdelivr.net/npm/dompurify@3.2.4/+esm"; // For sanitizing HTML
+import { LitElement, html } from "https://cdn.jsdelivr.net/gh/lit/dist@3.2.1/core/lit-core.min.js";
 
 // Get CSS data for LIT components
 import
@@ -191,6 +190,17 @@ export class ProjectListItemElement extends LitElement
 
 		super.disconnectedCallback();
 	}
+
+
+	/*firstUpdated()
+	{
+		if(this.index == 0) // THIS IS PURELY FOR TESTING SO I DON'T HAVE TO PRESS EXPAND PROJECT EVERY TIME
+		{
+			this.ExpandProject(); // TEMP
+			ViewProjectInViewer(AllProjects[this.index]);
+
+		}
+	}*/
 
 	// For a better view of the HTML layout, see the comment block above.
 	render() // LIT event that contructs the tag's HTML.

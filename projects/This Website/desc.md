@@ -143,3 +143,20 @@ Eventually I was able to do away with all that by just listening for when the sc
 As I am writing this, the project viewer now coincides with the CSS animation, but still needs some work, like it covering the shrink project button, or that the page still scrolls behind it, and even takes precedence.
 
 For some reason, if you click the "ignore all" filter button more than once, it *DOES NOT* update the filter tags' visual filter, but still filters correctly anyway. **BY ALL ACCOUNTS there is no way this should happen.** The way I fixed it is to forcibly get the tags and forcibly set their filters, which defeated the whole purpose of setting them through the LIT `render()` function.
+
+I've also had a good amount of trouble with the project viewer prev and next buttons, because I wanted them to be arrow buttons, e.g. "◀" (`&#x25C0`) and "▶" (`&#x25B6`).  
+The main two issues were to keep them square AND at the same height, and that every unicode arrow I found was designed to vertically align with text, so the space above them was larger than below.  
+In fact, the only vertically centered unicode character I could find was the interpunct "·" (`U+00B7`).
+
+## 15th of February, 2025
+
+Took a break.
+
+## 16th of February, 2025
+
+Took a break. I was considering working on the project, but didn't get around to it.
+
+## 17th of February, 2025
+
+After realising I was wasting time on the 14th, I have decided to just use "prev" and "next" as labels.  
+I didn't want to as the width of the buttons would be uneven, but if I can get the shrink button to center, and the other two to orbit, then it should be fine.

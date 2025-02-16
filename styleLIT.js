@@ -169,12 +169,10 @@ export const ProjectListItemElement_StyleCSS = css`
 
 .viewprojectbutton
 {
-	position: absolute;
-	top: 0;
 	margin: 4px;
 	padding: 0.1em 0.15em;
 	visibility: visible; /* To be visible regardless of parent .projectanim */
-	font-size: 1.4em;
+	font-size: calc(1vw + 10px);
 	background-color: #fbf1f7;
 	border: 0.1em solid #777777;
 	border-radius: 0.3em;
@@ -248,7 +246,6 @@ export const ProjectListItemElement_StyleCSS = css`
 
 .projecttag
 {
-	/* flex: 0 0 auto; */
 	margin: 1px;
 	padding: 1px;
 	font-size: 0.9em;
@@ -264,13 +261,16 @@ export const ProjectListItemElement_AnimationCSS = css`
 .projectanim
 {
 	position: absolute;
+	display: flex;
 	inset: 0px;
 	margin: 0;
+	z-index: 2; /* to be under all expand/shrink buttons */
 	width: auto;
 	height: auto;
-	z-index: 2; /* to be under all expand/shrink buttons */
 	visibility: hidden;
-	background-color: #cccccc; /* Black and transparent */
+	align-items: flex-start;
+	justify-content: center;
+	background-color: #cccccc;
 
 	animation-name: var(--projectanim-animation); /* animaton switched by JavaScript */
 	animation-duration: var(--projectanim-duration);
@@ -298,9 +298,9 @@ export const ProjectListItemElement_AnimationCSS = css`
 		position: fixed;
 		top: var(--projectanim-to-top);
 		left: var(--projectanim-to-left);
+		z-index: 9; /* To be on top of everything except for its OWN the expand/shrink button */
 		width: var(--projectanim-to-width);
 		height: var(--projectanim-to-height);
-		z-index: 9; /* To be on top of everything except for its OWN the expand/shrink button */
 		visibility: visible;
 	}
 }
@@ -313,9 +313,9 @@ export const ProjectListItemElement_AnimationCSS = css`
 		/* may not be the size of the viewport if the expand was interruped by user */
 		top: var(--projectanim-from-top);
 		left: var(--projectanim-from-left);
+		z-index: 9; /* To be on top of everything except for its OWN expand/shrink button */
 		width: var(--projectanim-from-width);
 		height: var(--projectanim-from-height);
-		z-index: 9; /* To be on top of everything except for its OWN expand/shrink button */
 		visibility: visible;
 		border-color: inherit; /* will fade out border like bg colour */
 	}
@@ -342,14 +342,48 @@ export const ProjectListItemElement_AnimationCSS = css`
 export const ProjectViewerElement_StyleCSS = css`
 #projectviewer
 {
-	position: fixed;
+	--projectviewertopbarheight: 1vh;
+	position: absolute;
 	top: 0;
 	left: 0;
 	z-index: 100; /* To be on top of everything, project shrink button only clickable if this isn't over it */
+	width: fit-content;
+	/* height: 100vh;
+	overflow: scroll; */
+}
+
+#projectviewertopbar
+{
+	position: sticky;
+	top: 0;
+	display: flex;
 	width: 100vw;
-	height: 100vh;
-	margin: 20px; /* Temporary value, To not cover the project shrink button */
-	overflow: scroll;
+	height: fit-content;
+	background-color: #cccccc;
+}
+
+#projectviewertopbar > div:first-child /* To align the middle button to screen center */
+{
+	display: flex;
+	flex: 1 1 0;
+	justify-content: right;
+}
+
+#projectviewertopbar > div:last-child /* To align the middle button to screen center */
+{
+	display: flex;
+	flex: 1 1 0;
+	justify-content: left;
+}
+
+#projectviewerdata
+{
+	top: 0;
+	margin: 1em;
+	margin-top: 0;
+	padding: 0.5em;
 	text-wrap: wrap;
+	border: 0.5em solid #888888;
+	border-radius: 0.2em;
 }
 `;

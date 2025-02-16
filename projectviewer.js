@@ -1,9 +1,11 @@
 /// Constant / Idempotent / Static Values
 /// =====================================
+import { ProjectListItemElement, ProjectShrinkName } from "./projectlist.js";
 
 
 /// Global Session State Storage
 /// ============================
+import { CurrentlyViewedProject } from "./projectlist.js";
 
 
 /// Runtime Functions
@@ -69,7 +71,7 @@ import {LitElement, html, unsafeHTML} from "https://cdn.jsdelivr.net/gh/lit/dist
 import dompurify from "https://cdn.jsdelivr.net/npm/dompurify@3.2.4/+esm"; // For sanitizing HTML
 
 // Get CSS data for LIT components
-import { ProjectViewerElement_StyleCSS } from "./styleLIT.js";
+import { ProjectListItemElement_StyleCSS, ProjectViewerElement_StyleCSS } from "./styleLIT.js";
 
 // Entire generated inner HTML of <project-viewer></project-viewer>.
 /*\
@@ -91,7 +93,7 @@ export class ProjectViewerElement extends LitElement
 	static Displaying = false; // If false, nothing will render.
 
 	// Set the CSS data
-	static styles = [ ProjectViewerElement_StyleCSS ];
+	static styles = [ ProjectViewerElement_StyleCSS, ProjectListItemElement_StyleCSS ];
 
 	// For a better view of the HTML layout, see the comment block above.
 	render() // LIT event that contructs the tag's HTML.
@@ -105,14 +107,36 @@ export class ProjectViewerElement extends LitElement
 		// Add each loaded file to the project viewer.
 		return html`
 			<div id="projectviewer">
-				${ // For each file. index is unused but kept to make clear that these are indexed by file order, not by filename. 
-					Object.entries(ProjectViewerElement.ProjectViewData).map(function([index, [filename, contents]])
-					{
-						// unsafeHTML is used because of markdown, but we have sanitized
-						return html`<div filename="${dompurify.sanitize(filename)}">${unsafeHTML(dompurify.sanitize(contents))}</div>`;
-					})
-				}
+				<div id="projectviewertopbar">
+					<div><button @click=${this._viewPrevProject} class="viewprojectbutton prevbutton">Prev</button></div>
+					<div><button @click=${this._stopViewingProject} class="viewprojectbutton">${ProjectShrinkName}</button></div>
+					<div><button @click=${this._viewNextProject} class="prevbutton viewprojectbutton">Next</button></div>
+				</div>
+				<div id="projectviewerdata">
+					${ // For each file. index is unused but kept to make clear that these are indexed by file order, not by filename. 
+						Object.entries(ProjectViewerElement.ProjectViewData).map(function([index, [filename, contents]])
+						{
+							// unsafeHTML is used because of markdown, but we have sanitized
+							return html`<div filename="${dompurify.sanitize(filename)}">${unsafeHTML(dompurify.sanitize(contents))}</div>`;
+						})
+					}
+				</div>
 			</div>`;
+	}
+
+	_stopViewingProject()
+	{
+		CurrentlyViewedProject.ShrinkProject();
+	}
+
+	_viewPrevProject()
+	{
+		console.log("prev");
+	}
+
+	_viewNextProject()
+	{
+		console.log("next");
 	}
 }
 // registers the ProjectViewerElement class as "project-viewer" in the DOM
