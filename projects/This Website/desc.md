@@ -160,3 +160,5 @@ Took a break. I was considering working on the project, but didn't get around to
 
 After realising I was wasting time on the 14th, I have decided to just use "prev" and "next" as labels.  
 I didn't want to as the width of the buttons would be uneven, but if I can get the shrink button to center, and the other two to orbit, then it should be fine.
+
+After some grueling CSS, I moved on to getting the prev and next buttons to work. I'm still not entirely sure if I followed best practices, but it's hard to know with inherently-lax languages like JavaScript and CSS.

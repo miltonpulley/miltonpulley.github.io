@@ -1,15 +1,23 @@
 /// Constant / Idempotent / Static Values
 /// =====================================
-import { ProjectListItemElement, ProjectShrinkName } from "./projectlist.js";
+import { ProjectShrinkName } from "./projectlist.js";
 
 
 /// Global Session State Storage
 /// ============================
 import { CurrentlyViewedProject } from "./projectlist.js";
+import
+{
+	AllProjects,
+	DisplayedProjectsIndexes,
+}
+from "./main.js";
 
 
 /// Runtime Functions
 /// =================
+import { FindAndExpandProject } from "./projectlist.js";
+
 // Rerenders the expanded project viewer screen.
 // To change what project is being viewed, call ViewProjectInViewer() instead.
 export function RefreshProjectViewer()
@@ -18,8 +26,11 @@ export function RefreshProjectViewer()
 	document.querySelector("project-viewer").requestUpdate();
 }
 
-export function ViewProjectInViewer(/*Project*/ project)
+// BYPASSES ANIMATION, if you want the animation, call FindAndExpandProject().
+export function ViewProjectInViewer(/*index*/ displayIndex) // Get by index into to DisplayedProjectsIndexes[].
 {
+	let project = AllProjects[DisplayedProjectsIndexes[displayIndex]];
+	
 	let numFiles = project.viewerdatafiles.length; // how many files in total to load
 
 	// Clear the current data and set the array to final size, since it might be filled out of order, even though
@@ -45,13 +56,14 @@ export function ViewProjectInViewer(/*Project*/ project)
 			//   time a file is loaded is unnecessary, and may cause multiple flashes.
 			if(numLoadedFiles == numFiles)
 			{
+				ProjectViewerElement.DisplayIndex = displayIndex;
 				ProjectViewerElement.Displaying = true;
 				RefreshProjectViewer();
 			}
 		});
 	}
 }
-
+// BYPASSES ANIMATION, if you want the animation, call FindAndExpandProject().
 export function ClearProjectViewer()
 {
 	ProjectViewerElement.Displaying = false;
@@ -89,8 +101,12 @@ export class ProjectViewerElement extends LitElement
 {
 	// These are static members and not properties since there are only one
 	//   of each, and need to be accessed without reference to the LIT tag.
+	static DisplayIndex; // Index of this project into DisplayedProjectsIndexes[].
 	static ProjectViewData = []; // fetched project view data set in ViewProjectInViewer().
 	static Displaying = false; // If false, nothing will render.
+
+	static GetPrevProject = () => AllProjects[DisplayedProjectsIndexes[ProjectViewerElement.DisplayIndex - 1]];
+	static GetNextProject = () => AllProjects[DisplayedProjectsIndexes[ProjectViewerElement.DisplayIndex + 1]];
 
 	// Set the CSS data
 	static styles = [ ProjectViewerElement_StyleCSS, ProjectListItemElement_StyleCSS ];
@@ -104,13 +120,34 @@ export class ProjectViewerElement extends LitElement
 		{
 			return html``;
 		}
-		// Add each loaded file to the project viewer.
+
+		// Get the previous and next projects' names to display.
+		let prevProject = ProjectViewerElement.GetPrevProject();
+		let nextProject = ProjectViewerElement.GetNextProject();
+		let prevName = (prevProject) ? prevProject.name : "";
+		let nextName = (nextProject) ? nextProject.name : "";
+		
+		// Add the topbar and each loaded file to the project viewer.
 		return html`
 			<div id="projectviewer">
-				<div id="projectviewertopbar">
-					<div><button @click=${this._viewPrevProject} class="viewprojectbutton prevbutton">Prev</button></div>
-					<div><button @click=${this._stopViewingProject} class="viewprojectbutton">${ProjectShrinkName}</button></div>
-					<div><button @click=${this._viewNextProject} class="prevbutton viewprojectbutton">Next</button></div>
+				<div id="projectviewertopbar" class="centerthree">
+					<div><p>${prevName}</p></div>
+					<div class="centerthree">
+						${ // If there is no previous project, disable the prev project button
+						(prevProject) // Lines are identical except for button being disabled
+						? html`<div><button @click=${this._viewPrevProject} class="viewprojectbutton"         >Prev</button></div>`
+						: html`<div><button @click=${this._viewPrevProject} class="viewprojectbutton" disabled>Prev</button></div>`
+						}
+
+						<div><button @click=${this._stopViewingProject} class="viewprojectbutton">${ProjectShrinkName}</button></div>
+
+						${ // If there is no next project, disable the next project button
+						(nextProject) // Lines are identical except for button being disabled
+						? html`<div><button @click=${this._viewNextProject} class="viewprojectbutton"        >Next</button></div>`
+						: html`<div><button @click=${this._viewNextProject} class="viewprojectbutton"disabled>Next</button></div>`
+						}
+					</div>
+					<div><p>${nextName}</p></div>
 				</div>
 				<div id="projectviewerdata">
 					${ // For each file. index is unused but kept to make clear that these are indexed by file order, not by filename. 
@@ -131,12 +168,18 @@ export class ProjectViewerElement extends LitElement
 
 	_viewPrevProject()
 	{
-		console.log("prev");
+		if(ProjectViewerElement.GetPrevProject())
+		{
+			FindAndExpandProject(ProjectViewerElement.DisplayIndex - 1);
+		}
 	}
 
 	_viewNextProject()
 	{
-		console.log("next");
+		if(ProjectViewerElement.GetNextProject())
+		{
+			FindAndExpandProject(ProjectViewerElement.DisplayIndex + 1);
+		}
 	}
 }
 // registers the ProjectViewerElement class as "project-viewer" in the DOM

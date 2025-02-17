@@ -139,7 +139,7 @@ export const ProjectListItemElement_StyleCSS = css`
 	--projectdesc-margin-left-right: 0.15em;
 
 	--projectanim-animation: ""; /* set by JavaScript and read by .projectanim */
-	--projectanim-duration: 1s; /* read by JavaScript and by .projectanim */
+	--projectanim-duration: 0.80s; /* read by JavaScript and by .projectanim */
 	--projectanim-delay: 0s; /* set by JavaScript and read by .projectanim */
 
 	/* The rect that the project animation starts with, set by JavaScript and read by .projectanim */
@@ -177,7 +177,7 @@ export const ProjectListItemElement_StyleCSS = css`
 	border: 0.1em solid #777777;
 	border-radius: 0.3em;
 }
-.viewprojectbutton:hover
+.viewprojectbutton:enabled:hover
 {
 	background-color: #ffffff;
 }
@@ -342,38 +342,52 @@ export const ProjectListItemElement_AnimationCSS = css`
 export const ProjectViewerElement_StyleCSS = css`
 #projectviewer
 {
-	--projectviewertopbarheight: 1vh;
 	position: absolute;
 	top: 0;
 	left: 0;
 	z-index: 100; /* To be on top of everything, project shrink button only clickable if this isn't over it */
-	width: fit-content;
-	/* height: 100vh;
-	overflow: scroll; */
+	background-color: #cccccc;
 }
 
-#projectviewertopbar
+#projectviewertopbar /* Still dependent on width for centering */
 {
 	position: sticky;
 	top: 0;
 	display: flex;
 	width: 100vw;
-	height: fit-content;
 	background-color: #cccccc;
 }
 
-#projectviewertopbar > div:first-child /* To align the middle button to screen center */
+#projectviewertopbar p
+{
+	position: relative;
+	margin: 0;
+	width: 100%;
+	overflow: hidden;
+	white-space: nowrap; 
+	text-overflow: ellipsis;
+}
+
+/* Align the three child divs so that the middle div is horizontally centered with the screen, and the other two adjust accordingly */
+.centerthree
+{
+	display: flex;
+	height: auto;
+	align-items: center;
+}
+.centerthree > div:first-child /* To align the middle button to screen center */
 {
 	display: flex;
 	flex: 1 1 0;
 	justify-content: right;
+	text-align: right;
 }
-
-#projectviewertopbar > div:last-child /* To align the middle button to screen center */
+.centerthree > div:last-child /* To align the middle button to screen center */
 {
 	display: flex;
 	flex: 1 1 0;
 	justify-content: left;
+	text-align: left;
 }
 
 #projectviewerdata
@@ -385,5 +399,11 @@ export const ProjectViewerElement_StyleCSS = css`
 	text-wrap: wrap;
 	border: 0.5em solid #888888;
 	border-radius: 0.2em;
+}
+
+#projectviewerdata img
+{
+	max-width: 90vw;
+	aspect-ratio: auto;
 }
 `;

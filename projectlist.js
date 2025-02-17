@@ -28,6 +28,12 @@ export function RefreshProjectList()
 	document.querySelector("project-list").requestUpdate();
 }
 
+// ProjectListItem.ExpandProject() for when you only have index into DisplayedProjectsIndexes[].
+export function FindAndExpandProject(/*index*/ displayIndex)
+{
+	document.querySelector("project-list").FindAndExpandProject(displayIndex);
+}
+
 
 /// Classes and Objects
 /// ===================
@@ -70,6 +76,7 @@ export class Project
 	}
 }
 
+
 /// Page and HTML construction
 /// ==========================
 import { LitElement, html } from "https://cdn.jsdelivr.net/gh/lit/dist@3.2.1/core/lit-core.min.js";
@@ -88,7 +95,7 @@ from "./styleLIT.js";
 |*| <project-list>
 |*| |   <div>
 |*| |   |   ...
-|*| |   |   <project-list-item>
+|*| |   |   <project-list-item displayIndex="[Index into DisplayedProjectsIndexes[] Array]">
 |*| |   |   |   <div class="project">
 |*| |   |   |   |   <div class="projectanim">
 |*| |   |   |   |   |   <button class="viewprojectbutton" value="[Project Name]">Expand</button>
@@ -139,13 +146,35 @@ export class ProjectListElement extends LitElement
 			<div>
 			${
 				// For each project that we want to display
-				DisplayedProjectsIndexes.map(function(index)
+				DisplayedProjectsIndexes.map(function(allProjIndex, displayedProjIndex)
 				{
+					// Get the indexes of the projects that display before and after this project, undefined
+					//   if at one end of list. Conveniently don't need to check for OutOfBounds array access
+					//   because JavaScript. It will just return undefined, which is actually what we want.
+					// let prev = DisplayedProjectsIndexes[displayedProjIndex - 1];
+					// let next = DisplayedProjectsIndexes[displayedProjIndex + 1];
+					// console.log(allProjIndex + ", " + displayedProjIndex + ", " + prev + ", " + next);
+
 					// Give the project list item the reference to the project
-					return html`<project-list-item .index="${index}"></project-list-item>`;
+					return html`<project-list-item displayIndex="${displayedProjIndex}"></project-list-item>`;
+					// return html`<project-list-item displayIndex="${displayedProjIndex}" .prevIndex="${prev}" .nextIndex="${next}"></project-list-item>`;
 				})
 			}
 			</div>`;
+	}
+
+	// ProjectListItem.ExpandProject() for when you only have index into DisplayedProjectsIndexes[].
+	FindAndExpandProject(/*index*/ displayIndex)
+	{
+		let projListItem = this.shadowRoot.querySelector(`project-list-item[displayIndex="${displayIndex}"]`);
+		if(projListItem)
+		{
+			projListItem.ExpandProject(displayIndex);
+		}
+		else
+		{
+			console.error(`Error: could not find project list item with display index "${displayIndex}" to expand!`);
+		}
 	}
 }
 // registers the ProjectListElement class as "project-list" in the DOM
@@ -156,8 +185,10 @@ export class ProjectListItemElement extends LitElement
 	// defines attributes
 	static properties =
 	{
-		index: {type: Number}, // The index into AllProjects
-		
+		displayIndex: {type: Number}, // The index into DisplayedProjectsIndexes[].
+		// prevIndex: {type: Number}, // The previous displaying project's index into AllProjects
+		// nextIndex: {type: Number}, // The next displaying project's index into AllProjects
+
 		// don't want it as an attribute, so state = true (makes it internal)
 		// convention to put underscore in front
 		_viewState: {type: String, state: true}, // Also what the view project button text will be
@@ -191,14 +222,11 @@ export class ProjectListItemElement extends LitElement
 		super.disconnectedCallback();
 	}
 
-
 	/*firstUpdated()
 	{
-		if(this.index == 0) // THIS IS PURELY FOR TESTING SO I DON'T HAVE TO PRESS EXPAND PROJECT EVERY TIME
+		if(this.displayIndex == 0) // THIS IS PURELY FOR TESTING SO I DON'T HAVE TO PRESS EXPAND PROJECT EVERY TIME
 		{
 			this.ExpandProject(); // TEMP
-			ViewProjectInViewer(AllProjects[this.index]);
-
 		}
 	}*/
 
@@ -207,7 +235,7 @@ export class ProjectListItemElement extends LitElement
 	{
 		// Constructs the HTML project list based on filters and adds functionality to its buttons.
 		// Filtering must be called beforehand via FilterProjects().
-		let project = AllProjects[this.index];
+		let project = AllProjects[DisplayedProjectsIndexes[this.displayIndex]];
 		return html`
             <div class="project">
                 <div class="projectanim">
@@ -256,7 +284,7 @@ export class ProjectListItemElement extends LitElement
 			//   of the previous project, so we want to delay the expand anim by the duration of the shrink anim.
 			// This is actually the duration of the NEW project, not the one just shrunk. If we wanted to use the duration of the
 			//   shrinking project, we would have to store it in the HTML tag because for some reason JavaScript can't read CSS.
-			delay = "calc(var(--projectanim-duration) * 0.5)";
+			delay = "calc(var(--projectanim-duration) * 0.25)";
 		}
 		// set the delay
 		projectContainer.style.setProperty("--projectanim-delay", delay);
@@ -276,8 +304,8 @@ export class ProjectListItemElement extends LitElement
 		// When the animation ends, run this
 		projectAnimation.onanimationend = () =>
 		{
-			// Get the project and view it in the project viewer
-			ViewProjectInViewer(AllProjects[this.index]);
+			// View the project in the project viewer
+			ViewProjectInViewer(this.displayIndex);
 		};
 	}
 
@@ -293,7 +321,7 @@ export class ProjectListItemElement extends LitElement
 		//   is NOT the currently expanded one, then we have two expanded projects.
 		if(this != CurrentlyViewedProject)
 		{
-			console.warn(`Warning: somehow two projects are expanded: "${CurrentlyViewedProject.index}" and "${this.index}", shrinking both...`);
+			console.warn(`Warning: somehow two projects are expanded: "${CurrentlyViewedProject.displayIndex}" and "${this.displayIndex}", shrinking both...`);
 			CurrentlyViewedProject.ShrinkProject();
 		}
 
