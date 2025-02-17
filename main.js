@@ -57,9 +57,13 @@ function FetchAllProjectsCallback(/*Function Callback*/ fetchedprojectsJSON)
 		{
 			console.warn(`Warning: Project of name "${proj.name}" already exists! Skipping...`);
 		}
+		else if(proj.name.trim().length == 0) // First trim the leading and trailing whitespace
+		{
+			console.warn(`Warning: Project has no name! Skipping...`);
+		}
 		else
 		{
-			AllProjects[index] = new Project(proj.name, proj.date, proj.blurb, proj.tags, proj.projectviewerdatapath, proj.projectviewerdatafiles);
+			AllProjects[index] = new Project(proj.name.trim(), proj.date, proj.blurb, proj.tags, proj.projectviewerdatapath, proj.projectviewerdatafiles);
 			index++;
 		}
 	});
