@@ -1,5 +1,6 @@
 /// Constant / Idempotent / Static Values
 /// =====================================
+import { ProjectCategoriesAndTags } from "./filters.js";
 
 
 /// Global Session State Storage
@@ -66,6 +67,22 @@ function FetchAllProjectsCallback(/*Function Callback*/ fetchedprojectsJSON)
 			AllProjects[index] = new Project(proj.name.trim(), proj.date, proj.blurb, proj.tags, proj.projectviewerdatapath, proj.projectviewerdatafiles);
 			index++;
 		}
+
+		// Check if this project has a tag that doesn't appear in any tag category
+		// For all tags in this project...
+		proj.tags.forEach((tag) =>
+		{
+			let tagExists = false; // ...does the tag appear in a category? ...
+			Object.values(ProjectCategoriesAndTags).forEach((tagsInCategory) =>
+			{
+				tagExists |= tagsInCategory.includes(tag);
+				// console.log(proj.name + ", " + tag + ", [" + tagsInCategory + "], " + tagExists);
+			});
+			if(!tagExists) // ... if not, warn.
+			{
+				console.warn(`Warning: Project "${proj.name}" has unknown tag "${tag}", please add to ProjectCategoriesAndTags.`);
+			}
+		});
 	});
 
 	FilterProjects();

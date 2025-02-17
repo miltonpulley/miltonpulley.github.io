@@ -1,12 +1,14 @@
 /// Constant / Idempotent / Static Values
 /// =====================================
 // const FilterTagButtonID = "tagfilterbutton"
-const ProjectCategoriesAndTags =
+export const ProjectCategoriesAndTags =
 {
 	"Group size": ["Solo", "Team member", "Team leader"],
-	"Languages": ["C/C++", "C#", "C# (Unity)", "Java", "Python", "HTML/CSS/JS"],
-	"Art": ["2D drawing", "2D digital", "3D model", "Blender Grease Pencil", "Animation", "Sketch"],
-	"Music": ["Vocals", "Band", "Music sheet", "Live performance"],
+	"Project type": ["Sketch", "Protoype", "Test/Experiment"],
+	"Programs": ["Blender", "Unity", "MuseScore"],
+	"Languages": ["C/C++", "C#", "Java", "Python", "HTML/CSS/JS"],
+	"Art": ["2D drawing", "2D digital", "3D model", "Animation", "Costume"],
+	"Music": ["Vocals", "Music sheet/MIDI", "Studio performance", "Live performance"],
 };
 
 

@@ -148,16 +148,8 @@ export class ProjectListElement extends LitElement
 				// For each project that we want to display
 				DisplayedProjectsIndexes.map(function(allProjIndex, displayedProjIndex)
 				{
-					// Get the indexes of the projects that display before and after this project, undefined
-					//   if at one end of list. Conveniently don't need to check for OutOfBounds array access
-					//   because JavaScript. It will just return undefined, which is actually what we want.
-					// let prev = DisplayedProjectsIndexes[displayedProjIndex - 1];
-					// let next = DisplayedProjectsIndexes[displayedProjIndex + 1];
-					// console.log(allProjIndex + ", " + displayedProjIndex + ", " + prev + ", " + next);
-
 					// Give the project list item the reference to the project
 					return html`<project-list-item displayIndex="${displayedProjIndex}"></project-list-item>`;
-					// return html`<project-list-item displayIndex="${displayedProjIndex}" .prevIndex="${prev}" .nextIndex="${next}"></project-list-item>`;
 				})
 			}
 			</div>`;

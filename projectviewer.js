@@ -105,6 +105,9 @@ export class ProjectViewerElement extends LitElement
 	static ProjectViewData = []; // fetched project view data set in ViewProjectInViewer().
 	static Displaying = false; // If false, nothing will render.
 
+	// Get the projects that display before and after this project, returning undefined if
+	//   at one end of list. Conveniently don't need to check for OutOfBounds array access
+	//   because JavaScript. It will just return undefined, which is actually what we want.
 	static GetPrevProject = () => AllProjects[DisplayedProjectsIndexes[ProjectViewerElement.DisplayIndex - 1]];
 	static GetNextProject = () => AllProjects[DisplayedProjectsIndexes[ProjectViewerElement.DisplayIndex + 1]];
 
