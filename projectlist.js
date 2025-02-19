@@ -28,10 +28,10 @@ export function RefreshProjectList()
 	document.querySelector("project-list").requestUpdate();
 }
 
-// ProjectListItem.ExpandProject() for when you only have index into DisplayedProjectsIndexes[].
-export function FindAndExpandProject(/*index*/ displayIndex)
+// ProjectListItem.ExpandProject() for when you only have index into AllProjects[].
+export function FindAndExpandProject(/*index*/ projIndex)
 {
-	document.querySelector("project-list").FindAndExpandProject(displayIndex);
+	document.querySelector("project-list").FindAndExpandProject(projIndex);
 }
 
 
@@ -95,7 +95,7 @@ from "./styleLIT.js";
 |*| <project-list>
 |*| |   <div>
 |*| |   |   ...
-|*| |   |   <project-list-item displayIndex="[Index into DisplayedProjectsIndexes[] Array]">
+|*| |   |   <project-list-item>
 |*| |   |   |   <div class="project">
 |*| |   |   |   |   <div class="projectanim">
 |*| |   |   |   |   |   <button class="viewprojectbutton" value="[Project Name]">Expand</button>
@@ -146,26 +146,36 @@ export class ProjectListElement extends LitElement
 			<div>
 			${
 				// For each project that we want to display
-				DisplayedProjectsIndexes.map(function(allProjIndex, displayedProjIndex)
+				DisplayedProjectsIndexes.map(function(index) // index into AllProjects[].
 				{
 					// Give the project list item the reference to the project
-					return html`<project-list-item displayIndex="${displayedProjIndex}"></project-list-item>`;
+					return html`<project-list-item .index="${index}"></project-list-item>`;
 				})
 			}
 			</div>`;
 	}
 
-	// ProjectListItem.ExpandProject() for when you only have index into DisplayedProjectsIndexes[].
-	FindAndExpandProject(/*index*/ displayIndex)
+	// ProjectListItem.ExpandProject() for when you only have index into AllProjects[].
+	FindAndExpandProject(/*index*/ projIndex)
 	{
-		let projListItem = this.shadowRoot.querySelector(`project-list-item[displayIndex="${displayIndex}"]`);
-		if(projListItem)
+		// Cannot do .find() because projList is not actually an array, but still supports forEach().
+		//   If projList was an array, all this could be replaced by .find(). Also, JavaScript has no
+		//   way to stop .forEach() while executing, which is why foundProj exists. Array.some() can,
+		//   but if we had access to .some() we have access to .find(), which is the ideal one.
+		let foundProj = false;
+		let projList = this.shadowRoot.querySelectorAll(`project-list-item`);
+		projList.forEach((projListItem) =>
 		{
-			projListItem.ExpandProject(displayIndex);
-		}
-		else
+			if(projListItem.index == projIndex)
+			{
+				foundProj = true;
+				projListItem.ExpandProject(projIndex);
+			}
+		});
+		
+		if(!foundProj)
 		{
-			console.error(`Error: could not find project list item with display index "${displayIndex}" to expand!`);
+			console.error(`Error: could not find project list item with project index "${projIndex}" to expand!`);
 		}
 	}
 }
@@ -177,9 +187,7 @@ export class ProjectListItemElement extends LitElement
 	// defines attributes
 	static properties =
 	{
-		displayIndex: {type: Number}, // The index into DisplayedProjectsIndexes[].
-		// prevIndex: {type: Number}, // The previous displaying project's index into AllProjects
-		// nextIndex: {type: Number}, // The next displaying project's index into AllProjects
+		index: {type: Number}, // The index into AllProjects[].
 
 		// don't want it as an attribute, so state = true (makes it internal)
 		// convention to put underscore in front
@@ -214,20 +222,34 @@ export class ProjectListItemElement extends LitElement
 		super.disconnectedCallback();
 	}
 
-	/*firstUpdated()
+	firstUpdated()
 	{
-		if(this.displayIndex == 0) // THIS IS PURELY FOR TESTING SO I DON'T HAVE TO PRESS EXPAND PROJECT EVERY TIME
+		if(this.index == 0) // THIS IS PURELY FOR TESTING SO I DON'T HAVE TO PRESS EXPAND PROJECT EVERY TIME
 		{
 			this.ExpandProject(); // TEMP
 		}
-	}*/
+	}
+
+	// attributeChangedCallback(a)
+	// {
+	// 	this.requestUpdate();
+	// 	console.log(this.displayIndex);
+	// 	console.log(a);
+	// 	let projListItems = projList.shadowRoot.querySelectorAll("project-list-item");
+	// 	projListItems.forEach((projListItem) =>
+	// 	{
+	// 		if(DisplayedProjectsIndexes.includes(projListItem.displayIndex))
+	// 		{
+	// 		}
+	// 	});
+	// }
 
 	// For a better view of the HTML layout, see the comment block above.
 	render() // LIT event that contructs the tag's HTML.
 	{
 		// Constructs the HTML project list based on filters and adds functionality to its buttons.
 		// Filtering must be called beforehand via FilterProjects().
-		let project = AllProjects[DisplayedProjectsIndexes[this.displayIndex]];
+		let project = AllProjects[this.index];
 		return html`
             <div class="project">
                 <div class="projectanim">
@@ -297,7 +319,7 @@ export class ProjectListItemElement extends LitElement
 		projectAnimation.onanimationend = () =>
 		{
 			// View the project in the project viewer
-			ViewProjectInViewer(this.displayIndex);
+			ViewProjectInViewer(this.index);
 		};
 	}
 
@@ -313,7 +335,7 @@ export class ProjectListItemElement extends LitElement
 		//   is NOT the currently expanded one, then we have two expanded projects.
 		if(this != CurrentlyViewedProject)
 		{
-			console.warn(`Warning: somehow two projects are expanded: "${CurrentlyViewedProject.displayIndex}" and "${this.displayIndex}", shrinking both...`);
+			console.warn(`Warning: somehow two projects are expanded: "${CurrentlyViewedProject.index}" and "${this.index}", shrinking both...`);
 			CurrentlyViewedProject.ShrinkProject();
 		}
 

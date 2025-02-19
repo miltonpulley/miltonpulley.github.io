@@ -162,3 +162,14 @@ After realising I was wasting time on the 14th, I have decided to just use "prev
 I didn't want to as the width of the buttons would be uneven, but if I can get the shrink button to center, and the other two to orbit, then it should be fine.
 
 After some grueling CSS, I moved on to getting the prev and next buttons to work. I'm still not entirely sure if I followed best practices, but it's hard to know with inherently-lax languages like JavaScript and CSS.
+
+## 18th of February, 2025
+
+Yesterday I noticed that the filtering has broken. I have determined it to be a multitide of factors, but they for some reason stem from one change, when I made the project list items save their index into the array of *currently filtered* projects (`DisplayedProjectsIndexes[]`), when previously they had their index into the array of *every* project (`AllProjects[]`).  
+I know this is the issue because, firstly, checked via GIT version control, and also because via `console.log()` I noticed that everything is working until the LIT `render()` function where it gets the project data to display, but it indexes as if it was into `AllProjects[]`, even though should be into `DisplayedProjectsIndexes[]`. ALSO, sometimes changing a filter just... doesn't update itself when it should.  
+I made this index change because there wasn't a clean way to get a project's `DisplayedProjectsIndexes[]` index when it only stored the index into `AllProjects[]`, but is easy the other way, since `DisplayedProjectsIndexes[]` stores the *indexes into* `AllProjects[]`.  
+Unfortunately, because I don't have total control over everything (because LIT components), I don't entirely know why it is like this, because as far as I can tell this shouldn't be happening. This is why I prefer total control, and probably why I didn't start this project with LIT.
+
+## 19th of February, 2025
+
+After considering that I've wasted too much time trying to convince JavaScript to let me to make my code better, I'm going to change back the filtering index thing that I talked about on the 18th. I won't rid that commit, rather Git has the ability to 'revert' a commit, which makes a new commit that undoes what that other commit did.

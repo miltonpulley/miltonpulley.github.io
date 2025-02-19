@@ -27,9 +27,9 @@ export function RefreshProjectViewer()
 }
 
 // BYPASSES ANIMATION, if you want the animation, call FindAndExpandProject().
-export function ViewProjectInViewer(/*index*/ displayIndex) // Get by index into to DisplayedProjectsIndexes[].
+export function ViewProjectInViewer(/*index*/ projIndex) // Get by index into to AllProjects[].
 {
-	let project = AllProjects[DisplayedProjectsIndexes[displayIndex]];
+	let project = AllProjects[projIndex];
 	
 	let numFiles = project.viewerdatafiles.length; // how many files in total to load
 
@@ -56,7 +56,7 @@ export function ViewProjectInViewer(/*index*/ displayIndex) // Get by index into
 			//   time a file is loaded is unnecessary, and may cause multiple flashes.
 			if(numLoadedFiles == numFiles)
 			{
-				ProjectViewerElement.DisplayIndex = displayIndex;
+				ProjectViewerElement.Index = projIndex;
 				ProjectViewerElement.Displaying = true;
 				RefreshProjectViewer();
 			}
@@ -101,15 +101,15 @@ export class ProjectViewerElement extends LitElement
 {
 	// These are static members and not properties since there are only one
 	//   of each, and need to be accessed without reference to the LIT tag.
-	static DisplayIndex; // Index of this project into DisplayedProjectsIndexes[].
+	static Index; // Index of this project into AllProjects[].
 	static ProjectViewData = []; // fetched project view data set in ViewProjectInViewer().
 	static Displaying = false; // If false, nothing will render.
 
 	// Get the projects that display before and after this project, returning undefined if
 	//   at one end of list. Conveniently don't need to check for OutOfBounds array access
 	//   because JavaScript. It will just return undefined, which is actually what we want.
-	static GetPrevProject = () => AllProjects[DisplayedProjectsIndexes[ProjectViewerElement.DisplayIndex - 1]];
-	static GetNextProject = () => AllProjects[DisplayedProjectsIndexes[ProjectViewerElement.DisplayIndex + 1]];
+	static GetPrevProject = () => AllProjects[ProjectViewerElement.Index - 1];
+	static GetNextProject = () => AllProjects[ProjectViewerElement.Index + 1];
 
 	// Set the CSS data
 	static styles = [ ProjectViewerElement_StyleCSS, ProjectListItemElement_StyleCSS ];
@@ -173,7 +173,7 @@ export class ProjectViewerElement extends LitElement
 	{
 		if(ProjectViewerElement.GetPrevProject())
 		{
-			FindAndExpandProject(ProjectViewerElement.DisplayIndex - 1);
+			FindAndExpandProject(ProjectViewerElement.Index - 1);
 		}
 	}
 
@@ -181,7 +181,7 @@ export class ProjectViewerElement extends LitElement
 	{
 		if(ProjectViewerElement.GetNextProject())
 		{
-			FindAndExpandProject(ProjectViewerElement.DisplayIndex + 1);
+			FindAndExpandProject(ProjectViewerElement.Index + 1);
 		}
 	}
 }
