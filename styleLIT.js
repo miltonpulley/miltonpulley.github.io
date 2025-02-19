@@ -34,8 +34,13 @@ export const FilterAreaElement_StyleCSS = css`
 {
 	margin: 0.2em auto;
 	width: fit-content;
-	font-size: calc(1vw + 0.7em);
+	font-size: calc(0.7vw + 1em);
 	align-content: center;
+}
+
+#numshowingprojects /* The make the (#/#) projects slightly bigger*/
+{
+	font-size: calc(1vw + 1em);
 }
 
 #filterallbuttons
@@ -50,8 +55,11 @@ export const FilterAreaElement_StyleCSS = css`
 
 #filtercategories
 {
-	padding: 0px;
+	margin: 0.5em 1em;
+	padding: 0.5em 0px;
 	text-align: center;
+	border: 0.2em solid #999999;
+	border-radius: 1em;
 }
 
 #filtercategories h3
@@ -84,6 +92,10 @@ button:hover /* all ignored ("ig") or unspecified tags, and default of all other
 {
 	background-color: #fffafa;
 }
+button:active /* all ignored ("ig") or unspecified tags, and default of all others */
+{
+	background-color: #ddddda;
+}
 *[value="wh"] /* all whitelisted tags */
 {
 	color: #333333;
@@ -94,6 +106,10 @@ button[value="wh"]:hover /* all whitelisted tags */
 {
 	background-color: #fefefe;
 }
+button[value="wh"]:active /* all whitelisted tags */
+{
+	background-color: #eeeeee;
+}
 *[value="bl"] /* all blacklisted tags */
 {
 	color: #eeeeee;
@@ -103,6 +119,10 @@ button[value="wh"]:hover /* all whitelisted tags */
 button[value="bl"]:hover /* all blacklisted tags */
 {
 	background-color: #313131;
+}
+button[value="bl"]:active /* all blacklisted tags */
+{
+	background-color: #000000;
 }
 `;
 
@@ -181,17 +201,28 @@ export const ProjectListItemElement_StyleCSS = css`
 {
 	background-color: #ffffff;
 }
+.viewprojectbutton:enabled:active
+{
+	background-color: #dbd1d7;
+}
+.viewprojectbutton:disabled
+{
+	color: #3b3137;
+	background-color: #aba1a7;
+}
 
 .projectdate
 {
 	position: absolute;
-	right: 0;
-	margin: 4px;
-	padding: 0.1em 0.15em;
-	font-size: 1.4em;
-	background-color: #cccccc;
-	border: 0.1em solid #777777;
-	border-radius: 0.3em;
+	top: 0;
+	left: 0;
+	margin: 0px var(--projectdesc-margin-left-right);
+	padding: 2px 0.25em;
+	font-size: 1.8em;
+	background-color: #ccccccaa;
+	border-right: 0.1em solid #777777;
+	border-bottom: 0.1em solid #777777;
+	border-radius: 0 0 0.4em 0;
 }
 
 .projectimg

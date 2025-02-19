@@ -167,9 +167,9 @@ import { FilterAreaElement_StyleCSS } from "./styleLIT.js";
 |*| |   |   |   </div>
 |*| |   |   |   ...
 |*| |   |   </div>
-|*| |   |   <p id="numshowingprojects" value="ig">[Text]</p>
 |*| |   |   <p id="activewhitelist" value="wh">[Text]</p>
 |*| |   |   <p id="activeblacklist" value="bl">[Text]</p>
+|*| |   |   <p id="numshowingprojects" value="ig">[Text]</p>
 |*| |   </div>
 |*| </filter-area>
 \*/
@@ -213,9 +213,9 @@ export class FilterAreaElement extends LitElement
 					}, this)
 				}
 				</div>
-				<p id="numshowingprojects" value="${FilterTag.IGNORE}">${FilterAreaElement.numshowingprojects}</p>
 				<p id="activewhitelist" value="${FilterTag.WHITELISTED}">${FilterAreaElement.activewhitelist}</p>
 				<p id="activeblacklist" value="${FilterTag.BLACKLISTED}">${FilterAreaElement.activeblacklist}</p>
+				<p id="numshowingprojects" value="${FilterTag.IGNORE}">${FilterAreaElement.numshowingprojects}</p>
 			</div>`;
 	}
 
