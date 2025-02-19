@@ -85,6 +85,26 @@ export function FilterProjects()
 	FilterAreaElement.UpdateActiveTagsText();
 }
 
+// Gets a project's index into DisplayedProjectsIndexes[] from its index into AllProjects[].
+export function GetDisplayIndexFromAllProjectsIndex(/*index*/ allProjectsIndex)
+{
+	let displayIndex = DisplayedProjectsIndexes.indexOf(allProjectsIndex);
+	if(displayIndex == -1)
+	{
+		displayIndex = undefined;
+		console.warn(`Warning: Could not find project with project index \"${allProjectsIndex}\" in the display array. It is either the project does not exist, or is currently being filtered away. Returning undefined...`);
+	}
+	return displayIndex;
+}
+
+// Gets a project's index into AllProjects[] from its index into DisplayedProjectsIndexes[].
+export function GetAllProjectsIndexFromDisplayIndex(/*index*/ displayIndex)
+{
+	// This simple because the purpose of DisplayedProjectsIndexes[] is
+	//   to keep track of the displaying project's AllProjects[] index.
+	return DisplayedProjectsIndexes[displayIndex];
+}
+
 
 /// Classes and Objects
 /// ===================

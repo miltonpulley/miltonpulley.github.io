@@ -173,3 +173,5 @@ Unfortunately, because I don't have total control over everything (because LIT c
 ## 19th of February, 2025
 
 After considering that I've wasted too much time trying to convince JavaScript to let me to make my code better, I'm going to change back the filtering index thing that I talked about on the 18th. I won't rid that commit, rather Git has the ability to 'revert' a commit, which makes a new commit that undoes what that other commit did.
+
+After reverting it, I had to do some cleanup, and now everything *should* be working. All that is left to do for this website (besides making the website have actually good UI/UX and a few CSS fixes) is to have the project viewer read CSS, and actually fill the project list with my projects.
