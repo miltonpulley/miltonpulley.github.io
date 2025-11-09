@@ -5,21 +5,23 @@ import { ProjectShrinkName } from "./projectlist.js";
 
 /// Global Session State Storage
 /// ============================
-import { CurrentlyViewedProject } from "./projectlist.js";
 import { AllProjects, DisplayedProjectsIndexes } from "./main.js";
+import { CurrentlyViewedProject } from "./projectlist.js";
 
 
 /// Runtime Functions
 /// =================
+import { UpdateURL } from "./main.js";
 import { GetDisplayIndexFromAllProjectsIndex } from "./filters.js";
 import { FindAndExpandProject } from "./projectlist.js";
 
 // Rerenders the expanded project viewer screen.
 // To change what project is being viewed, call ViewProjectInViewer() instead.
-export function RefreshProjectViewer()
+export async function RefreshProjectViewer()
 {
 	// Get <project-viewer> tag and LIT regenerate html
-	document.querySelector("project-viewer").requestUpdate();
+	await document.querySelector("project-viewer").requestUpdate();
+	UpdateURL();
 }
 
 // BYPASSES ANIMATION, if you want the animation, call FindAndExpandProject().
@@ -40,7 +42,7 @@ export function ViewProjectInViewer(/*index*/ projIndex) // Get by index into to
 	{
 		let filename = project.viewerdatafiles[i];
 
-		FetchFile(project.viewerdatapath + filename,
+		FetchFile(project.datapath + filename,
 		(data) => // Once fetched, add to the list of stuff shown when viewing.
 		{
 			// Set by i instead of pushing since this runs in an asynchronous callback, so
@@ -166,14 +168,15 @@ export class ProjectViewerElement extends LitElement
 	_stopViewingProject()
 	{
 		CurrentlyViewedProject.ShrinkProject();
+		UpdateURL();
 	}
 
 	_viewPrevProject()
 	{
 		if(ProjectViewerElement.GetPrevProject())
 		{
-			let displayIndex = GetDisplayIndexFromAllProjectsIndex(ProjectViewerElement.ProjIndex);
-			FindAndExpandProject(displayIndex - 1);
+			FindAndExpandProject(ProjectViewerElement.ProjIndex - 1);
+			UpdateURL();
 		}
 	}
 
@@ -181,8 +184,8 @@ export class ProjectViewerElement extends LitElement
 	{
 		if(ProjectViewerElement.GetNextProject())
 		{
-			let displayIndex = GetDisplayIndexFromAllProjectsIndex(ProjectViewerElement.ProjIndex);
-			FindAndExpandProject(displayIndex + 1);
+			FindAndExpandProject(ProjectViewerElement.ProjIndex + 1);
+			UpdateURL();
 		}
 	}
 }

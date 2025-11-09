@@ -3,12 +3,12 @@
 // const FilterTagButtonID = "tagfilterbutton"
 export const ProjectCategoriesAndTags =
 {
-	"Group size": ["Solo", "Team member", "Team leader"],
-	"Project type": ["Sketch", "Protoype", "Test/Experiment"],
-	"Programs": ["Blender", "Unity", "MuseScore"],
-	"Languages": ["C/C++", "C#", "Java", "Python", "HTML/CSS/JS"],
-	"Art": ["2D drawing", "2D digital", "3D model", "Animation", "Costume"],
-	"Music": ["Vocals", "Music sheet/MIDI", "Studio performance", "Live performance"],
+	"Group Role": ["Solo", "Team Member", "Lead Developer", "Producer"],
+	"Project Type": ["Protoype/Test/Experiment", "Release", "Game Jam", "VR"],
+	//"Programs": ["Blender", "Unity", "MuseScore"],
+	"Languages": ["C/C++", "CSharp", "Java", "HTML/CSS/JS"],//, "Python"],
+	"Art": ["2D Art", "3D Art", "Animation", "Music"],//, "Costume"],
+	//"Music": ["Composition", "Vocals", "Music sheet/MIDI", "Studio performance", "Live performance"],
 };
 
 
@@ -18,6 +18,7 @@ export const ProjectCategoriesAndTags =
 var TotalNumberOfFilterTags = 0;
 // total number of tags equals the sum of the number of tags in each category
 Object.values(ProjectCategoriesAndTags).forEach((tags) => { TotalNumberOfFilterTags += tags.length;} );
+var dropdownclosed = true;
 
 import
 {
@@ -25,6 +26,8 @@ import
 	Whitelist,
 	Blacklist,
 	DisplayedProjectsIndexes,
+	ToURLAllowedFilterTag,
+	UpdateURL,
 }
 from "./main.js";
 
@@ -35,10 +38,20 @@ import { RefreshProjectList } from "./projectlist.js";
 
 // Rerenders the filter list.
 // To modify filters, call FilterProjects() beforehand.
-export function RefreshFilterList()
+export async function RefreshFilterList()
 {
 	// Get <filter-area> tag and LIT regenerate html
-	document.querySelector("filter-area").requestUpdate();
+	await document.querySelector("filter-area").requestUpdate();
+	UpdateURL();
+}
+export function ClearAllFilters()
+{
+	document.querySelector("filter-area").SetAllFilterButtonsTo(FilterTag.IGNORE);
+}
+
+export function SetFilters(blacklist, whitelist)
+{
+	document.querySelector("filter-area").SetFilters(blacklist, whitelist);
 }
 
 export function FilterProjects()
@@ -88,11 +101,12 @@ export function FilterProjects()
 // Gets a project's index into DisplayedProjectsIndexes[] from its index into AllProjects[].
 export function GetDisplayIndexFromAllProjectsIndex(/*index*/ allProjectsIndex)
 {
+	// Out of all displaying projects, get the one that has the matching AllProjects[] index.
 	let displayIndex = DisplayedProjectsIndexes.indexOf(allProjectsIndex);
 	if(displayIndex == -1)
 	{
 		displayIndex = undefined;
-		console.warn(`Warning: Could not find project with project index \"${allProjectsIndex}\" in the display array. It is either the project does not exist, or is currently being filtered away. Returning undefined...`);
+		console.error(`Warning: Could not find project with project index \"${allProjectsIndex}\" in the display array. It is either the project does not exist, or is currently being filtered away. Returning undefined...`);
 	}
 	return displayIndex;
 }
@@ -149,11 +163,14 @@ import { FilterAreaElement_StyleCSS } from "./styleLIT.js";
 /*\
 |*| <filter-area>
 |*| |   <div>
-|*| |   |   <h2>Filter projects by tags</h2>
+|*| |   |   <div id="filterareaheader">
+|*| |   |   |   <button @click="[Callback]" class="tagfilterdropdownbutton" value="closed"><div id="chevron" class="chevronclosed"></div></button>
+|*| |   |   |   <h2>Filter projects by tags</h2>
+|*| |   |   </div>
 |*| |   |   <div id="filterallbuttons">
-|*| |   |   |   <button class="tagfilterallbutton" value="ig">Ignore All</button>
-|*| |   |   |   <button class="tagfilterallbutton" value="wh">Whitelist All</button>
-|*| |   |   |   <button class="tagfilterallbutton" value="bl">Blacklist All</button>
+|*| |   |   |   <button @click="[Callback]" class="tagfilterallbutton" value="ig">Ignore All</button>
+|*| |   |   |   <button @click="[Callback]" class="tagfilterallbutton" value="wh">Whitelist All</button>
+|*| |   |   |   <button @click="[Callback]" class="tagfilterallbutton" value="bl">Blacklist All</button>
 |*| |   |   </div>
 |*| |   |   <div id="filtercategories">
 |*| |   |   |   ...
@@ -161,7 +178,7 @@ import { FilterAreaElement_StyleCSS } from "./styleLIT.js";
 |*| |   |   |   <div class="filtercategory">
 |*| |   |   |   |   ...
 |*| |   |   |   |   <filter-tag tag="[Tag Name]">
-|*| |   |   |   |   |   <button class="tagfilterbutton" value="filter">[Tag Name]</button>
+|*| |   |   |   |   |   <button @click="[Callback]" class="tagfilterbutton" value="filter">[Tag Name]</button>
 |*| |   |   |   |   </filter-tag>
 |*| |   |   |   |   ...
 |*| |   |   |   </div>
@@ -190,13 +207,16 @@ export class FilterAreaElement extends LitElement
 		FilterAreaElement.UpdateActiveTagsText();
 		return html`
 			<div>
+				<div id="filterareaheader">
+				<button @click="${this._filterDropdownButtonClicked}" class="tagfilterdropdownbutton" value="${dropdownclosed}"><div id="chevron" class="chevron${(dropdownclosed ? "closed" : "open")}"></div></button>
 				<h2>Filter projects by tags</h2>
-				<div id="filterallbuttons">
+				</div>
+				<div id="filterallbuttons", class="dropdown${dropdownclosed}">
 					<button @click="${this._filterAllButtonClicked}" class="tagfilterallbutton" value="${FilterTag.IGNORE}">Ignore All</button>
 					<button @click="${this._filterAllButtonClicked}" class="tagfilterallbutton" value="${FilterTag.WHITELISTED}">Whitelist All</button>
 					<button @click="${this._filterAllButtonClicked}" class="tagfilterallbutton" value="${FilterTag.BLACKLISTED}">Blacklist All</button>
 				</div>
-				<div id="filtercategories">
+				<div id="filtercategories", class="dropdown${dropdownclosed}">
 				${ // For each category:
 					Object.entries(ProjectCategoriesAndTags).map(function([category, tags])
 					{
@@ -213,49 +233,75 @@ export class FilterAreaElement extends LitElement
 					}, this)
 				}
 				</div>
-				<p id="activewhitelist" value="${FilterTag.WHITELISTED}">${FilterAreaElement.activewhitelist}</p>
-				<p id="activeblacklist" value="${FilterTag.BLACKLISTED}">${FilterAreaElement.activeblacklist}</p>
+				<p id="activewhitelist", class="dropdown${dropdownclosed}", value="${FilterTag.WHITELISTED}">${FilterAreaElement.activewhitelist}</p>
+				<p id="activeblacklist", class="dropdown${dropdownclosed}", value="${FilterTag.BLACKLISTED}">${FilterAreaElement.activeblacklist}</p>
 				<p id="numshowingprojects" value="${FilterTag.IGNORE}">${FilterAreaElement.numshowingprojects}</p>
 			</div>`;
+	}
+
+	_filterDropdownButtonClicked(b)
+	{
+		dropdownclosed = !dropdownclosed;
+
+		RefreshFilterList(); // rerender
 	}
 
 	_filterAllButtonClicked(b)
 	{
 		// The filter type that every filter tag will become.
-		let newFilter = b.target.value;
+		this.SetAllFilterButtonsTo(b.target.value);
+	}
 
+	SetAllFilterButtonsTo(newFilter)
+	{
+		if(newFilter == FilterTag.BLACKLISTED)
+		{
+			// Fill the blacklist with every tag
+			SetFilters(Object.values(ProjectCategoriesAndTags).flat().map((str) => str = ToURLAllowedFilterTag(str)), undefined);
+		}
+		else if(newFilter == FilterTag.WHITELISTED)
+		{
+			// Fill the whitelist with every tag
+			SetFilters(undefined, Object.values(ProjectCategoriesAndTags).flat().map((str) => str = ToURLAllowedFilterTag(str)));
+		}
+		else
+		{
+			// Only clear the black and white lists
+			SetFilters(undefined, undefined);
+		}
+	}
+
+	SetFilters(blacklist, whitelist)
+	{
 		// Clear all filters
 		Whitelist.splice(0);
 		Blacklist.splice(0);
-		
-		// Fill the whitelist with every tag
-		if(newFilter == FilterTag.WHITELISTED)
-		{
-			for(let tagsInCategory of Object.values(ProjectCategoriesAndTags))
-			{
-				for(let tag of tagsInCategory)
-				{
-					FilterTag.AddToWhitelist(tag);
-				};
-			}
-		}
-		// Fill the blacklist with every tag
-		if(newFilter == FilterTag.BLACKLISTED)
-		{
-			for(let tagsInCategory of Object.values(ProjectCategoriesAndTags))
-			{
-				for(let tag of tagsInCategory)
-				{
-					FilterTag.AddToBlacklist(tag);
-				};
-			}
-		}
+
+		let tags = this.shadowRoot.firstElementChild.querySelectorAll("filter-tag");
 
 		// Set all filter tags' filter state
 		// This was previously done through FilterAreaElement.render(), but did not properly set the tag styles
 		//   because FOR SOME REASON clicking the "ignore all" button more than once stops setting the tags' filters.
-		let tags = this.shadowRoot.firstElementChild.querySelectorAll("filter-tag");
-		tags.forEach((t) => {t.filter = newFilter});
+		tags.forEach((t) =>
+		{
+			let filterName = ToURLAllowedFilterTag(t.attributes["tag"].value);
+			
+			if(blacklist?.includes(filterName))
+			{
+				t.filter = FilterTag.BLACKLISTED;
+				FilterTag.AddToBlacklist(filterName);
+				console.log(filterName);
+			}
+			else if(whitelist?.includes(filterName))
+			{
+				t.filter = FilterTag.WHITELISTED;
+				FilterTag.AddToWhitelist(filterName);
+			}
+			else
+			{
+				t.filter = FilterTag.IGNORE;
+			}
+		});
 
 		// Apply new filter(s) and reconstruct HTML
 		FilterProjects();
@@ -266,7 +312,7 @@ export class FilterAreaElement extends LitElement
 	// Mostly beautifying based on corner cases
 	static UpdateActiveTagsText()
 	{
-		FilterAreaElement.numshowingprojects = `Showing (${DisplayedProjectsIndexes.length}/${AllProjects.length}) projects.`;
+		FilterAreaElement.numshowingprojects = `Filters showing (${DisplayedProjectsIndexes.length}/${AllProjects.length}) projects.`;
 		
 		FilterAreaElement.activewhitelist = "No tags whitelisted."; // if Whitelist.length == 0
 		if(Whitelist.length == 1)

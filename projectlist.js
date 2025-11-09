@@ -18,15 +18,15 @@ from "./main.js";
 
 /// Runtime Functions
 /// =================
-import { GetDisplayIndexFromAllProjectsIndex } from "./filters.js";
+import { UpdateURL } from "./main.js";
 import { ViewProjectInViewer, ClearProjectViewer } from "./projectviewer.js";
 
 // Rerenders the project list based on filters.
 // To modify filters, call FilterProjects() beforehand.
-export function RefreshProjectList()
+export async function RefreshProjectList()
 {
 	// Get <project-list> tag and LIT regenerate html
-	document.querySelector("project-list").requestUpdate();
+	await document.querySelector("project-list").requestUpdate();
 }
 
 // ProjectListItem.ExpandProject() for when you only have its index into DisplayedProjectsIndexes[].
@@ -45,22 +45,26 @@ export class Project
 	_date = ""; // Just text, gets try-parsed to Date() object in GetDisplayDate()
 	blurb = "";
 	tags = [];
-	viewerdatapath = "";
+	datapath = "";
+	desc = "";
+	thumbnail = "";
 	viewerdatafiles = [];
 
-	constructor(name, date, blurb, tags, viewerdatapath, viewerdatafiles)
+	constructor(name, date, blurb, tags, datapath, desc, thumbnail, viewerdatafiles)
 	{
 		this.name = name;
 		this._date = date;
-		this.blurb = blurb
+		this.blurb = blurb;
 		this.tags = tags;
-		this.viewerdatapath = viewerdatapath;
-		this.viewerdatafiles = viewerdatafiles;
+		this.datapath = datapath;
+		this.desc = desc;
+		this.thumbnail = thumbnail;
+		this.viewerdatafiles = this.viewerdatafiles.concat(desc, viewerdatafiles);
 	}
 
 	describe()
 	{
-		return `Project "${this.name}": (${this.GetDisplayDate()}), ${this.blurb}, [${this.tags}], "${this.viewerdatapath}" [${this.viewerdatafiles}].`;
+		return `Project "${this.name}": (${this.GetDisplayDate()}), ${this.blurb}, [${this.tags}], "${this.desc}", "${this.datapath}", "${this.datapath}" [${this.viewerdatafiles}].`;
 	}
 
 	GetDisplayDate()
@@ -96,15 +100,15 @@ from "./styleLIT.js";
 |*| <project-list>
 |*| |   <div>
 |*| |   |   ...
-|*| |   |   <project-list-item>
+|*| |   |   <project-list-item projindex="[Index into AllProjects[] array]">
 |*| |   |   |   <div class="project">
 |*| |   |   |   |   <div class="projectanim">
 |*| |   |   |   |   |   <button class="viewprojectbutton" value="[Project Name]">Expand</button>
 |*| |   |   |   |   </div>
-|*| |   |   |   |   <img class="projectimg" src="[Project Image]"></img>
+|*| |   |   |   |   <img class="projectthumbnail" src="[Project Thumbnail]"></img>
 |*| |   |   |   |   <p class="projectdate">[Date]</p>
 |*| |   |   |   |   <p class="projectname">[Project Name]</p>
-|*| |   |   |   |   <p class="projectdesc">[Project Description]</p>
+|*| |   |   |   |   <p class="projectblurb">[Project Blurb]</p>
 |*| |   |   |   |   <div class="projecttaglist">
 |*| |   |   |   |   |   ...
 |*| |   |   |   |   |   <p class="projecttag">[Project Tag]</p>
@@ -129,9 +133,9 @@ export class ProjectListElement extends LitElement
 		{
 			return html`
 				<div><li class="project">
-					<img src="/placeholder.jpg" class="projectimg"></img>
+					<img class="projectthumbnail" src="/placeholder.jpg"></img>
 					<p class="projectname">An Error Message</p>
-					<p class="projectdesc">Um... uh... this is where I list my projects... but there was a problem fetching them!</p>
+					<p class="projectblurb">Um... uh... this is where I list my projects... but there was a problem fetching them!</p>
 					<ul class="projecttaglist">
 						<li class="projecttag">Error message</li>
 						<li class="projecttag">You're not supposed to see this!</li>
@@ -141,7 +145,15 @@ export class ProjectListElement extends LitElement
 		// If there are no projects that match the filters, show so.
 		if(DisplayedProjectsIndexes.length == 0)
 		{
-			return html`<div><li class="project"><p class="projectdesc">No projects match the filters!</p></li></div>`;
+			return html`
+				<div><li class="project">
+					<img class="projectthumbnail"></img>
+					<p class="projectname">No projects match the filters!</p>
+					<p class="projectblurb"> </p>
+					<ul class="projecttaglist">
+						<li class="projecttag"> </li>
+					</ul>
+				</li></div>`;
 		}
 		return html`
 			<div>
@@ -152,28 +164,33 @@ export class ProjectListElement extends LitElement
 					// Give the project list item the reference to the project
 					// It would be nice to store the index into DisplayedProjectsIndexes[] but when
 					//   I tried it, the filtering broke for a reason I failed to find after 2 days.
-					return html`<project-list-item .projIndex="${projIndex}"></project-list-item>`;
+					return html`<project-list-item projindex=${projIndex}></project-list-item>`;
 				})
 			}
 			</div>`;
 	}
 
 	// ProjectListItem.ExpandProject() for when you only have its index into DisplayedProjectsIndexes[].
-	FindAndExpandProject(/*index*/ displayIndex)
+	FindAndExpandProject(/*index*/ allProjIndex)
 	{
 		// querySelectorAll()'s return value Cannot do .find() because projList
 		//    is not actually an array, even though it supports forEach().
 		let projList = Array.from(this.shadowRoot.querySelectorAll(`project-list-item`));
 		
 		// Out of all displaying projects, get the one that has the matching AllProjects[] index.
-		let projListItem = projList.find((proj) => proj.projIndex == DisplayedProjectsIndexes[displayIndex]);
+		let projListItem = projList[allProjIndex];
+
+		//console.log("FindAndExpandProject   ");// + "  " + projListItem);
+		//console.log(projList);
+		//console.log(projListItem);
+
 		if(projListItem)
 		{
 			projListItem.ExpandProject();
 		}
 		else
 		{
-			console.error(`Error: could not find project list item with display index "${displayIndex}" to expand!`);
+			console.error(`Error: could not find project list item with project index "${allProjIndex}" to expand!`);
 		}
 	}
 }
@@ -239,10 +256,10 @@ export class ProjectListItemElement extends LitElement
                 <div class="projectanim">
                     <button @click=${this._viewButtonClicked} class="viewprojectbutton" value="${project.name}">${this._viewState}</button>
                 </div>
-                <img class="projectimg" src="${project.viewerdatapath}thumbnail.png"></img>
+                <img class="projectthumbnail" src="${project.datapath}${project.thumbnail}"></img>
                 <p class="projectdate">${project.GetDisplayDate()}</p>
                 <p class="projectname">${project.name}</p>
-                <p class="projectdesc">${project.blurb}</p>
+                <p class="projectblurb">${project.blurb}</p>
                 <div class="projecttaglist">
 					${project.tags.map(function(t)
 					{

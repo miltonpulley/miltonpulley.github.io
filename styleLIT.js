@@ -8,6 +8,13 @@ export const FilterAreaElement_StyleCSS = css`
 	list-style: none;
 }
 
+.dropdowntrue
+{
+	position: absolute;
+	height: 0px;
+	transform: scale(0);
+}
+
 :host > div
 {
 	margin: 2px auto 3vh;
@@ -18,16 +25,59 @@ export const FilterAreaElement_StyleCSS = css`
 	min-width: fit-content;
 	max-width: 100%;
 	background-color: #d6d6d6;
-	border: 0.1em solid #aaaaaa;
-	border-radius: 2vw;
+	border: 0.2em solid #aaaaaa;
+	border-radius: 1em;
 }
 
-:host > div > h2 /* Filter Projects By Tags */
+:host #filterareaheader
 {
 	display: inline-block;
-	margin: 2px 0px 0px 2vw;
+	margin: 2px 0px 2px calc(2px + 0.1em);
+	height: calc(1vw + 1.5em);
 	width: fit-content;
+	height: fit-content;
 	font-size: calc(1vw + 1.5em);
+	vertical-align: center;
+}
+
+:host #filterareaheader > *
+{
+	vertical-align: middle;
+}
+
+:host #filterareaheader > h2 /* "Filter Projects By Tags" */
+{
+	display: inline;
+	margin: 0px;
+	font-size: inherit;
+}
+
+:host #filterareaheader > .tagfilterdropdownbutton
+{
+	margin: 0px;
+	padding: 2px;
+	font-size: inherit;
+	width: fit-content;
+	height: fit-content;
+	background-color: #ffffff;
+	border: 0.1em solid #aaaaaa;
+	border-radius: 0.25em;
+}
+:host #filterareaheader .tagfilterdropdownbutton #chevron
+{
+	margin: 0em;
+	width: 0.5em;
+	height: 0.5em;
+	border-right: 0.1em solid #000000;
+	border-bottom: 0.1em solid #000000;
+}
+:host #filterareaheader .tagfilterdropdownbutton .chevronclosed
+{
+	transform: scale(0.7)translateX(-0.14142em) rotate(-45deg);
+}
+:host #filterareaheader .tagfilterdropdownbutton .chevronopen
+{
+	transform: scale(0.7) translateY(-0.14142em) rotate(45deg);
 }
 
 :host > div > p /* The 3 filter texts e.g. showing (#/#) projects */
@@ -154,9 +204,9 @@ export const ProjectListItemElement_StyleCSS = css`
 
 .project
 {
-	--projectimg-height: 50%;
-	--projectimg-margin-bottom: 2px;
-	--projectdesc-margin-left-right: 0.15em;
+	--projectthumbnail-height: 50%;
+	--projectthumbnail-margin-bottom: 2px;
+	--projectblurb-margin-left-right: 0.15em;
 
 	--projectanim-animation: ""; /* set by JavaScript and read by .projectanim */
 	--projectanim-duration: 0.80s; /* read by JavaScript and by .projectanim */
@@ -216,7 +266,7 @@ export const ProjectListItemElement_StyleCSS = css`
 	position: absolute;
 	top: 0;
 	left: 0;
-	margin: 0px var(--projectdesc-margin-left-right);
+	margin: 0px var(--projectblurb-margin-left-right);
 	padding: 2px 0.25em;
 	font-size: 1.8em;
 	background-color: #ccccccaa;
@@ -225,36 +275,37 @@ export const ProjectListItemElement_StyleCSS = css`
 	border-radius: 0 0 0.4em 0;
 }
 
-.projectimg
+.projectthumbnail
 {
-	flex: 0 0 var(--projectimg-height);
+	flex: 0 0 var(--projectthumbnail-height);
 	margin: 2px;
-	margin-bottom: var(--projectimg-margin-bottom);
 	margin-inline: auto;
+	margin-bottom: var(--projectthumbnail-margin-bottom);
+	margin-right: var(--projectthumbnail-margin-bottom);
 	padding: 0px;
 	width: auto;
-	height: var(--projectimg-height);
+	height: var(--projectthumbnail-height);
 	aspect-ratio: auto;
 }
 
 .projectname
 {
 	position: absolute;
-	bottom: calc(var(--projectimg-height) - var(--projectimg-margin-bottom) - 2px);
-	margin: 2px var(--projectdesc-margin-left-right);
+	bottom: calc(var(--projectthumbnail-height) - var(--projectthumbnail-margin-bottom) - 2px);
+	margin: 2px var(--projectblurb-margin-left-right);
 	margin-bottom: 0px;
 	padding: 2px 0.25em;
 	font-size: 1.8em;
-	background-color: #ccccccaa;
+	background-color: #cccccccc;
 	border-top: 0.1em solid #777777;
 	border-right: 0.1em solid #777777;
 	border-radius: 0 0.4em 0 0;
 }
 
-.projectdesc
+.projectblurb
 {
 	display: inline-block;
-	margin: 0 var(--projectdesc-margin-left-right);
+	margin: 0 var(--projectblurb-margin-left-right);
 	max-height: 3.4em; /* If I can't write the desc in 3 lines or less, it's too probably too long. */
 	font-size: 2em;
 	overflow: hidden;
@@ -378,6 +429,7 @@ export const ProjectViewerElement_StyleCSS = css`
 	left: 0;
 	z-index: 100; /* To be on top of everything, project shrink button only clickable if this isn't over it */
 	background-color: #cccccc;
+	font-size: 1em;
 }
 
 #projectviewertopbar /* Still dependent on width for centering */
@@ -432,9 +484,22 @@ export const ProjectViewerElement_StyleCSS = css`
 	border-radius: 0.2em;
 }
 
-#projectviewerdata img
+/* markdown images are inserted as img, wrapped in p */
+
+#projectviewerdata p:not(:has(> img)) /* p that dont wrap markdown images */
 {
 	max-width: 90vw;
-	aspect-ratio: auto;
 }
+#projectviewerdata p:has(> img) /* p that wrap markdown images */
+{
+	text-align: center;
+}
+#projectviewerdata p > img /* markdown images */
+{
+	width: 15cm;
+	max-width: 90vw;
+	aspect-ratio: auto;
+	text-align: center;
+}
+
 `;

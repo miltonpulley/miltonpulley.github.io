@@ -2,19 +2,30 @@
 	"projects":
 	[
 		{
+			"name": "ARMLEGEDDON",
+			"date": "2025-10-31T09:00:00",
+			"blurb": "Victory may cost an arm... and a leg.",
+			"tags":
+			[
+				"VR", "CSharp", "Release", "Producer", "Lead Developer", "3D Art", "Music"
+			],
+			"datapath":  "/projects/ARMLEGEDDON/",
+			"desc": "desc.md",
+			"thumbnail": "ARMLEGEDDON.jpg",
+			"projectviewerdatafiles": []
+		},
+		{
 			"name": "Portfolio Website",
 			"date": "2025-01-30T12:41:26",
 			"blurb": "This website you are on now was created by me!",
 			"tags":
 			[
-				"Solo", "HTML/CSS/JS", "2D digital"
+				"Solo", "HTML/CSS/JS", "2D Art"
 			],
-			"projectviewerdatapath": "/projects/This Website/",
-			"projectviewerdatafiles":
-			[
-				"desc.md",
-				"thumbnail.png"
-			]
+			"datapath": "/projects/This Website/",
+			"desc": "desc.md",
+			"thumbnail": "thumbnail.png",
+			"projectviewerdatafiles": []
 		},
 		{
 			"name": "Placeholder Text",
@@ -22,14 +33,12 @@
 			"blurb": "This",
 			"tags":
 			[
-				"Team member", "2D digital", "C#"
+				"Team Member", "2D Art", "CSharp"
 			],
-			"projectviewerdatapath": "/projects/This Website/",
-			"projectviewerdatafiles":
-			[
-				"thumbnail.png",
-				"desc.md"
-			]
+			"datapath": "/projects/This Website/",
+			"desc": "desc.md",
+			"thumbnail": "thumbnail.png",
+			"projectviewerdatafiles": []
 		},
 		{
 			"name": "blah blah",
@@ -37,29 +46,12 @@
 			"blurb": "Such a nice placeholder here",
 			"tags":
 			[
-				"Team member", "Sketch", "3D model", "Vocals"
+				"Team Member", "Release", "3D Art", "Music"
 			],
-			"projectviewerdatapath":  "/projects/This Website/",
-			"projectviewerdatafiles":
-			[
-				"desc.md",
-				"thumbnail.png"
-			]
-		},
-		{
-			"name": "woiwwiyuoe ajguiagfh gu oioyuoyuyi",
-			"date": "9999-12-31T23:59:59",
-			"blurb": "lhiuhuhyGGUYqg udugh ihsesht jkyfkyufhuoabigbeergui ohoabu sssssdfkj fjwnodq fenbghibi",
-			"tags":
-			[
-				"Solo", "Team member", "HTML/CSS/JS", "2D digital", "Sketch", "3D model", "Blender", "Vocals", "C#", "Live performance"
-			],
-			"projectviewerdatapath":  "/projects/This Website/",
-			"projectviewerdatafiles":
-			[
-				"desc.md",
-				"thumbnail.png"
-			]
+			"datapath":  "/projects/This Website/",
+			"desc": "desc.md",
+			"thumbnail": "thumbnail.png",
+			"projectviewerdatafiles": []
 		},
 		{
 			"name": ".",
@@ -69,12 +61,10 @@
 			[
 				
 			],
-			"projectviewerdatapath":  "/projects/This Website/",
-			"projectviewerdatafiles":
-			[
-				"desc.md",
-				"thumbnail.png"
-			]
+			"datapath":  "/projects/This Website/",
+			"desc": "desc.md",
+			"thumbnail": "thumbnail.png",
+			"projectviewerdatafiles": []
 		}
 	]
 }
