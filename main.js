@@ -63,11 +63,15 @@ async function InitWebsite()
 	
 	//await new Promise((resolve) => setTimeout(() => resolve(0), 2000));
 
-	ClearAllFilters();
 	InterpretURLParams();
 
 	stillInit = false;
 	UpdateURL();
+
+	FilterProjects();
+	await RefreshFilterList();
+	await RefreshProjectList();
+	await RefreshProjectViewer();
 }
 
 export function UpdateURL()
@@ -110,6 +114,7 @@ function InterpretURLParams()
 	// Perhaps show one of the projects
 	if(URLParams[ViewIndexURLParam] != undefined)
 	{
+		ClearAllFilters();
 		FindAndExpandProject(URLParams[ViewIndexURLParam]);
 	}
 	// Perhaps set filters

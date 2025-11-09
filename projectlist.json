@@ -7,13 +7,15 @@
 			"blurb": "Victory may cost an arm... and a leg.",
 			"tags":
 			[
-				"VR", "CSharp", "Release", "Producer", "Lead Developer", "3D Art", "Music"
+				"VR", "CSharp", "Release", "Producer", "Lead Developer", "Team Member", "3D Art", "Music", "Animation"
 			],
 			"datapath":  "/projects/ARMLEGEDDON/",
 			"desc": "desc.md",
 			"thumbnail": "ARMLEGEDDON.jpg",
 			"projectviewerdatafiles": []
 		},
+
+
 		{
 			"name": "Portfolio Website",
 			"date": "2025-01-30T12:41:26",
@@ -27,43 +29,34 @@
 			"thumbnail": "thumbnail.png",
 			"projectviewerdatafiles": []
 		},
+
+
 		{
-			"name": "Placeholder Text",
-			"date": "2025-01-30T12:41:26",
-			"blurb": "This",
+			"name": "Let's Scale Back, PLEASE",
+			"date": "2024-08-18T09:35:00",
+			"blurb": "A game about adding too much stuff to a game.",
 			"tags":
 			[
-				"Team Member", "2D Art", "CSharp"
+				"Game Jam", "Team Member", "CSharp"
 			],
-			"datapath": "/projects/This Website/",
+			"datapath":  "/projects/Let's Scale Back, PLEASE/",
 			"desc": "desc.md",
-			"thumbnail": "thumbnail.png",
+			"thumbnail": "Cover Image.png",
 			"projectviewerdatafiles": []
 		},
+
+
 		{
-			"name": "blah blah",
-			"date": "Unknown",
-			"blurb": "Such a nice placeholder here",
+			"name": "The Great Roll Reversal",
+			"date": "2023-07-10T01:15:00",
+			"blurb": "The universe is impure. Turn everything in the galaxy into bread rolls.",
 			"tags":
 			[
-				"Team Member", "Release", "3D Art", "Music"
+				"Game Jam", "Team Member", "CSharp"
 			],
-			"datapath":  "/projects/This Website/",
+			"datapath":  "/projects/The Great Roll Reversal/",
 			"desc": "desc.md",
-			"thumbnail": "thumbnail.png",
-			"projectviewerdatafiles": []
-		},
-		{
-			"name": ".",
-			"date": "0001-01-01T22:00:00",
-			"blurb": "",
-			"tags":
-			[
-				
-			],
-			"datapath":  "/projects/This Website/",
-			"desc": "desc.md",
-			"thumbnail": "thumbnail.png",
+			"thumbnail": "bread_cover_art.png",
 			"projectviewerdatafiles": []
 		}
 	]

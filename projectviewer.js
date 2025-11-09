@@ -12,7 +12,7 @@ import { CurrentlyViewedProject } from "./projectlist.js";
 /// Runtime Functions
 /// =================
 import { UpdateURL } from "./main.js";
-import { GetDisplayIndexFromAllProjectsIndex } from "./filters.js";
+import { GetAllProjectsIndexFromDisplayIndex, GetDisplayIndexFromAllProjectsIndex } from "./filters.js";
 import { FindAndExpandProject } from "./projectlist.js";
 
 // Rerenders the expanded project viewer screen.
@@ -175,7 +175,7 @@ export class ProjectViewerElement extends LitElement
 	{
 		if(ProjectViewerElement.GetPrevProject())
 		{
-			FindAndExpandProject(ProjectViewerElement.ProjIndex - 1);
+			FindAndExpandProject(GetDisplayIndexFromAllProjectsIndex(ProjectViewerElement.ProjIndex) - 1);
 			UpdateURL();
 		}
 	}
@@ -184,7 +184,7 @@ export class ProjectViewerElement extends LitElement
 	{
 		if(ProjectViewerElement.GetNextProject())
 		{
-			FindAndExpandProject(ProjectViewerElement.ProjIndex + 1);
+			FindAndExpandProject(GetDisplayIndexFromAllProjectsIndex(ProjectViewerElement.ProjIndex) + 1);
 			UpdateURL();
 		}
 	}

@@ -177,3 +177,13 @@ After considering that I've wasted too much time trying to convince JavaScript t
 After reverting it, I had to do some cleanup, and now everything *should* be working. All that is left to do for this website (besides making the website have actually good UI/UX and a few CSS fixes) is to have the project viewer read CSS, and actually fill the project list with my projects.
 
 ## 20th of February, 2025
+
+## 9th of November, 2025
+
+Well, this was an eventful year.  
+Around this time, I *would've* been finishing my degree, but three surgeries and leading the most disadvantaged year-long group project certainly saw to it that I'd push back some units.
+
+In any case, I've come back to this website to add that year-long project *ARMLEGEDDON*, and the two game jams I participated in, *The Great Roll Reversal* and *Let's Scale Back, PLEASE*.
+
+I've also decreased the amount of filter tags, and made the section into a dropdown.
+Also, I've utilised the URL parameters such that the current filters and/or the currently-viewed project can be shared with just a link.

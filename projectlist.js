@@ -171,18 +171,18 @@ export class ProjectListElement extends LitElement
 	}
 
 	// ProjectListItem.ExpandProject() for when you only have its index into DisplayedProjectsIndexes[].
-	FindAndExpandProject(/*index*/ allProjIndex)
+	FindAndExpandProject(/*index*/ displayIndex)
 	{
 		// querySelectorAll()'s return value Cannot do .find() because projList
 		//    is not actually an array, even though it supports forEach().
 		let projList = Array.from(this.shadowRoot.querySelectorAll(`project-list-item`));
 		
 		// Out of all displaying projects, get the one that has the matching AllProjects[] index.
-		let projListItem = projList[allProjIndex];
+		let projListItem = projList[displayIndex];
 
 		//console.log("FindAndExpandProject   ");// + "  " + projListItem);
 		//console.log(projList);
-		//console.log(projListItem);
+		console.log(projListItem);
 
 		if(projListItem)
 		{
@@ -190,7 +190,7 @@ export class ProjectListElement extends LitElement
 		}
 		else
 		{
-			console.error(`Error: could not find project list item with project index "${allProjIndex}" to expand!`);
+			console.error(`Error: could not find project list item with project index "${displayIndex}" to expand!`);
 		}
 	}
 }

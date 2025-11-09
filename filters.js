@@ -286,16 +286,16 @@ export class FilterAreaElement extends LitElement
 		{
 			let filterName = ToURLAllowedFilterTag(t.attributes["tag"].value);
 			
+			
 			if(blacklist?.includes(filterName))
 			{
 				t.filter = FilterTag.BLACKLISTED;
-				FilterTag.AddToBlacklist(filterName);
-				console.log(filterName);
+				FilterTag.AddToBlacklist(t.attributes["tag"].value);
 			}
 			else if(whitelist?.includes(filterName))
 			{
 				t.filter = FilterTag.WHITELISTED;
-				FilterTag.AddToWhitelist(filterName);
+				FilterTag.AddToWhitelist(t.attributes["tag"].value);
 			}
 			else
 			{
