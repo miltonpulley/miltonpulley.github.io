@@ -11,3 +11,7 @@ ARMLEGEDDON is a nonstop VR rogue-like where you are an action figure that can s
 Playtest Feedback Form
 
 <https://docs.google.com/forms/d/e/1FAIpQLSeAno-PFbIP9cgp-NfqM-1CvyqF8gJsuCTX8lgLNx1qr7XqhQ/viewform?usp=header>
+
+## IMAGES
+
+This is one of the enemies in the game that I modelled, called the "Gutterby". It's basically a gutted furby head that shoots lasers out of its eyes. Upsetting!

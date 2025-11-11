@@ -2,6 +2,7 @@
 	"projects":
 	[
 		{
+			"id": "armlegeddon",
 			"name": "ARMLEGEDDON",
 			"date": "2025-10-31T09:00:00",
 			"blurb": "Victory may cost an arm... and a leg.",
@@ -12,11 +13,15 @@
 			"datapath":  "/projects/ARMLEGEDDON/",
 			"desc": "desc.md",
 			"thumbnail": "ARMLEGEDDON.jpg",
-			"projectviewerdatafiles": []
+			"projectviewerdatafiles":
+			[
+				"gutterbycollage.png"
+			]
 		},
 
 
 		{
+			"id": "portfoliowebsite",
 			"name": "Portfolio Website",
 			"date": "2025-01-30T12:41:26",
 			"blurb": "This website you are on now was created by me!",
@@ -32,6 +37,7 @@
 
 
 		{
+			"id": "letsscalebackplease",
 			"name": "Let's Scale Back, PLEASE",
 			"date": "2024-08-18T09:35:00",
 			"blurb": "A game about adding too much stuff to a game.",
@@ -42,11 +48,15 @@
 			"datapath":  "/projects/Let's Scale Back, PLEASE/",
 			"desc": "desc.md",
 			"thumbnail": "Cover Image.png",
-			"projectviewerdatafiles": []
+			"projectviewerdatafiles":
+			[
+				"behindthescenes.PNG"
+			]
 		},
 
 
 		{
+			"id": "thegreatrollreversal",
 			"name": "The Great Roll Reversal",
 			"date": "2023-07-10T01:15:00",
 			"blurb": "The universe is impure. Turn everything in the galaxy into bread rolls.",
@@ -57,7 +67,29 @@
 			"datapath":  "/projects/The Great Roll Reversal/",
 			"desc": "desc.md",
 			"thumbnail": "bread_cover_art.png",
-			"projectviewerdatafiles": []
+			"projectviewerdatafiles":
+			[
+				"behindthescenes.PNG"
+			]
+		},
+
+
+		{
+			"id": "projectnamedtower",
+			"name": "Project Named Tower",
+			"date": "2022-09-07T00:00:00",
+			"blurb": "A client-server demo game made at TAFE.",
+			"tags":
+			[
+				"Protoype/Test/Experiment", "Lead Developer", "Team Member", "CSharp"
+			],
+			"datapath":  "/projects/Project Named Tower/",
+			"desc": "desc.md",
+			"thumbnail": "",
+			"projectviewerdatafiles":
+			[
+				"behindthescenes.mp4"
+			]
 		}
 	]
 }

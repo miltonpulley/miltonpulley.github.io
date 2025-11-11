@@ -484,6 +484,12 @@ export const ProjectViewerElement_StyleCSS = css`
 	border-radius: 0.2em;
 }
 
+#projectviewerdata > div
+{
+	margin: 0.5em 0px;
+	border-bottom: 0.5em solid #888888;
+}
+
 /* markdown images are inserted as img, wrapped in p */
 
 #projectviewerdata p:not(:has(> img)) /* p that dont wrap markdown images */
@@ -502,4 +508,25 @@ export const ProjectViewerElement_StyleCSS = css`
 	text-align: center;
 }
 
+#projectviewerdata div:has(> img) /* div that wrap non-markdown images */
+{
+	width: auto;
+	text-align: center;
+}
+#projectviewerdata div > img /* non-markdown images */
+{
+	max-width: 90vw;
+	aspect-ratio: auto;
+	text-align: center;
+}
+
+#projectviewerdata video
+{
+	width: auto;
+	max-width: 90vw;
+}
+#projectviewerdata div:has(> video)
+{
+	text-align: center;
+}
 `;

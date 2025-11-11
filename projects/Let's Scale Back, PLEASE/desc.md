@@ -32,6 +32,12 @@ Programming, Writing: <https://slingnut.itch.io/>
 
 ## OST
 
-<https://youtu.be/Y1W8f00_I4I>
+<https://www.youtube.com/watch?v=Y1W8f00_I4I&feature=youtu.be>
+
+## Images
 
 !["Gameplay Tease"](<projects/Let's Scale Back, PLEASE/photo1.png>)
+
+Behind the scenes view
+
+!["Behind the scenes view"](<projects/Let's Scale Back, PLEASE/behindthescenes.PNG>)

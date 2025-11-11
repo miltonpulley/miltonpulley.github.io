@@ -25,7 +25,7 @@ export async function RefreshProjectViewer()
 }
 
 // BYPASSES ANIMATION, if you want the animation, call FindAndExpandProject().
-export function ViewProjectInViewer(/*index*/ projIndex) // Get by index into to AllProjects[].
+export async function ViewProjectInViewer(/*index*/ projIndex) // Get by index into to AllProjects[].
 {
 	let project = AllProjects[projIndex];
 	
@@ -42,23 +42,28 @@ export function ViewProjectInViewer(/*index*/ projIndex) // Get by index into to
 	{
 		let filename = project.viewerdatafiles[i];
 
-		FetchFile(project.datapath + filename,
-		(data) => // Once fetched, add to the list of stuff shown when viewing.
-		{
-			// Set by i instead of pushing since this runs in an asynchronous callback, so
-			//   the order could be out depending on how long each file takes to be loaded.
-			ProjectViewerElement.ProjectViewData[i] = [filename, data];
+		let fetchedFile;
+		// Once fetched, add to the list of stuff shown when viewing.
+		await FetchFile(project.datapath + filename, (data) => fetchedFile = data);
 
-			numLoadedFiles++;
-			// If this is the final file loaded, refresh to display. Refreshing every
-			//   time a file is loaded is unnecessary, and may cause multiple flashes.
-			if(numLoadedFiles == numFiles)
-			{
-				ProjectViewerElement.ProjIndex = projIndex;
-				ProjectViewerElement.Displaying = true;
-				RefreshProjectViewer();
-			}
-		});
+		if(fetchedFile == undefined)
+		{
+			fetchedFile = `<!---->`; // make it into a comment if the file couldn't be loaded
+		}
+
+		// Set by i instead of pushing since this runs in an asynchronous callback, so
+		//   the order could be out depending on how long each file takes to be loaded.
+		ProjectViewerElement.ProjectViewData[i] = [filename, fetchedFile];
+
+		numLoadedFiles++;
+		// If this is the final file loaded, refresh to display. Refreshing every
+		//   time a file is loaded is unnecessary, and may cause multiple flashes.
+		if(numLoadedFiles == numFiles)
+		{
+			ProjectViewerElement.ProjIndex = projIndex;
+			ProjectViewerElement.Displaying = true;
+			RefreshProjectViewer();
+		}
 	}
 }
 // BYPASSES ANIMATION, if you want the animation, call FindAndExpandProject().

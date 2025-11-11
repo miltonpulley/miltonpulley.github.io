@@ -41,6 +41,7 @@ export function FindAndExpandProject(/*index*/ displayIndex)
 // Project data is NOT stored in the LIT element as the project may be filtered out, but the data must still exist
 export class Project
 {
+	id = "";
 	name = "";
 	_date = ""; // Just text, gets try-parsed to Date() object in GetDisplayDate()
 	blurb = "";
@@ -50,8 +51,9 @@ export class Project
 	thumbnail = "";
 	viewerdatafiles = [];
 
-	constructor(name, date, blurb, tags, datapath, desc, thumbnail, viewerdatafiles)
+	constructor(id, name, date, blurb, tags, datapath, desc, thumbnail, viewerdatafiles)
 	{
+		this.id = id;
 		this.name = name;
 		this._date = date;
 		this.blurb = blurb;
@@ -64,7 +66,7 @@ export class Project
 
 	describe()
 	{
-		return `Project "${this.name}": (${this.GetDisplayDate()}), ${this.blurb}, [${this.tags}], "${this.desc}", "${this.datapath}", "${this.datapath}" [${this.viewerdatafiles}].`;
+		return `Project "${this.name} (id ${id})": (${this.GetDisplayDate()}), ${this.blurb}, [${this.tags}], "${this.desc}", "${this.datapath}", "${this.datapath}" [${this.viewerdatafiles}].`;
 	}
 
 	GetDisplayDate()
@@ -182,7 +184,7 @@ export class ProjectListElement extends LitElement
 
 		//console.log("FindAndExpandProject   ");// + "  " + projListItem);
 		//console.log(projList);
-		console.log(projListItem);
+		//console.log(projListItem);
 
 		if(projListItem)
 		{

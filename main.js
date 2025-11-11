@@ -7,7 +7,7 @@ import { ProjectCategoriesAndTags } from "./filters.js";
 /// ============================
 export const URLParams = {}; // The list of all URL parameters read.
 
-const ViewIndexURLParam = "view";
+const ViewProjURLParam = "view";
 const BlacklistURLParam = "blacklist";
 const WhitelistURLParam = "whitelist";
 
@@ -85,7 +85,7 @@ export function UpdateURL()
 
 	if(ProjectViewerElement.Displaying)
 	{
-		params.push(ViewIndexURLParam+"="+ProjectViewerElement.ProjIndex);
+		params.push(ViewProjURLParam+"="+(AllProjects[ProjectViewerElement.ProjIndex].id));
 	}
 	if(Blacklist?.flat().length > 0)
 	{
@@ -112,10 +112,14 @@ export function UpdateURL()
 function InterpretURLParams()
 {
 	// Perhaps show one of the projects
-	if(URLParams[ViewIndexURLParam] != undefined)
+	if(URLParams[ViewProjURLParam] != undefined)
 	{
+		// clear all filters to make Allprojects[] equivalent to DisplayedProjectsIndexes[].
 		ClearAllFilters();
-		FindAndExpandProject(URLParams[ViewIndexURLParam]);
+		// find project with this id
+		let proj = AllProjects.find(proj => proj.id === URLParams[ViewProjURLParam]);
+		// display it
+		FindAndExpandProject(AllProjects.indexOf(proj));
 	}
 	// Perhaps set filters
 	else
@@ -160,6 +164,10 @@ function GetURLParams()
 	{
 		URLParams[WhitelistURLParam] = URLParams[WhitelistURLParam].split(',');
 	}
+	if(URLParams[ViewProjURLParam] != undefined && typeof URLParams[ViewProjURLParam] == Number)
+	{
+		URLParams[ViewProjURLParam] = AllProjects[URLParams[WhitelistURLParam]].id;
+	}
 }
 
 async function FetchAllProjectsCallback(/*Function Callback*/ fetchedprojectsJSON)
@@ -188,7 +196,7 @@ async function FetchAllProjectsCallback(/*Function Callback*/ fetchedprojectsJSO
 		}
 		else
 		{
-			AllProjects[index] = new Project(proj.name.trim(), proj.date, proj.blurb, proj.tags, proj.datapath, proj.desc, proj.thumbnail, proj.projectviewerdatafiles);
+			AllProjects[index] = new Project(proj.id, proj.name.trim(), proj.date, proj.blurb, proj.tags, proj.datapath, proj.desc, proj.thumbnail, proj.projectviewerdatafiles);
 			index++;
 		}
 
@@ -216,7 +224,9 @@ async function FetchAllProjectsCallback(/*Function Callback*/ fetchedprojectsJSO
 //   extension, for if the file extension is not known beforehand.
 export async function FetchFile(/*String*/ filepath, /*Function*/ callbackFunction)
 {
-	let extension = filepath.split('.').pop(); // get substring from last '.' to end of superstring.
+	// get substring from last '.' to end of superstring.
+	let extension = filepath.split('.').pop().toLowerCase();
+
 	switch(extension)
 	{
 		default: console.warn(`Warning: attempted to fetch unknown file extension \"${extension}\", skipping file...`); return;
@@ -228,6 +238,11 @@ export async function FetchFile(/*String*/ filepath, /*Function*/ callbackFuncti
 		case  "png": // v (Fall through)
 		case  "jpg": // v (Fall through)
 		case "jpeg": FetchImageToHTML(filepath, callbackFunction); return;
+
+		case "mkv": // v (Fall through)
+		case "mp4": // v (Fall through)
+		case "mov": // v (Fall through)
+		case "avi": FetchVideoToHTML(filepath, callbackFunction); return;
 	}
 }
 export async function FetchJSONToObject(/*String*/ filepath, /*Function(Object)*/ callbackFunction)
@@ -289,7 +304,17 @@ export function FetchImageToHTML(/*String*/ filepath, /*Function(String)*/ callb
 	// Don't actually need to fetch since the image can be loaded through the <img src=""></img> tag.
 	callbackFunction(`<img src="${filepath}"></img>`);
 }
+export function FetchVideoToHTML(/*String*/ filepath, /*Function(String)*/ callbackFunction)
+{
+	// Don't actually need to fetch since the video can be loaded through the <video src=""></video> tag.
+	// get substring from last '.' to end of superstring.
+	let extension = filepath.split('.').pop().toLowerCase();
 
+	callbackFunction(
+		`<!-- The text between the <video> and </video> tags will only be displayed in browsers that do not support the <video> element. -->`
+		+ `<video controls loop><source src="${filepath}" type="video/${extension}"><p>Your browser does not support the video tag.</p></video>`
+	);
+}
 
 /// Page and HTML construction
 /// ==========================
