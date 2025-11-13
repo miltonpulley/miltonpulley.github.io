@@ -23,6 +23,10 @@ export async function RefreshProjectViewer()
 	await document.querySelector("project-viewer").requestUpdate();
 	UpdateURL();
 }
+window.onresize = () => // event handler
+{
+	RefreshProjectViewer();
+}
 
 // BYPASSES ANIMATION, if you want the animation, call FindAndExpandProject().
 export async function ViewProjectInViewer(/*index*/ projIndex) // Get by index into to AllProjects[].

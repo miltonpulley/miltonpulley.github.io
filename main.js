@@ -27,15 +27,15 @@ export const DisplayedProjectsIndexes = []; // The filtered version of AllProjec
 
 /// Runtime Functions
 /// =================
-import { FilterProjects } from "./filters.js";
+import { FilterProjects, ToggleFilterDropdown, RefreshFilterList, ClearAllFilters, SetFilters } from "./filters.js";
+import { RefreshProjectList, FindAndExpandProject } from "./projectlist.js";
+import { RefreshProjectViewer } from "./projectviewer.js";
 
 
 /// Classes and Objects
 /// ===================
 import { Project } from "./projectlist.js";
-import { RefreshFilterList, GetDisplayIndexFromAllProjectsIndex, ClearAllFilters, SetFilters } from "./filters.js";
-import { RefreshProjectList, FindAndExpandProject } from "./projectlist.js";
-import { RefreshProjectViewer, ProjectViewerElement } from "./projectviewer.js";
+import { ProjectViewerElement } from "./projectviewer.js";
 
 
 /// Initialisation Functions
@@ -124,6 +124,10 @@ function InterpretURLParams()
 	// Perhaps set filters
 	else
 	{
+		if(URLParams[BlacklistURLParam] != undefined || URLParams[WhitelistURLParam] != undefined)
+		{
+			ToggleFilterDropdown(false); // open dropdown
+		}
 		SetFilters(URLParams[BlacklistURLParam], URLParams[WhitelistURLParam]);
 	}
 }

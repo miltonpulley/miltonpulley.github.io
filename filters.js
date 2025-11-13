@@ -6,7 +6,7 @@ export const ProjectCategoriesAndTags =
 	"Group Role": ["Solo", "Team Member", "Lead Developer", "Producer"],
 	"Project Type": ["Protoype/Test/Experiment", "Release", "Game Jam", "VR"],
 	//"Programs": ["Blender", "Unity", "MuseScore"],
-	"Languages": ["C/C++", "CSharp", "Java", "HTML/CSS/JS"],//, "Python"],
+	"Languages": ["CSharp", "Java", "C/C++", "HTML/CSS/JS"],//, "Python"],
 	"Art": ["2D Art", "3D Art", "Animation", "Music"],//, "Costume"],
 	//"Music": ["Composition", "Vocals", "Music sheet/MIDI", "Studio performance", "Live performance"],
 };
@@ -117,6 +117,12 @@ export function GetAllProjectsIndexFromDisplayIndex(/*index*/ displayIndex)
 	// This simple because the purpose of DisplayedProjectsIndexes[] is
 	//   to keep track of the displaying project's AllProjects[] index.
 	return DisplayedProjectsIndexes[displayIndex];
+}
+
+export function ToggleFilterDropdown(closed)
+{
+	dropdownclosed = closed;
+	RefreshFilterList(); // rerender
 }
 
 
@@ -241,9 +247,7 @@ export class FilterAreaElement extends LitElement
 
 	_filterDropdownButtonClicked(b)
 	{
-		dropdownclosed = !dropdownclosed;
-
-		RefreshFilterList(); // rerender
+		ToggleFilterDropdown(!dropdownclosed);
 	}
 
 	_filterAllButtonClicked(b)

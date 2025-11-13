@@ -48,10 +48,7 @@
 			"datapath":  "/projects/Let's Scale Back, PLEASE/",
 			"desc": "desc.md",
 			"thumbnail": "Cover Image.png",
-			"projectviewerdatafiles":
-			[
-				"behindthescenes.PNG"
-			]
+			"projectviewerdatafiles": []
 		},
 
 
@@ -69,7 +66,8 @@
 			"thumbnail": "bread_cover_art.png",
 			"projectviewerdatafiles":
 			[
-				"behindthescenes.PNG"
+				"bread_intro.mp4",
+				"bread_outro.mp4"
 			]
 		},
 
@@ -77,7 +75,7 @@
 		{
 			"id": "projectnamedtower",
 			"name": "Project Named Tower",
-			"date": "2022-09-07T00:00:00",
+			"date": "2022-11-27T00:00:00",
 			"blurb": "A client-server demo game made at TAFE.",
 			"tags":
 			[
@@ -88,6 +86,26 @@
 			"thumbnail": "",
 			"projectviewerdatafiles":
 			[
+				"behindthescenes.mp4"
+			]
+		},
+
+
+		{
+			"id": "cough",
+			"name": "COugh",
+			"date": "2022-10-25T00:00:00",
+			"blurb": "A game mechanics demo game made at TAFE.",
+			"tags":
+			[
+				"Protoype/Test/Experiment", "Team Member", "CSharp"
+			],
+			"datapath":  "/projects/COugh/",
+			"desc": "desc.md",
+			"thumbnail": "thumb.PNG",
+			"projectviewerdatafiles":
+			[
+				"demo.mp4",
 				"behindthescenes.mp4"
 			]
 		}
